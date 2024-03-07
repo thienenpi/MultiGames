@@ -1,20 +1,38 @@
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { useCallback } from 'react';
+import { AuthProvider } from './app/context/AuthContext';
+import AppNavigation from './app/navigation/AppNavigation';
 
 export default function App() {
+  // Load the fonts
+  const [fontsLoaded] = useFonts({
+    sfPro: require('./assets/fonts/SF-Pro-Display-Regular.otf'),
+    sfProItalic: require('./assets/fonts/SF-Pro-Display-RegularItalic.otf'),
+    sfProBold: require('./assets/fonts/SF-Pro-Display-Semibold.otf'),
+    sfProBoldItalic: require('./assets/fonts/SF-Pro-Display-SemiboldItalic.otf'),
+  });
+
+  // Unused code, but do not remove or cmd
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  // Return null if can not load fonts
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  SplashScreen.preventAutoHideAsync();
+  setTimeout(SplashScreen.hideAsync, 1500);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AuthProvider>
+      <AppNavigation></AppNavigation>
+    </AuthProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
