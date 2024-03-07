@@ -3,7 +3,7 @@
 # dependencies
 node_modules/
 yarn.lock
-server
+package-lock.json
 
 # Expo
 .expo/
