@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/851bbc1e-fd48-4fa6-86e8-9de4d65291ef/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/eliteserver/subscriptions/851bbc1e-fd48-4fa6-86e8-9de4d65291ef/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/multigamesserver",
+    "appService.deploySubpath": "server"
+}
