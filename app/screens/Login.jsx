@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import styles from './styles/login.style';
 import CustomButton from '../components/CustomButton';
@@ -11,7 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const handleSubmit = () => {
-    login()
+    login({ email: email, password: password });
   };
 
   return (
@@ -49,7 +49,7 @@ const Login = () => {
         isValid={true}
         label={'Login'}
         onPress={() => {
-          login();
+          handleSubmit();
         }}
       ></CustomButton>
 
