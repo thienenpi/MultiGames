@@ -18,9 +18,11 @@ export const AuthProvider = ({ children }) => {
     const res = await userLogin({ data: data });
 
     if (res.status === 200) {
+      const responseData = res.data;
+
       setIsLoading(true);
-      setUserToken('thiennp');
-      AsyncStorage.setItem('userToken', 'thiennp');
+      setUserToken(responseData.token);
+      AsyncStorage.setItem('userToken', JSON.stringify(responseData.token));
       setIsLoading(false);
     } else {
       Alert.alert(res.statusText, 'Please try again with another password', [
