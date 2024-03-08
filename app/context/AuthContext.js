@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useEffect, useState } from 'react';
+import { userLogin } from '../api/UserApi';
+import { Alert } from 'react-native';
 
 export const AuthContext = createContext();
 
@@ -7,11 +9,29 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userToken, setUserToken] = useState(null);
 
-  const login = () => {
-    setIsLoading(true);
-    setUserToken('thiennp');
-    AsyncStorage.setItem('userToken', 'thiennp');
-    setIsLoading(false);
+  const login = async ({ email, password }) => {
+    const data = {
+      email: email,
+      password: password,
+    };
+
+    const res = await userLogin({ data: data });
+
+    if (res.status === 200) {
+      const responseData = res.data;
+
+      setIsLoading(true);
+      setUserToken(responseData.token);
+      AsyncStorage.setItem('userToken', JSON.stringify(responseData.token));
+      setIsLoading(false);
+    } else {
+      Alert.alert(res.statusText, 'Please try again with another password', [
+        {
+          text: 'Try again',
+          style: 'cancel',
+        },
+      ]);
+    }
   };
 
   const logout = () => {
