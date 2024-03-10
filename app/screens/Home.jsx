@@ -5,11 +5,11 @@ import styles from './styles/home.style';
 import { AuthContext } from '../context/AuthContext';
 
 const Home = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout, userInfo } = useContext(AuthContext);
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-      <Text>Home</Text>
+      <Text>Welcome {userInfo.name}</Text>
       <CustomButton
         styles={styles}
         label={'Sign Out'}
