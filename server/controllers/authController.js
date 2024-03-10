@@ -27,7 +27,7 @@ const login = async (req, res) => {
       expiresIn: '7d',
     });
 
-    const { password, __v, createdAt, updatedAt, ...userData } = user._doc;
+    const { __v, createdAt, updatedAt, ...userData } = user._doc;
 
     res.status(200).json({ ...userData, token: userToken });
   } catch (error) {
@@ -46,7 +46,14 @@ const register = async (req, res) => {
 
     newUser.password = encryptedPassword;
     await newUser.save();
-    res.status(200).json('Register successfully');
+
+    const userToken = jwt.sign({ id: newUser.id }, process.env.JWT_SEC, {
+      expiresIn: '7d',
+    });
+
+    const { __v, createdAt, updatedAt, ...userData } = newUser._doc;
+
+    res.status(200).json({ ...userData, token: userToken });
   } catch (error) {
     console.error('Failed to register: ', error);
     res.status(500).json(error);
