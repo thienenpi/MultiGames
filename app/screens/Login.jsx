@@ -4,14 +4,17 @@ import { AuthContext } from '../context/AuthContext';
 import styles from './styles/login.style';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Login = () => {
+  const navigation = useNavigation();
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = () => {
-    login()
+    login({ email: email, password: password });
   };
 
   return (
@@ -19,6 +22,12 @@ const Login = () => {
       <Text>Login Screen</Text>
 
       <InputField
+        icon={
+          <MaterialCommunityIcons
+            name="email"
+            size={24}
+          ></MaterialCommunityIcons>
+        }
         styles={styles}
         label={'Email'}
         keyboardType={'email-address'}
@@ -32,6 +41,12 @@ const Login = () => {
       <View style={{ height: 20 }}></View>
 
       <InputField
+        icon={
+          <MaterialCommunityIcons
+            name="onepassword"
+            size={24}
+          ></MaterialCommunityIcons>
+        }
         styles={styles}
         label={'Password'}
         inputType={'password'}
@@ -49,7 +64,7 @@ const Login = () => {
         isValid={true}
         label={'Login'}
         onPress={() => {
-          login();
+          handleSubmit();
         }}
       ></CustomButton>
 
@@ -59,6 +74,7 @@ const Login = () => {
         styles={styles}
         isValid={true}
         label={'Register'}
+        onPress={() => navigation.navigate('Register')}
       ></CustomButton>
     </View>
   );
