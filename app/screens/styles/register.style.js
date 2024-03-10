@@ -42,6 +42,24 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     color: COLORS.text,
   },
+
+  dpContainer: {
+    flexDirection: 'row',
+    width: SIZES.width - SIZES.xxLarge * 2,
+    alignItems: 'center',
+    // backgroundColor: COLORS.disable,
+    paddingHorizontal: SIZES.small,
+  },
+
+  dpLabel: {
+    paddingHorizontal: 10,
+    fontSize: SIZES.medium,
+    color: COLORS.disable,
+  },
+
+  dp: {
+    flex: 1,
+  },
 });
 
 export default styles;
