@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   btnContainer: (backgroundColor) => ({
     backgroundColor: backgroundColor,
     borderRadius: 99,
-    width: SIZES.width - SIZES.xxLarge * 2,
+    width: SIZES.width - SIZES.xxLarge * 4,
     height: SIZES.xxLarge,
     alignItems: 'center',
     justifyContent: 'center',
@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
 
   ipfContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     width: SIZES.width - SIZES.xxLarge * 2,
     borderRadius: SIZES.medium,
     borderColor: COLORS.text,
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
 
   ipfTextInput: {
     flex: 1,
-    paddingHorizontal: 0,
+    paddingHorizontal: 10,
     fontSize: SIZES.medium,
     color: COLORS.text
   }
