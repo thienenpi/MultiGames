@@ -5,7 +5,7 @@ import styles from './styles/login.style';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
 import { useNavigation } from '@react-navigation/native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -14,7 +14,12 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const handleSubmit = () => {
-    login({ email: email, password: password });
+    const data = {
+      email: email,
+      password: password,
+    };
+
+    login({ data: data });
   };
 
   return (
@@ -22,12 +27,7 @@ const Login = () => {
       <Text>Login Screen</Text>
 
       <InputField
-        icon={
-          <MaterialCommunityIcons
-            name="email"
-            size={24}
-          ></MaterialCommunityIcons>
-        }
+        icon={<Ionicons name="mail" size={24}></Ionicons>}
         styles={styles}
         label={'Email'}
         keyboardType={'email-address'}
@@ -41,12 +41,7 @@ const Login = () => {
       <View style={{ height: 20 }}></View>
 
       <InputField
-        icon={
-          <MaterialCommunityIcons
-            name="onepassword"
-            size={24}
-          ></MaterialCommunityIcons>
-        }
+        icon={<Ionicons name="keypad" size={24}></Ionicons>}
         styles={styles}
         label={'Password'}
         inputType={'password'}
