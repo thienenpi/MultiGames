@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
-import React, { useState } from 'react';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+
 
 const CustomDatePicker = ({ styles, label, icon, onChangeValue, value }) => {
   return (
@@ -11,7 +11,7 @@ const CustomDatePicker = ({ styles, label, icon, onChangeValue, value }) => {
         style={styles.dp}
         value={value}
         mode="date"
-        is24Hour={true}
+        is24Hour={false}
         display="default"
         onChange={onChangeValue}
       ></RNDateTimePicker>

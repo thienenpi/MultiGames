@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native';
+import { Platform, Text, View, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import React, { useContext, useState } from 'react';
 import styles from './styles/register.style';
 import InputField from '../components/InputField';
@@ -38,6 +38,7 @@ const Register = () => {
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || birth;
+    Console.log(currentDate);
     setBirth(currentDate);
   };
 
@@ -58,68 +59,75 @@ const Register = () => {
     }
   };
 
+  const hideKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Register Screen</Text>
+    <TouchableWithoutFeedback onPress={hideKeyboard}>
+      <View style={styles.container}>
+        <Text>Register Screen</Text>
 
-      <InputField
-        icon={<Ionicons name="person" size={24}></Ionicons>}
-        label={'Your (user)name'}
-        styles={styles}
-        value={name}
-        onChangeText={(text) => {
-          setName(text);
-        }}
-        onSubmitEditing={handleSubmit}
-      ></InputField>
+        <InputField
+          icon={<Ionicons name="person" size={24}></Ionicons>}
+          label={'Your (user)name'}
+          styles={styles}
+          value={name}
+          onChangeText={(text) => {
+            setName(text);
+          }}
+          onSubmitEditing={handleSubmit}
+        ></InputField>
 
-      <View style={{ height: 20 }}></View>
+        <View style={{ height: 20 }}></View>
 
-      <InputField
-        icon={<Ionicons name="mail" size={24}></Ionicons>}
-        label={'Email'}
-        value={email}
-        styles={styles}
-        keyboardType={'email-address'}
-        onChangeText={(text) => {
-          setEmail(text);
-        }}
-        onSubmitEditing={handleSubmit}
-      ></InputField>
+        <InputField
+          icon={<Ionicons name="mail" size={24}></Ionicons>}
+          label={'Email'}
+          value={email}
+          styles={styles}
+          keyboardType={'email-address'}
+          onChangeText={(text) => {
+            setEmail(text);
+          }}
+          onSubmitEditing={handleSubmit}
+        ></InputField>
 
-      <View style={{ height: 20 }}></View>
+        <View style={{ height: 20 }}></View>
 
-      <InputField
-        icon={<Ionicons name="keypad" size={24}></Ionicons>}
-        label={'Password'}
-        value={password}
-        styles={styles}
-        inputType={'password'}
-        onChangeText={(text) => {
-          setPassword(text);
-        }}
-        onSubmitEditing={handleSubmit}
-      ></InputField>
+        <InputField
+          icon={<Ionicons name="keypad" size={24}></Ionicons>}
+          label={'Password'}
+          value={password}
+          styles={styles}
+          inputType={'password'}
+          onChangeText={(text) => {
+            setPassword(text);
+          }}
+          onSubmitEditing={handleSubmit}
+        ></InputField>
 
-      <View style={{ height: 20 }}></View>
+        <View style={{ height: 20 }}></View>
+        
+        <CustomDatePicker
+          icon={<Ionicons name="calendar-number" size={24}></Ionicons>}
+          label="Your birthday"
+          styles={styles}
+          value={birth}
+          onChangeValue={() => {onChangeDate}}
+        ></CustomDatePicker>
 
-      <CustomDatePicker
-        icon={<Ionicons name="calendar-number" size={24}></Ionicons>}
-        label="Your birthday"
-        styles={styles}
-        value={birth}
-        onChangeValue={onChangeDate}
-      ></CustomDatePicker>
+        <View style={{ height: 20 }}></View>
 
-      <View style={{ height: 20 }}></View>
-
-      <CustomButton
-        label={'Create account'}
-        styles={styles}
-        isValid={true}
-        onPress={handleSubmit}
-      ></CustomButton>
-    </View>
+        <CustomButton
+          label={'Create account'}
+          styles={styles}
+          isValid={true}
+          onPress={handleSubmit}
+        ></CustomButton>
+        
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
