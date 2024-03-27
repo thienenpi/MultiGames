@@ -39,6 +39,7 @@ const Register = () => {
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || birth;
     setBirth(currentDate);
+    console.log(currentDate);
   };
 
   const handleSubmit = () => {
