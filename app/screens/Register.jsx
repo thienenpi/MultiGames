@@ -1,54 +1,42 @@
-import { Platform, Text, View, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Platform, Text, View, Keyboard, TouchableWithoutFeedback, Pressable, TextInput, TouchableOpacity } from 'react-native';
 import React, { useContext, useState } from 'react';
 import styles from './styles/register.style';
 import InputField from '../components/InputField';
 import CustomButton from '../components/CustomButton';
-import CustomDatePicker from '../components/CustomDatePicker';
 import { AuthContext } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
-
-const checkBirthEntered = (birth) => {
-  const today = new Date();
-
-  return !(
-    today.getDate() === birth.getDate() &&
-    today.getMonth() === birth.getMonth() &&
-    today.getFullYear() === birth.getFullYear()
-  );
-};
-
-const checkBirthValid = (birth) => {
-  const today = new Date();
-
-  if (today.getFullYear() < birth.getFullYear()) {
-    return false;
-  } else if (today.getMonth() < birth.getMonth()) {
-    return false;
-  } else {
-    return today.getDate() >= birth.getDate();
-  }
-};
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Register = () => {
   const { register } = useContext(AuthContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [birth, setBirth] = useState(new Date());
+  const [date, setDate] = useState(new Date());
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [showPicker, setShowPicker] = useState(false);
 
-  const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate || birth;
-    Console.log(currentDate);
-    setBirth(currentDate);
+  const onChange = ({ type }, selectedDate) => {
+    if (type == "set") {
+      const currentDate = selectedDate;
+      setDate(currentDate);
+      
+      if (Platform.OS === "android") {
+        toggleDatapicker();
+        setDateOfBirth(currentDate.toDateString());
+      }
+    } else {
+      toggleDatapicker();
+    }
   };
 
   const handleSubmit = () => {
-    if (checkBirthValid(birth)) {
+    if (checkBirthValid(dateOfBirth)) {
       const data = {
         name: name,
         email: email,
         password: password,
-        birth: checkBirthEntered(birth) ? birth : null,
+        birth: checkBirthEntered(dateOfBirth) ? dateOfBirth : null,
         role_id: 'a',
         status: 'a',
       };
@@ -61,6 +49,32 @@ const Register = () => {
 
   const hideKeyboard = () => {
     Keyboard.dismiss();
+  };
+
+  const toggleDatapicker = () => {
+    setShowPicker(!showPicker);
+  };
+
+  const checkBirthEntered = () => {
+    return dateOfBirth !== '';
+  };
+  
+  const checkBirthValid = () => {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+  
+    if (today.getFullYear() < birthDate.getFullYear()) {
+      return false;
+    } else if (today.getMonth() < birthDate.getMonth()) {
+      return false;
+    } else {
+      return today.getDate() >= birthDate.getDate();
+    }
+  };
+
+  const confirmIOSDate = () => {
+    setDateOfBirth(date.toDateString());
+    toggleDatapicker();
   };
 
   return (
@@ -109,13 +123,52 @@ const Register = () => {
 
         <View style={{ height: 20 }}></View>
         
-        <CustomDatePicker
-          icon={<Ionicons name="calendar-number" size={24}></Ionicons>}
-          label="Your birthday"
-          styles={styles}
-          value={birth}
-          onChangeValue={() => {onChangeDate}}
-        ></CustomDatePicker>
+        {showPicker && (
+          <DateTimePicker
+            mode="date"
+            value={date}
+            display="spinner"
+            onChange={onChange}
+          ></DateTimePicker>
+        )}
+        
+        <Pressable
+          onPress={toggleDatapicker}>
+          <View style={styles.dpContainer}>
+            <Ionicons name="calendar-number" size={24}></Ionicons>
+            <TextInput
+              style={styles.dpLabel}
+              placeholder="Your birthday"
+              value={dateOfBirth}
+              onChangeText={setDateOfBirth}
+              editable={false}
+              onPressIn={toggleDatapicker}>
+            </TextInput>
+          </View>
+        </Pressable>
+        
+        <View style={{ height: 20 }}></View>
+
+        {showPicker && Platform.OS === "ios" && (
+          <View
+            style={{ flexDirection: "row", 
+             justifyContent: "space-around" }}>
+            
+            <CustomButton
+              label={'Cancel'}
+              styles={styles}
+              isValid={true}
+              onPress={toggleDatapicker}
+            ></CustomButton>
+            
+            <CustomButton
+              label={'Confirm'}
+              styles={styles}
+              isValid={true}
+              onPress={confirmIOSDate}
+            ></CustomButton>
+          </View>
+        )}
 
         <View style={{ height: 20 }}></View>
 
