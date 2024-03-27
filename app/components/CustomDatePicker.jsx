@@ -1,20 +1,20 @@
-import { View, Text } from 'react-native';
-import React, { useState } from 'react';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { View, Text, Pressable } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const CustomDatePicker = ({ styles, label, icon, onChangeValue, value }) => {
   return (
     <View style={styles.dpContainer}>
       {icon}
       <Text style={styles.dpLabel}>{label}</Text>
-      <RNDateTimePicker
+      <DateTimePicker
         style={styles.dp}
         value={value}
         mode="date"
-        is24Hour={true}
-        display="default"
+        is24Hour={false}
+        display="spinner"
         onChange={onChangeValue}
-      ></RNDateTimePicker>
+      ></DateTimePicker>
     </View>
   );
 };
