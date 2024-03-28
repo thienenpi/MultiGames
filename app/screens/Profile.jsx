@@ -49,6 +49,15 @@ const Profile = () => {
         }}
       ></CustomButton>
       {/* <ScrollView style={styles.body}></ScrollView> */}
+      <View style={{height: 20}}></View>
+      <CustomButton
+        styles={styles}
+        label={'Sign Out'}
+        isValid={true}
+        onPress={() => {
+          logout();
+        }}
+      ></CustomButton>
     </View>
   );
 };
