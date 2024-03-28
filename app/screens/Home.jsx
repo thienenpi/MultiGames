@@ -1,22 +1,22 @@
 import { Text, View } from 'react-native';
 import React, { useContext } from 'react';
-import CustomButton from '../components/CustomButton';
-import styles from './styles/home.style';
 import { AuthContext } from '../context/AuthContext';
+import { CustomButton } from '../components';
+import styles from './styles/home.style';
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
-  const { logout, userInfo } = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext);
+  const navigation = useNavigation()
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
       <Text>Welcome {userInfo.name}</Text>
       <CustomButton
         styles={styles}
-        label={'Sign Out'}
+        label={'Drawing & Guessing'}
         isValid={true}
-        onPress={() => {
-          logout();
-        }}
+        onPress={() => navigation.navigate("Guessing Word")}
       ></CustomButton>
     </View>
   );
