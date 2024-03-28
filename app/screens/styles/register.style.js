@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: SIZES.width - SIZES.xxLarge * 2,
     alignItems: 'center',
-    // backgroundColor: COLORS.disable,
     paddingHorizontal: SIZES.small,
   },
 
@@ -60,6 +59,7 @@ const styles = StyleSheet.create({
   dp: {
     flex: 1,
   },
+  
 });
 
 export default styles;
