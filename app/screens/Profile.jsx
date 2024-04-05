@@ -1,6 +1,7 @@
-import { ScrollView, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {  Text, View } from 'react-native';
+import React, { useContext, useState } from 'react';
 import styles from './styles/profile.style';
+import { AuthContext } from '../context/AuthContext';
 import { CustomButton, InputField } from '../components';
 import axios from 'axios';
 
@@ -8,6 +9,7 @@ const Profile = () => {
   const [firstNum, setFirstNum] = useState();
   const [secondNum, setSecondNum] = useState();
   const [result, setResult] = useState();
+  const { logout } = useContext(AuthContext)
 
   return (
     <View style={styles.container}>
@@ -50,14 +52,14 @@ const Profile = () => {
       ></CustomButton>
       {/* <ScrollView style={styles.body}></ScrollView> */}
       <View style={{height: 20}}></View>
-      <CustomButton
+      {/* <CustomButton
         styles={styles}
         label={'Sign Out'}
         isValid={true}
         onPress={() => {
           logout();
         }}
-      ></CustomButton>
+      ></CustomButton> */}
     </View>
   );
 };
