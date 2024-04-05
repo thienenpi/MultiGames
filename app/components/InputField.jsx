@@ -11,7 +11,7 @@ const InputField = ({
   fieldButtonFunction,
   value,
   onChangeText,
-  onSubmitEditing
+  onSubmitEditing,
 }) => {
   return (
     <View style={styles.ipfContainer}>

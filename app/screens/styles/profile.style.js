@@ -1,19 +1,30 @@
-import { StyleSheet } from 'react-native';
+const { StyleSheet } = require('react-native');
 import { COLORS, SIZES } from '../../constants';
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: SIZES.width,
     backgroundColor: COLORS.background,
+  },
+
+  header: {
+    // flex: 0.5,
+    marginBottom: SIZES.small,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: COLORS.button
+  },
+
+  body: {
+    flex: 1,
   },
 
   btnContainer: (backgroundColor) => ({
     backgroundColor: backgroundColor,
     borderRadius: 99,
-    width: SIZES.width - SIZES.xxLarge * 4,
+    width: SIZES.width - SIZES.xxLarge * 5,
     height: SIZES.xxLarge,
     alignItems: 'center',
     justifyContent: 'center',
@@ -27,8 +38,8 @@ const styles = StyleSheet.create({
 
   ipfContainer: {
     flexDirection: 'row',
-    width: SIZES.width - SIZES.xxLarge * 2,
     alignItems: 'center',
+    width: SIZES.xxLarge * 2,
     borderRadius: SIZES.medium,
     borderColor: COLORS.text,
     borderWidth: 1,
@@ -40,26 +51,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     fontSize: SIZES.medium,
-    color: COLORS.text,
-  },
-
-  dpContainer: {
-    flexDirection: 'row',
-    width: SIZES.width - SIZES.xxLarge * 2,
-    alignItems: 'center',
-    paddingHorizontal: SIZES.small,
-  },
-
-  dpLabel: {
-    paddingHorizontal: 10,
-    fontSize: SIZES.medium,
-    color: COLORS.disable,
-  },
-
-  dp: {
-    flex: 1,
-  },
-  
+    color: COLORS.text
+  }
 });
 
 export default styles;
