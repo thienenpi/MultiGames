@@ -1,13 +1,15 @@
-import { ScrollView, Text, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import styles from './styles/profile.style';
-import { CustomButton, InputField } from '../components';
-import axios from 'axios';
+import { ScrollView, Text, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import styles from "./styles/profile.style";
+import { CustomButton, InputField } from "../components";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 const Profile = () => {
   const [firstNum, setFirstNum] = useState();
   const [secondNum, setSecondNum] = useState();
   const [result, setResult] = useState();
+  const { logout } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
@@ -34,25 +36,25 @@ const Profile = () => {
           const calculate = async ({ firstNum, secondNum }) => {
             firstNum = parseInt(firstNum);
             secondNum = parseInt(secondNum);
-            const url = 'https://multigames.azurewebsites.net/api/calculate';
+            const url = "https://multigames.azurewebsites.net/api/calculate";
             const data = {
               a: firstNum,
               b: secondNum,
             };
 
             const res = await axios.post(url, data);
-            console.log(res.data)
-            setResult(JSON.stringify(res.data))
+            console.log(res.data);
+            setResult(JSON.stringify(res.data));
           };
 
           calculate({ firstNum: firstNum, secondNum: secondNum });
         }}
       ></CustomButton>
       {/* <ScrollView style={styles.body}></ScrollView> */}
-      <View style={{height: 20}}></View>
+      <View style={{ height: 20 }}></View>
       <CustomButton
         styles={styles}
-        label={'Sign Out'}
+        label={"Sign Out"}
         isValid={true}
         onPress={() => {
           logout();
