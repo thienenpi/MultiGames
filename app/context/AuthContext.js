@@ -15,10 +15,12 @@ export const AuthProvider = ({ children }) => {
 
     if (res.status === 200) {
       const responseData = res.data;
+      let userInfo = responseData;
+      let userToken = responseData.token;
 
       setIsLoading(true);
-      setUserInfo(responseData);
-      setUserToken(responseData.token);
+      setUserInfo(userInfo);
+      setUserToken(userToken);
 
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
       AsyncStorage.setItem('userToken', JSON.stringify(userToken));
@@ -39,15 +41,18 @@ export const AuthProvider = ({ children }) => {
 
     if (res.status === 200) {
       const responseData = res.data;
+      let userInfo = responseData;
+      let userToken = responseData.token;
 
       setIsLoading(true);
-      setUserInfo(responseData);
-      setUserToken(responseData.token);
+      setUserInfo(userInfo);
+      setUserToken(userToken);
 
       AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
       AsyncStorage.setItem('userToken', JSON.stringify(userToken));
 
       setIsLoading(false);
+      console.log('token ', userToken);
     } else {
       Alert.alert(res.data, 'Please try again with another password', [
         {

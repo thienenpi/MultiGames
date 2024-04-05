@@ -22,6 +22,13 @@ app.get('/', (req, res) =>
 
 app.use('/api/roles', rolesRouter);
 app.use('/api/users', userRouter);
+app.post('/api/calculate', (req, res) => {
+  const a = req.body.a;
+  const b = req.body.b;
+  const result = a + b;
+
+  res.status(200).json(result);
+});
 
 app.listen(port || process.env.PORT, () =>
   console.log(`Multigames listening on port ${port}!`)
