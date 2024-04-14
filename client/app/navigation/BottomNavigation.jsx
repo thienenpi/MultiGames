@@ -1,7 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Home from '../screens/Home';
+import { Home, Profile } from '../screens';
 import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -10,12 +11,14 @@ const screenOptions = {
   tabBarActiveTintColor: '#F8C06D',
   tabBarInactiveTintColor: '#7C7773',
   tabBarLabelStyle: {
-    fontSize: 12,
+    fontSize: 14,
+    fontFamily: 'sfProBold',
+    color: COLORS.text,
   },
   tabBarStyle: [
     {
       display: 'flex',
-      backgroundColor: 'black',
+      backgroundColor: COLORS.button,
     },
     null,
   ],
@@ -29,7 +32,17 @@ const BottomNavigation = () => {
         component={Home}
         options={{
           tabBarIcon: () => {
-            return <Ionicons name="home" size={24} />;
+            return <Ionicons name="home-outline" size={24} />;
+          },
+        }}
+      ></Tab.Screen>
+
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: () => {
+            return <Ionicons name="person-circle-outline" size={24}></Ionicons>;
           },
         }}
       ></Tab.Screen>
