@@ -69,7 +69,7 @@ const Login = () => {
       ></CustomButton>
 
       <View style={{ height: 20 }}></View>
-
+      
       <CustomButton
         styles={styles}
         isValid={true}

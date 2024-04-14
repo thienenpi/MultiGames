@@ -3,10 +3,9 @@ import React, { useContext } from 'react';
 import CustomButton from '../components/CustomButton';
 import styles from './styles/home.style';
 import { AuthContext } from '../context/AuthContext';
-
-const Home = () => {
+import { useNavigation } from '@react-navigation/native';
+const Home = ({ navigation = useNavigation() }) => {
   const { logout, userInfo } = useContext(AuthContext);
-
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
       <Text>Welcome {userInfo.name}</Text>
@@ -16,8 +15,13 @@ const Home = () => {
         isValid={true}
         onPress={() => {
           logout();
-        }}
-      ></CustomButton>
+        }}/>
+        <CustomButton
+          styles={styles}
+          label={'Go to SpyGame'}
+          isValid={true}
+          onPress={() => navigation.navigate('Spy Game')}
+        />
     </View>
   );
 };
