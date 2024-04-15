@@ -10,19 +10,20 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
 
-  btnContainer: (backgroundColor) => ({
-    backgroundColor: backgroundColor,
+  btnContainer: () => ({
+    // backgroundColor: backgroundColor,
+    backgroundColor:'#00CDF9' ,
     borderRadius: 99,
     width: SIZES.width - SIZES.xxLarge * 4,
     height: SIZES.xxLarge,
     alignItems: 'center',
     justifyContent: 'center',
   }),
-
+  
   btnLabel: {
     fontFamily: 'sfProBold',
     fontSize: SIZES.large,
-    color: COLORS.text,
+    color: 'white',
   },
 
   ipfContainer: {
@@ -41,6 +42,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: SIZES.medium,
     color: COLORS.text
+  },
+  registerText: {
+    color: '#00BDF9',
+    
   }
 });
 

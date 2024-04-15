@@ -1,4 +1,4 @@
-import { Text, View, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import {  TouchableOpacity ,Image, Text, View, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import styles from './styles/login.style';
@@ -29,8 +29,13 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
       <View style={styles.container}>
-        <Text>Login Screen</Text>
-
+     
+      <View style={{ height: 200, width: 200, alignSelf: 'center', marginTop: -40,marginBottom:50}}>
+        <Image
+          style={{ flex: 1, width: undefined, height: undefined }}
+          source={require('../../assets/image_login.png')}
+        />
+      </View>
         <InputField
           icon={<Ionicons name="mail" size={24}></Ionicons>}
           styles={styles}
@@ -62,20 +67,24 @@ const Login = () => {
         <CustomButton
           styles={styles}
           isValid={true}
-          label={'Login'}
+          label={'Đăng nhập'}
           onPress={() => {
             handleSubmit();
           }}
         ></CustomButton>
 
-        <View style={{ height: 20 }}></View>
-
-        <CustomButton
+      <View style={{ ...styles.registerContainer, flexDirection: 'row' , marginTop:20}}>
+        <Text>Nếu bạn chưa có tài khoản? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.registerText}>Đăng ký</Text>
+        </TouchableOpacity>
+      </View>
+        {/* <CustomButton
           styles={styles}
           isValid={true}
           label={'Register'}
           onPress={() => navigation.navigate('Register')}
-        ></CustomButton>
+        ></CustomButton> */}
       </View>
     </TouchableWithoutFeedback>
   );
