@@ -1,12 +1,10 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native'; // Thêm TextInput từ react-native
-import React from 'react';
-import styles from './styles/guessingWord.style';
-import { WhiteBoard } from '../components';
+import { View, Text, TextInput, TouchableOpacity, Image } from "react-native"; // Thêm TextInput từ react-native
+import React from "react";
+import styles from "./styles/guessingWord.style";
+import { WhiteBoard } from "../components";
 
 const GuessingWord = () => {
-  const handleSendImage = () => {
-    
-  };
+  const handleSendImage = () => {};
 
   const handleChooseIcon = () => {
     // Xử lý khi người dùng nhấn vào nút chọn bộ icon
@@ -20,7 +18,7 @@ const GuessingWord = () => {
             style={styles.menuIcon}
           />
         </TouchableOpacity>  */}
-         <View style={styles.roomInfoContainer}>
+        <View style={styles.roomInfoContainer}>
           <Text style={styles.roomName}>Tên Phòng</Text>
           <Text style={styles.roomId}>ID Phòng: 123456</Text>
         </View>
@@ -55,31 +53,34 @@ const GuessingWord = () => {
           </TouchableOpacity>
         </View> */}
         {/* <View style={styles.container}> */}
-      <View style={styles.inputContainer}>
-        {/* Icon button gửi ảnh */}
-        <TouchableOpacity onPress={handleSendImage} style={styles.iconButton}>
-          <Image
-            source={require('../../assets/send_image.png')}
-            style={styles.icon}
+        <View style={styles.inputContainer}>
+          {/* Icon button gửi ảnh */}
+          <TouchableOpacity onPress={handleSendImage} style={styles.iconButton}>
+            <Image
+              source={require("../../assets/send_image.png")}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          {/* TextInput */}
+          <TextInput
+            style={styles.input}
+            placeholder="Nhập câu trả lời..."
+            placeholderTextColor="#888"
           />
-        </TouchableOpacity>
-        {/* TextInput */}
-        <TextInput
-          style={styles.input}
-          placeholder="Nhập câu trả lời..."
-          placeholderTextColor="#888"
-        />
-        {/* Icon button chọn bộ icon */}
-        <TouchableOpacity onPress={handleChooseIcon} style={styles.iconButton}>
-          <Image
-            // source={require('../../assets/choose-icon.png')}
-            source={require('../../assets/send.png')}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
+          {/* Icon button chọn bộ icon */}
+          <TouchableOpacity
+            onPress={handleChooseIcon}
+            style={styles.iconButton}
+          >
+            <Image
+              // source={require('../../assets/choose-icon.png')}
+              source={require("../../assets/send.png")}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-      </View>
-      </View>
+    </View>
     // </View>
   );
 };

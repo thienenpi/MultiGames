@@ -8,6 +8,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  appBar: {
+    zIndex: 999,
+    position: 'absolute',
+    top: 0,
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    height: 60,
+    width: SIZES.width,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#79c060',
+  },
+
   whiteBoard: {
     flex: 1,
     width: SIZES.width,
@@ -68,17 +82,6 @@ const styles = StyleSheet.create({
     marginBottom: 10, // Khoảng cách giữa khung chứa ảnh và khung chứa câu trả lời
     padding: 60, // Khoảng cách giữa các phần tử bên trong khung chứa câu trả lời
     borderRadius: 10, // Đường viền cong cho khung chứa câu trả lời
-  },
-  appBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    height: 60,
-    paddingHorizontal: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    backgroundColor: '#79c060',
-   
   },
 
   roomInfoContainer: {
