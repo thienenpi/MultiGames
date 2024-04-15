@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, Profile } from '../screens';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
+import Store from '../screens/Store';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,6 +34,16 @@ const BottomNavigation = () => {
         options={{
           tabBarIcon: () => {
             return <Ionicons name="home-outline" size={24} />;
+          },
+        }}
+      ></Tab.Screen>
+
+      <Tab.Screen
+        name="Store"
+        component={Store}
+        options={{
+          tabBarIcon: () => {
+            return <Ionicons name="storefront" size={24}></Ionicons>;
           },
         }}
       ></Tab.Screen>
