@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    backgroundColor: '#79c060'
+    backgroundColor: '#79c060',
+   
   },
 
   roomInfoContainer: {
@@ -94,8 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white'
     },
-//Inout container 
-
+//Input container 
   iconButton: {
     padding: 10,
   },

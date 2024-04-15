@@ -1,4 +1,4 @@
-import { Platform, Text, View, Keyboard, TouchableWithoutFeedback, Pressable, TextInput, TouchableOpacity } from 'react-native';
+import { Image, Platform, Text, View, Keyboard, TouchableWithoutFeedback, Pressable, TextInput, TouchableOpacity } from 'react-native';
 import React, { useContext, useState } from 'react';
 import styles from './styles/register.style';
 import InputField from '../components/InputField';
@@ -80,11 +80,17 @@ const Register = () => {
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
       <View style={styles.container}>
-        <Text>Register Screen</Text>
-
+      
+      <View style={{ height: 200, width: 200, alignSelf: 'center', marginTop: -20,marginBottom:50}}>
+        <Image
+          style={{ flex: 1, width: undefined, height: undefined }}
+          source={require('../../assets/image_login.png')}
+        />
+      </View>
         <InputField
           icon={<Ionicons name="person" size={24}></Ionicons>}
-          label={'Your (user)name'}
+          // label={'Your (user)name'}
+          label ={'Nhập tên đầy đủ'}
           styles={styles}
           value={name}
           onChangeText={(text) => {
@@ -111,7 +117,7 @@ const Register = () => {
 
         <InputField
           icon={<Ionicons name="keypad" size={24}></Ionicons>}
-          label={'Password'}
+          label={'Nhập mật khẩu'}
           value={password}
           styles={styles}
           inputType={'password'}
@@ -178,6 +184,7 @@ const Register = () => {
           isValid={true}
           onPress={handleSubmit}
         ></CustomButton>
+      
         
       </View>
     </TouchableWithoutFeedback>
