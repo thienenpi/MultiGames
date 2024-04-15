@@ -98,8 +98,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white'
     },
-//Inout container 
-
+//Input container 
   iconButton: {
     padding: 10,
   },
