@@ -10,8 +10,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
 
-  btnContainer: (backgroundColor) => ({
-    backgroundColor: backgroundColor,
+  btnContainer: () => ({
+    backgroundColor: '#00CDF9',
     borderRadius: 99,
     width: SIZES.width - SIZES.xxLarge * 4,
     height: SIZES.xxLarge,
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   btnLabel: {
     fontFamily: 'sfProBold',
     fontSize: SIZES.large,
-    color: COLORS.text,
+    color: 'white',
   },
 
   ipfContainer: {
