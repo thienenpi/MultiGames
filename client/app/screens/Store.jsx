@@ -81,19 +81,26 @@ const Store = () => {
           }}
         >
           <Pressable style={styles.centeredView} onPress={() => setModalVisible(false)}>
-            <View style={styles.modalView}>
-            
-              <Text style={styles.modalText}>ID: {selectedItem?.id}</Text>
-              <Text style={styles.modalText}>Description: {selectedItem?.description}</Text>
-              <Text style={styles.modalText}>Price: {selectedItem?.price}</Text>
+            <View
+              style={styles.modalView}
+              onStartShouldSetResponder={() => true}
+            >
+              <View style={styles.itemContainer}>
+                <Image source={selectedItem?.image} style={[styles.image, {width: 250, height: 250} ]} />
+                <Text style={styles.description}>{selectedItem?.description}</Text>
+                <View style={{ flexDirection: "row", alignSelf: "flex-start" }}>
+                  <Ionicons name="cash-outline" style={[styles.icon, { color: 'green', fontSize: 18 }]} />
+                  <Text style={[styles.balance, { marginLeft: 8 }]}>{selectedItem?.price}</Text>
+                </View>
+              </View>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                // onPress={() => setModalVisible(!modalVisible)}
+              // onPress={() => setModalVisible(!modalVisible)}
               >
                 <Text style={styles.textStyle}>Mua</Text>
               </Pressable>
             </View>
-            </Pressable>
+          </Pressable>
         </Modal>
       </View>
     </SafeAreaView>
