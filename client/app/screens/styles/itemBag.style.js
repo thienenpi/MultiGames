@@ -68,14 +68,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#00CF00"
     },
-    bannerContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    bannerImage: {
-        width: '100%',
-        height: 170,
-    },
     separator: {
         height: 0.5,
         backgroundColor: 'lightgray',
