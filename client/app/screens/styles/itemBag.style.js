@@ -29,27 +29,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 16,
     },
-    image: {
-        width: 120,
-        height: 120,
-        borderRadius: 6,
-        marginBottom: 8,
-    },
-    description: {
-        fontSize: 14,
-        textAlign: "left",
-        marginBottom: 4,
-    },
-    priceContainer: {
-        flexDirection: "row",
-        alignSelf: "flex-start",
-    },
-    price: {
-        fontSize: 14,
-        marginLeft: 8,
-        fontWeight: "bold",
-        color: "#00CF00"
-    },
     balanceContainer: {
         flexDirection: "row",
         paddingHorizontal: 8,
@@ -104,7 +83,7 @@ const styles = StyleSheet.create({
         elevation: 2,
         width: "80%",
     },
-    buttonBuy: {
+    buttonUse: {
         backgroundColor: "#00BDF9",
         marginBottom: 20,
     },
