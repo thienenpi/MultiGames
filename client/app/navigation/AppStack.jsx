@@ -1,8 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavigation from './BottomNavigation';
-import { GuessingWord } from '../screens';
-import CreateRoom from '../screens/CreateRoom';
+import { GuessingWord, CreateRoom, Store, ItemBag } from '../screens';
 
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +21,16 @@ const AppStack = () => {
         <Stack.Screen
         name="CreateRoom"
         component={CreateRoom}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="Store"
+        component={Store}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="ItemBag"
+        component={ItemBag}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>
