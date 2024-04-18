@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, FlatList, SafeAreaView, Modal, Pressable, TouchableOpacity } from "react-native";
 import { Dimensions } from 'react-native';
 import styles from './styles/store.style';
+import { ItemComponent } from '../components';
 
 const Store = () => {
   const data = [
@@ -27,19 +28,6 @@ const Store = () => {
   const navigation = useNavigation();
 
   const screenWidth = Dimensions.get('window').width;
-
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <TouchableOpacity onPress={() => handleItemPress(item)}>
-        <Image source={item.image} style={styles.image} />
-        <Text style={styles.description}>{item.description}</Text>
-        <View style={styles.priceContainer}>
-          <Ionicons name="cash-outline" style={styles.icon} />
-          <Text style={styles.price}>{item.price}</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
-  );
 
   // Trong hàm handleItemPress, set state của modal và lớp phủ thành true
   const handleItemPress = (item) => {
@@ -86,7 +74,9 @@ const Store = () => {
       </View>
       <FlatList
         data={data}
-        renderItem={renderItem}
+        renderItem={({ item }) => (
+          <ItemComponent item={item} handleItemPress={handleItemPress} showPrice={true} />
+        )}
         keyExtractor={(item) => item.id.toString()}
         numColumns={3}
         contentContainerStyle={{ justifyContent: 'flex-start' }}
@@ -113,9 +103,9 @@ const Store = () => {
                 </View>
               </View>
             </View>
-            <Pressable style={[styles.button, styles.buttonBuy]} >
+            <TouchableOpacity style={[styles.button, styles.buttonBuy]} >
               <Text style={styles.textStyle}>Mua</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal> : null}

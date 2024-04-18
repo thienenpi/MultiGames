@@ -29,17 +29,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 16,
     },
-    image: {
-        width: 120,
-        height: 120,
-        borderRadius: 6,
-        marginBottom: 8,
-    },
-    description: {
-        fontSize: 14,
-        textAlign: "left",
-        marginBottom: 4,
-    },
     priceContainer: {
         flexDirection: "row",
         alignSelf: "flex-start",

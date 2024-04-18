@@ -23,7 +23,12 @@ const Home = ({ navigation = useNavigation() }) => {
         isValid={true}
         onPress={() => navigation.navigate("CreateRoom")}
       ></CustomButton>
-      
+      <CustomButton
+        styles={styles}
+        label={"Setting"}
+        isValid={true}
+        onPress={() => navigation.navigate("Setting")}
+      ></CustomButton>
     </View>
   );
 };
