@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Image, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import styles  from './styles/itemComponent.style';
+import styles from './styles/itemComponent.style';
 
 const ItemComponent = ({ item, handleItemPress, showPrice }) => {
   return (
