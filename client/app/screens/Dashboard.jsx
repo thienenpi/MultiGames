@@ -9,7 +9,7 @@ const Dashboard = () => {
     const { userInfo } = useContext(AuthContext);
 
     return (
-        <SafeAreaView style={{ marginTop: 40 }}>
+        <SafeAreaView>
             <ProfileRow
                 avatarSource={require('../../assets/bg01.png')}
                 name={userInfo.name}

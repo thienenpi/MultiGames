@@ -24,16 +24,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  index: {
+  desc: {
     fontSize: 14,
     marginRight: 8,
-    opacity: 0.8,
+    opacity: 0.5,
     color: 'gray',
   },
   icon: {
     fontSize: 16,
     opacity: 0.5,
     color: 'gray',
+  },
+  avatar: {
+    width: 25,
+    height: 25,
+    borderRadius: 25,
   },
 });
 

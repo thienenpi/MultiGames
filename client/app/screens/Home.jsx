@@ -29,6 +29,12 @@ const Home = ({ navigation = useNavigation() }) => {
         isValid={true}
         onPress={() => navigation.navigate("Setting")}
       ></CustomButton>
+      <CustomButton
+        styles={styles}
+        label={"Edit Profile"}
+        isValid={true}
+        onPress={() => navigation.navigate("EditProfile")}
+      ></CustomButton>
     </View>
   );
 };

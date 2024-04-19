@@ -6,5 +6,6 @@ import Shop from './Shop';
 import ItemBag from './ItemBag';
 import Setting from './Setting';
 import Dashboard from './Dashboard';
+import EditProfile from './EditProfile';
 
-export { Home, Profile, GuessingWord, CreateRoom, Shop, ItemBag, Setting, Dashboard };
+export { Home, Profile, GuessingWord, CreateRoom, Shop, ItemBag, Setting, Dashboard, EditProfile };
