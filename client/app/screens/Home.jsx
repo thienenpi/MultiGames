@@ -21,10 +21,14 @@ const Home = ({ navigation = useNavigation() }) => {
         styles={styles}
         label={"CreateRoom"}
         isValid={true}
-        
         onPress={() => navigation.navigate("CreateRoom")}
       ></CustomButton>
-      
+      <CustomButton
+        styles={styles}
+        label={"Setting"}
+        isValid={true}
+        onPress={() => navigation.navigate("Setting")}
+      ></CustomButton>
     </View>
   );
 };
