@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavigation from './BottomNavigation';
-import { GuessingWord, CreateRoom, Store, ItemBag, Setting } from '../screens';
+import { GuessingWord, CreateRoom, Shop, ItemBag, Setting } from '../screens';
 
 
 const Stack = createNativeStackNavigator();
@@ -24,8 +24,8 @@ const AppStack = () => {
         options={{ headerShown: false }}
       ></Stack.Screen>
       <Stack.Screen
-        name="Store"
-        component={Store}
+        name="Shop"
+        component={Shop}
         options={{ headerShown: false }}
       ></Stack.Screen>
       <Stack.Screen

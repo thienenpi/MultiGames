@@ -15,66 +15,75 @@ const Setting = () => {
                     <Pressable onPress={() => navigation.goBack()}>
                         <Ionicons name="arrow-back" size={22} />
                     </Pressable>
-                    <Text style={styles.headerText}>Cài đặt</Text>
+                    <Text style={styles.headerText}>Settings</Text>
                 </View>
             </View>
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Quản lý tài khoản"
+                    title="Account Management"
                     index=""
                     iconName="arrow-forward"
+                    isCenter={false}
                     onPress={() => { }}
                 />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Nhận thông báo mới nhất"
+                    title="Message Notification"
                     index=""
                     iconName="arrow-forward"
+                    isCenter={false}
                     onPress={() => { }}
                 />
             <HorizontalItem
-                    title="Quyền riêng tư"
+                    title="Privacy"
                     index=""
                     iconName="arrow-forward"
+                    isCenter={false}
                     onPress={() => { }}
                 />
             <HorizontalItem
-                    title="Thường dùng"
+                    title="General"
                     index=""
                     iconName="arrow-forward"
-                    onPress={() => { }}
-                />
-            <View style={styles.separator} />
-            <HorizontalItem
-                    title="Xóa bộ nhớ cache"
-                    index=""
-                    iconName="arrow-forward"
-                    onPress={() => { }}
-                />
-            <HorizontalItem
-                    title="Sửa bằng 1 lượt nhấp"
-                    index=""
-                    iconName="arrow-forward"
-                    onPress={() => { }}
-                />
-            <HorizontalItem
-                    title="Tải lên nhật ký"
-                    index=""
-                    iconName="arrow-forward"
+                    isCenter={false}
                     onPress={() => { }}
                 />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="MultiGame"
+                    title="Clear Cache"
+                    index=""
+                    iconName="arrow-forward"
+                    isCenter={false}
+                    onPress={() => { }}
+                />
+            <HorizontalItem
+                    title="Quick Repair"
+                    index=""
+                    iconName="arrow-forward"
+                    isCenter={false}
+                    onPress={() => { }}
+                />
+            <HorizontalItem
+                    title="Upload Log"
+                    index=""
+                    iconName="arrow-forward"
+                    isCenter={false}
+                    onPress={() => { }}
+                />
+            <View style={styles.separator} />
+            <HorizontalItem
+                    title="About Us"
                     index="V 1.0.0"
                     iconName="arrow-forward"
+                    isCenter={false}
                     onPress={() => { }}
                 />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Đăng xuất"
+                    title="Log Out"
                     index=""
-                    iconName="arrow-forward"
+                    iconName=""
+                    isCenter={true}
                     onPress={() => { }}
                 />
             <View style={styles.separator} />
