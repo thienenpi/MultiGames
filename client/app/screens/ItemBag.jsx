@@ -43,13 +43,13 @@ const ItemBag = () => {
           <Pressable onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={22} />
           </Pressable>
-          <Text style={styles.headerText}>Cửa hàng</Text>
+          <Text style={styles.headerText}>My Inventory</Text>
         </View>
       </View>
       <View style={styles.separator} />
       <View style={styles.categoryContainer}>
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
-        <Text style={styles.categoryText}>Nền bảng vẽ</Text>
+        <Text style={styles.categoryText}>Drawing Boards</Text>
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
       </View>
       <FlatList
@@ -80,7 +80,7 @@ const ItemBag = () => {
               </View>
             </View>
             <TouchableOpacity style={[styles.button, styles.buttonUse]} >
-              <Text style={styles.textStyle}>Sử dụng</Text>
+              <Text style={styles.textStyle}>Use</Text>
             </TouchableOpacity>
           </View>
         </View>
