@@ -3,10 +3,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, FlatList, SafeAreaView, Modal, Pressable, TouchableOpacity } from "react-native";
 import { Dimensions } from 'react-native';
-import styles from './styles/store.style';
-import { ItemComponent } from '../components';
+import styles from './styles/shop.style';
+import { Item } from '../components';
 
-const Store = () => {
+const Shop = () => {
   const data = [
     { id: 1, image: require('../../assets/bg01.png'), description: "Description 1", price: 200, },
     { id: 2, image: require('../../assets/bg02.png'), description: "Description 2", price: 300, },
@@ -49,7 +49,7 @@ const Store = () => {
           <Pressable onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={22} />
           </Pressable>
-          <Text style={styles.headerText}>Cửa hàng</Text>
+          <Text style={styles.headerText}>Shop</Text>
         </View>
         <Pressable onPress={() => navigation.navigate('ItemBag')}>
           <Ionicons name="cart" style={[styles.icon, { color: "#FFA500" }]} />
@@ -57,7 +57,7 @@ const Store = () => {
       </View>
       <View style={styles.separator} />
       <View style={styles.balanceContainer}>
-        <Text style={styles.balanceText}>Số dư tài khoản:</Text>
+        <Text style={styles.balanceText}>Balance:</Text>
         <View style={styles.balanceContent}>
           <Ionicons name="cash-outline" style={styles.icon} />
           <Text style={styles.balanceAmount}>100</Text>
@@ -69,13 +69,13 @@ const Store = () => {
       <View style={styles.separator} />
       <View style={styles.categoryContainer}>
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
-        <Text style={styles.categoryText}>Nền bảng vẽ</Text>
+        <Text style={styles.categoryText}>Drawing Boards</Text>
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
       </View>
       <FlatList
         data={data}
         renderItem={({ item }) => (
-          <ItemComponent item={item} handleItemPress={handleItemPress} showPrice={true} />
+          <Item item={item} handleItemPress={handleItemPress} showPrice={true} />
         )}
         keyExtractor={(item) => item.id.toString()}
         numColumns={3}
@@ -104,7 +104,7 @@ const Store = () => {
               </View>
             </View>
             <TouchableOpacity style={[styles.button, styles.buttonBuy]} >
-              <Text style={styles.textStyle}>Mua</Text>
+              <Text style={styles.textStyle}>Buy</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -113,4 +113,4 @@ const Store = () => {
   );
 };
 
-export default Store;
+export default Shop;

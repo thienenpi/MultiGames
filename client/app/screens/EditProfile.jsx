@@ -2,10 +2,10 @@ import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, SafeAreaView, TouchableOpacity, Pressable } from 'react-native';
-import styles from './styles/setting.style';
+import styles from './styles/editProfile.style';
 import { HorizontalItem } from '../components';
 
-const Setting = () => {
+const EditProfile = () => {
     const navigation = useNavigation();
 
     return (
@@ -15,66 +15,68 @@ const Setting = () => {
                     <Pressable onPress={() => navigation.goBack()}>
                         <Ionicons name="arrow-back" size={22} />
                     </Pressable>
-                    <Text style={styles.headerText}>Settings</Text>
+                    <Text style={styles.headerText}>Edit Profile</Text>
                 </View>
             </View>
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Account Management"
+                    title="Avatar"
+                    isAvt={true}
                     iconRight="arrow-forward"
+                    isCenter={false}
+                    onPress={() => { }}
+                />
+            <HorizontalItem
+                    title="Nickname"
+                    desc="Huynh Phat"
+                    iconRight="arrow-forward"
+                    isCenter={false}
+                    onPress={() => { }}
+                />
+            <HorizontalItem
+                    title="User ID"
+                    isIconDesc={true}
+                    iconDesc='alert-circle'
+                    colorIconDesc='red'
+                    desc="Not set"
+                    colorDesc='red'
+                    iconRight="arrow-forward"
+                    isCenter={false}
+                    onPress={() => { }}
+                />
+            <HorizontalItem
+                    title="QR Code Contact Card"
+                    iconRight="qr-code-sharp"
                     isCenter={false}
                     onPress={() => { }}
                 />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Message Notification"
+                    title="Gender"
+                    desc="Male"
                     iconRight="arrow-forward"
                     isCenter={false}
                     onPress={() => { }}
                 />
             <HorizontalItem
-                    title="Privacy"
+                    title="Birthday"
+                    desc="24/09/2003"
                     iconRight="arrow-forward"
                     isCenter={false}
                     onPress={() => { }}
                 />
             <HorizontalItem
-                    title="General"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
-            <View style={styles.separator} />
-            <HorizontalItem
-                    title="Clear Cache"
+                    title="Region"
+                    desc="Vietnam"
                     iconRight="arrow-forward"
                     isCenter={false}
                     onPress={() => { }}
                 />
             <HorizontalItem
-                    title="Quick Repair"
+                    title="Signature"
+                    desc=""
                     iconRight="arrow-forward"
                     isCenter={false}
-                    onPress={() => { }}
-                />
-            <HorizontalItem
-                    title="Upload Log"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
-            <View style={styles.separator} />
-            <HorizontalItem
-                    title="About Us"
-                    desc="V 1.0.0"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
-            <View style={styles.separator} />
-            <HorizontalItem
-                    title="Log Out"
-                    isCenter={true}
                     onPress={() => { }}
                 />
             <View style={styles.separator} />
@@ -82,4 +84,4 @@ const Setting = () => {
     );
 };
 
-export default Setting;
+export default EditProfile;

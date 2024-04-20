@@ -1,9 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, Profile } from '../screens';
+import { Home, Profile, Shop, Dashboard } from '../screens';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
-import Store from '../screens/Store';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,8 +38,18 @@ const BottomNavigation = () => {
       ></Tab.Screen>
 
       <Tab.Screen
-        name="Store"
-        component={Store}
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          tabBarIcon: () => {
+            return <Ionicons name="game-controller" size={24} />;
+          },
+        }}
+      ></Tab.Screen>
+
+      <Tab.Screen
+        name="Shop"
+        component={Shop}
         options={{
           tabBarIcon: () => {
             return <Ionicons name="storefront" size={24}></Ionicons>;
