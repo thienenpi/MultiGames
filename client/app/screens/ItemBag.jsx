@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, FlatList, SafeAreaView, Modal, Pressable, TouchableOpacity } from "react-native";
 import { Dimensions } from 'react-native';
 import styles from './styles/itemBag.style';
-import { ItemComponent } from '../components';
+import { Item } from '../components';
 
 const ItemBag = () => {
   const data = [
@@ -55,13 +55,13 @@ const ItemBag = () => {
       <FlatList
         data={data}
         renderItem={({ item }) => (
-          <ItemComponent item={item} handleItemPress={handleItemPress} showPrice={false} />
+          <Item item={item} handleItemPress={handleItemPress} showPrice={false} />
         )}
         keyExtractor={(item) => item.id.toString()}
         numColumns={3}
         contentContainerStyle={{ justifyContent: 'flex-start' }}
       />
-      {isOverlayVisible ? <Modal
+      {isOverlayVisible && <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
@@ -84,7 +84,7 @@ const ItemBag = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal> : null}
+      </Modal>}
     </SafeAreaView>
   );
 };

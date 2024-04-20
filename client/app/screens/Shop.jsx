@@ -81,7 +81,7 @@ const Shop = () => {
         numColumns={3}
         contentContainerStyle={{ justifyContent: 'flex-start' }}
       />
-      {isOverlayVisible ? <Modal
+      {isOverlayVisible && <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
@@ -108,7 +108,7 @@ const Shop = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal> : null}
+      </Modal>}
     </SafeAreaView>
   );
 };

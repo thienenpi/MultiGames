@@ -5,5 +5,15 @@ import WhiteBoard from './WhiteBoard';
 import Item from './Item';
 import HorizontalItem from './HorizontalItem';
 import ProfileRow from './ProfileRow';
+import GameCard from './GameCard';
 
-export { CustomButton, CustomDatePicker, InputField, WhiteBoard, Item, HorizontalItem, ProfileRow };
+export { 
+    CustomButton, 
+    CustomDatePicker, 
+    InputField, 
+    WhiteBoard, 
+    Item, 
+    HorizontalItem, 
+    ProfileRow,
+    GameCard,
+};
