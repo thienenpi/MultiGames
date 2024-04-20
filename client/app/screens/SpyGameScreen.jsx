@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import styles from './styles/spy.style';
+import styles from './styles/spyGame.style';
 import {
   View,
   TextInput,

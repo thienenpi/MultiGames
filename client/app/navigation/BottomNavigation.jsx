@@ -1,25 +1,24 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, Profile } from '../screens';
-import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../constants';
-import Store from '../screens/Store';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Home, Message, Profile } from "../screens";
+import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../constants";
+import Store from "../screens/Store";
 
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
   headerShown: false,
-  tabBarActiveTintColor: '#F8C06D',
-  tabBarInactiveTintColor: '#7C7773',
+  tabBarActiveTintColor: "#F8C06D",
+  tabBarInactiveTintColor: "#7C7773",
   tabBarLabelStyle: {
     fontSize: 14,
-    fontFamily: 'sfProBold',
+    fontFamily: "sfProBold",
     color: COLORS.text,
   },
   tabBarStyle: [
     {
-      display: 'flex',
-      backgroundColor: COLORS.button,
+      display: "flex",
     },
     null,
   ],
@@ -43,7 +42,19 @@ const BottomNavigation = () => {
         component={Store}
         options={{
           tabBarIcon: () => {
-            return <Ionicons name="storefront" size={24}></Ionicons>;
+            return <Ionicons name="storefront-outline" size={24}></Ionicons>;
+          },
+        }}
+      ></Tab.Screen>
+
+      <Tab.Screen
+        name="Message"
+        component={Message}
+        options={{
+          tabBarIcon: () => {
+            return (
+              <Ionicons name="chatbubble-ellipses-outline" size={24}></Ionicons>
+            );
           },
         }}
       ></Tab.Screen>
