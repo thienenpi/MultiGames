@@ -1,14 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
-import { AppBar, CustomButton, RoomCardView} from "../components";
+import { AppBar, CustomButton, RoomCardView } from "../components";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import styles from "./styles/createroom.style";
-import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import Dialog from "react-native-dialog";
 
 const items = [
   {
@@ -43,11 +39,24 @@ const renderItem = ({ item }) => <RoomCardView item={item}></RoomCardView>;
 
 const CreateRoom = () => {
   const navigation = useNavigation();
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [roomNumber, setRoomNumber] = useState("");
+  const showDialog = () => {
+    setDialogVisible(true);
+  };
 
+  const handleCancel = () => {
+    setDialogVisible(false);
+  };
+
+  const handleConfirm = () => {
+    // Xử lý số phòng ở đây
+    setDialogVisible(false);
+  };
   return (
     <View style={styles.container}>
       <AppBar
-        title='Create Room'
+        title="Create Room"
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
       <View
@@ -73,6 +82,7 @@ const CreateRoom = () => {
             styles.button,
             { backgroundColor: "#FC356E", flexDirection: "row" },
           ]}
+          onPress={showDialog}
         >
           <Ionicons name="search-circle" size={30} color="white" />
           <Text style={styles.buttonText}>Tìm phòng</Text>
@@ -105,6 +115,34 @@ const CreateRoom = () => {
         renderItem={renderItem}
         keyExtractor={(item) => JSON.stringify(item._id)}
       ></FlatList>
+      <Dialog.Container visible={dialogVisible}>
+        <Dialog.Title style={{ textAlign: "center" }}>Tìm phòng</Dialog.Title>
+        <Dialog.Input
+          onChangeText={(number) => setRoomNumber(number)}
+          placeholder="Nhập số phòng"
+          inputContainerStyle={{ borderBottomColor: "transparent" }}
+          style={{
+            borderColor: "#yourBorderColor", // Replace with your border color
+            borderWidth: 1,
+            borderRadius: 5,
+            padding: 10,
+          }}
+        ></Dialog.Input>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Dialog.Button
+            label="Hủy"
+            onPress={handleCancel}
+            color="#FC356E"
+            style={{ marginLeft: 30 }}
+          />
+          <Dialog.Button
+            label="Xác nhận"
+            onPress={handleConfirm}
+            color="#62C7FF"
+            style={{ marginRight: 30 }}
+          />
+        </View>
+      </Dialog.Container>
     </View>
   );
 };

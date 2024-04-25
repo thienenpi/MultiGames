@@ -4,20 +4,6 @@ import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  appBar: {
-    flex: 1,
-    flexDirection: "row",
-    width: "100%",
-  },
-
-  body: {
-    flex: 11,
-    alignItems: "center",
-    justifyContent: "center",
   },
   header: {
     flexDirection: "row",
