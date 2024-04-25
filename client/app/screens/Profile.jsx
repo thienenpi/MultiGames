@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import React, { useContext } from "react";
 import styles from "./styles/profile.style";
 import { CustomButton } from "../components";

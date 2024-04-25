@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, FlatList, SafeAreaView, Modal, Pressable, TouchableOpacity } from "react-native";
 import { Dimensions } from 'react-native';
 import styles from './styles/shop.style';
-import { Item } from '../components';
+import { Item, AppBar } from '../components';
 
 const Shop = () => {
   const data = [
@@ -44,17 +44,13 @@ const Shop = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Pressable onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={22} />
-          </Pressable>
-          <Text style={styles.headerText}>Shop</Text>
-        </View>
-        <Pressable onPress={() => navigation.navigate('ItemBag')}>
-          <Ionicons name="cart" style={[styles.icon, { color: "#FFA500" }]} />
-        </Pressable>
-      </View>
+      <AppBar
+        title="Shop"
+        rightIconName="cart"
+        showRightIcon={true}
+        rightIconStyle={{ fontSize: 24 }}
+        onPressLeftIcon={() => navigation.goBack()}
+        onPressRightIcon={() => navigation.navigate('ItemBag')} />
       <View style={styles.separator} />
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceText}>Balance:</Text>

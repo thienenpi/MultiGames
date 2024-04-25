@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { COLORS } from "../../constants";
 
 const styles = StyleSheet.create({
     container: {
@@ -28,28 +29,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         marginBottom: 16,
-    },
-    balanceContainer: {
-        flexDirection: "row",
-        paddingHorizontal: 8,
-        paddingVertical: 16,
-        justifyContent: 'space-between',
-    },
-    balanceText: {
-        fontSize: 14,
-    },
-    balanceContent: {
-        flexDirection: "row",
-    },
-    balanceAmount: {
-        fontSize: 14,
-        marginLeft: 8,
-        fontWeight: "bold",
-        color: "#00CF00"
-    },
-    separator: {
-        height: 0.5,
-        backgroundColor: 'lightgray',
     },
     categoryContainer: {
         flexDirection: 'row',

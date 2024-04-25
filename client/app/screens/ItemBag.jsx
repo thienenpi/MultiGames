@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, FlatList, SafeAreaView, Modal, Pressable, TouchableOpacity } from "react-native";
 import { Dimensions } from 'react-native';
 import styles from './styles/itemBag.style';
-import { Item } from '../components';
+import { Item, AppBar } from '../components';
 
 const ItemBag = () => {
   const data = [
@@ -38,14 +38,7 @@ const ItemBag = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Pressable onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={22} />
-          </Pressable>
-          <Text style={styles.headerText}>My Inventory</Text>
-        </View>
-      </View>
+      <AppBar title="My Inventory" onPressLeftIcon={() => navigation.goBack()} />
       <View style={styles.separator} />
       <View style={styles.categoryContainer}>
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />

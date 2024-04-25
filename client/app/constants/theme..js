@@ -4,12 +4,15 @@ const { height, width } = Dimensions.get("window");
 
 const COLORS = {
   text: "#0D0D0D",
+  back: "#000000",
+  white: "#FFFFFF",
   primaryLight: "#FF92DA",
   primaryDark: "#9B92FF",
   background: "#F2F2F2",
   secondary: "#8C281F",
   disable: "#8C8C87",
-  button: "#D94A4A",
+  button: "#00BDF9",
+  price: "#00CF00"
 };
 
 const SIZES = {

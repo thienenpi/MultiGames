@@ -21,7 +21,7 @@ const MessageCardView = ({ item }) => {
           imageStyle={styles.avatar}
         >
           <View style={styles.unreadNumber}>
-            <Text style={{ color: COLORS.background }}>
+            <Text style={{ color: COLORS.background, fontSize: 12 }}>
               {item.unreadNumber}
             </Text>
           </View>
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     // create border around the message card
     borderWidth: 0.2,
     borderColor: COLORS.text,
-    borderRadius: SIZES.medium,
-    marginHorizontal: SIZES.large,
+    borderRadius: SIZES.small,
+    marginHorizontal: SIZES.medium,
   },
 
   avatar: {

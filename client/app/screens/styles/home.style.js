@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   btnLabel: {
     fontFamily: "sfProBold",
     fontSize: SIZES.large,
-    color: COLORS.text,
+    color: COLORS.white,
   },
 });
 

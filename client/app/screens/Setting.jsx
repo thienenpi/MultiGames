@@ -1,23 +1,19 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, SafeAreaView, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, SafeAreaView, Pressable } from 'react-native';
 import styles from './styles/setting.style';
-import { HorizontalItem } from '../components';
+import { HorizontalItem, AppBar } from '../components';
 
 const Setting = () => {
     const navigation = useNavigation();
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.headerContent}>
-                    <Pressable onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back" size={22} />
-                    </Pressable>
-                    <Text style={styles.headerText}>Settings</Text>
-                </View>
-            </View>
+            <AppBar 
+                title="Settings"
+                onPressLeftIcon={() => navigation.goBack()}
+            />
             <View style={styles.separator} />
             <HorizontalItem
                     title="Account Management"

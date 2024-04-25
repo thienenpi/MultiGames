@@ -91,7 +91,6 @@ const items = [
 const Message = () => {
   return (
     <View style={styles.container}>
-      <AppBar style={styles}></AppBar>
 
       <View style={styles.header}>
         <Text style={styles.headerText}>Message</Text>
