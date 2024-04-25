@@ -12,7 +12,6 @@ const MessageCardView = ({ item }) => {
   return (
     <TouchableOpacity>
       <View style={styles.container}>
-        <View style></View>
         <ImageBackground
           source={{
             uri: item.avatarUrl,
