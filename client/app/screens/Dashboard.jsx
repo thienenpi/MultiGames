@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, Image, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ProfileRow } from '../components';
 import { AuthContext } from "../context/AuthContext";
@@ -64,7 +64,6 @@ const Dashboard = () => {
                     text="Who's the Spy?"
                 />
             </TouchableOpacity>
-
         </SafeAreaView>
     );
 };

@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { COLORS } from "../../constants";
 
 const styles = StyleSheet.create({
     container: {
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         fontSize: 20,
-        color: '#00CF00',
+        color: COLORS.price,
     },
     itemContainer: {
         flex: 1,

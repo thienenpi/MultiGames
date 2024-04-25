@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 
   headerText: {
     flex: 1,
-    color: COLORS.white,
+    color: COLORS.back,
     fontSize: SIZES.xLarge,
     fontFamily: 'sfProBold',
   },
