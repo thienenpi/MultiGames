@@ -9,6 +9,8 @@ import MessageColumn from "./message/MessageColumn";
 import MessageCardView from "./message/MessageCardView";
 import ProfileRow from "./ProfileRow";
 import GameCard from "./GameCard";
+import RoomCardView from "./roomHistory/RoomCardView";
+import RoomColumn from "./roomHistory/RoomColumn";
 
 export {
   CustomButton,
@@ -22,4 +24,6 @@ export {
   MessageCardView,
   ProfileRow,
   GameCard,
+  RoomCardView,
+  RoomColumn,
 };

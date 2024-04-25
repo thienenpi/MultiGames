@@ -1,24 +1,35 @@
-import { Header } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
+import { AppBar, CustomButton } from "../components";
+import styles from "./styles/createRoom.style";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const CreateRoom = () => {
   const navigation = useNavigation();
 
   return (
-    <View>
-      <Header
-        leftComponent={{
-          icon: "arrow-back",
-          color: "#fff",
-          onPress: () => navigation.goBack(),
-        }}
-        centerComponent={{ text: "Phòng Board Game", style: { color: "#fff" } }}
-        containerStyle={{
-          backgroundColor: "#3D6DCC",
-          justifyContent: "space-around",
-        }}
-      />
+    <View style={styles.container}>
+      <AppBar style={styles}></AppBar>
+
+      <View style={styles.body}>
+        <CustomButton
+          isValid={true}
+          icon={
+            <View style={styles.btnIcon}>
+              <MaterialIcons
+                name="door-front"
+                size={30}
+                color={"white"}
+              ></MaterialIcons>
+            </View>
+          }
+          styles={styles}
+          label={"Phòng tôi đã từng chơi"}
+          onPress={() => {
+            navigation.navigate("RoomHistory");
+          }}
+        ></CustomButton>
+      </View>
     </View>
   );
 };

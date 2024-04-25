@@ -10,6 +10,7 @@ import {
   ItemBag,
   Setting,
   EditProfile,
+  RoomHistory,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -67,6 +68,12 @@ const AppStack = () => {
       <Stack.Screen
         name="EditProfile"
         component={EditProfile}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+
+      <Stack.Screen
+        name="RoomHistory"
+        component={RoomHistory}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>
