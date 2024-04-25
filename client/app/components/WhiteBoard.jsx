@@ -20,7 +20,8 @@ const WhiteBoard = () => {
         path.current = "";
       },
       onPanResponderMove: (event, gesture) => {
-        path.current += `${gesture.moveX},${gesture.moveY} `;
+        //-60 để vị trí người dùng chạm vào trùng với vị trí của mà màn hình bị trừ xuống
+        path.current += `${gesture.moveX},${gesture.moveY-60} `;
         setPaths((previousPaths) => [...previousPaths, path.current]);
         // Emit draw event to server
         socket.emit("draw", path.current);

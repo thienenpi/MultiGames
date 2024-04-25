@@ -2,10 +2,27 @@ import { StyleSheet } from 'react-native';
 import { COLORS, SIZES } from '../../constants';
 
 const styles = StyleSheet.create({
+  dialogContainer: {
+    position: 'absolute', // Đảm bảo component lớn nhất nằm trên cùng
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(50, 50, 50, 0.5)', // Background color của component lớn nhất
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  dialogBody: {
+    height: '50%',
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center', 
   },
 
   appBar: {
@@ -72,13 +89,13 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     resizeMode: 'contain',
-    tintColor: COLORS.primary, 
+    tintColor: COLORS.primary,
   },
 
   answersContainer: {
     flex: 1, // Sử dụng flex để khung chứa câu trả lời mở rộng để điền vào khoảng trống còn lại
     backgroundColor: 'white', // Màu nền của khung chứa câu trả lời
-    marginTop: 10, 
+    marginTop: 10,
     marginBottom: 10, // Khoảng cách giữa khung chứa ảnh và khung chứa câu trả lời
     padding: 60, // Khoảng cách giữa các phần tử bên trong khung chứa câu trả lời
     borderRadius: 10, // Đường viền cong cho khung chứa câu trả lời
@@ -92,13 +109,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white'
-    
+
   },
   roomId: {
     fontSize: 14,
     color: 'white'
-    },
-//Inout container 
+  },
+  //Inout container 
 
   iconButton: {
     padding: 10,
@@ -112,5 +129,38 @@ const styles = StyleSheet.create({
     flex: 1,
     // Thêm các style khác cho TextInput nếu cần
   },
+  bannerCotainer: {
+    flex: 1,
+    width: SIZES.width,
+    backgroundColor: "#79c060",
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  buttonContainers: {
+    flex: 1,
+    width: SIZES.width,
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    paddingHorizontal: 20,
+    margin: 10,
+  },
+  containerInvite: {
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  containerStart: {
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  gradientButton: {
+    width: 150,
+    height: 50,
+    borderRadius: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+}
 });
 export default styles;

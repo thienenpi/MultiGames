@@ -17,6 +17,18 @@ const Home = ({ navigation = useNavigation() }) => {
         isValid={true}
         onPress={() => navigation.navigate("Guessing Word")}
       ></CustomButton>
+      <CustomButton
+        styles={styles}
+        label={"Spy Main"}
+        isValid={true}
+        onPress={() => navigation.navigate("Spy Main")}
+      ></CustomButton>
+      <CustomButton
+        styles={styles}
+        label={"Spy Game"}
+        isValid={true}
+        onPress={() => navigation.navigate("Spy Game")}
+      ></CustomButton>
     </View>
   );
 };
