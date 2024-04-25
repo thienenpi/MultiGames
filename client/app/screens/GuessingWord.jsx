@@ -2,8 +2,12 @@ import { View, Text, TextInput, TouchableOpacity, Image } from "react-native"; /
 import React from "react";
 import styles from "./styles/guessingWord.style";
 import { WhiteBoard } from "../components";
+import { useRoute } from "@react-navigation/native";
 
 const GuessingWord = () => {
+  const route = useRoute();
+  const { roomId } = route.params;
+
   const handleSendImage = () => {};
 
   const handleChooseIcon = () => {
@@ -25,7 +29,7 @@ const GuessingWord = () => {
       </View>
       {/* Whiteboard và khung chat */}
       <View style={styles.whiteBoard}>
-        <WhiteBoard></WhiteBoard>
+        <WhiteBoard roomId={roomId}></WhiteBoard>
       </View>
       <View style={styles.chatBox}>
         {/* Các ô chứa hình ảnh user */}
