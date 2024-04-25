@@ -48,16 +48,22 @@ const Dashboard = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <GameCard
-                color='rgba(0,0,180,0.5)'
-                imagePath={require('../../assets/draw_logo.png')}
-                text="Guess My Drawing"
-            />
-            <GameCard
-                color='rgba(0,180,0,0.5)'
-                imagePath={require('../../assets/spy_logo.png')}
-                text="Who's the Spy?"
-            />
+            <TouchableOpacity>
+                <GameCard
+                    colorDark='rgba(0,0,180,0.8)'
+                    colorLight='rgba(0,0,180,0.5)'
+                    imagePath={require('../../assets/draw_logo.png')}
+                    text="Guess My Drawing"
+                />
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <GameCard
+                    colorDark='rgba(0,180,0,0.8)'
+                    colorLight='rgba(0,180,0,0.5)'
+                    imagePath={require('../../assets/spy_logo.png')}
+                    text="Who's the Spy?"
+                />
+            </TouchableOpacity>
         </SafeAreaView>
     );
 };

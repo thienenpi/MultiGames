@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import styles from './styles/main_spy.style'
+import styles from './styles/spyMain.style'
 import {
     View,
     TextInput,

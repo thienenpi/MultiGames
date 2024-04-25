@@ -9,7 +9,7 @@ const socket = io(BASE_URL.slice(0, -4), {
   path: "/api/whiteBoard/",
 });
 
-const WhiteBoard = () => {
+const WhiteBoard = ({ roomId }) => {
   const [paths, setPaths] = useState([]);
   const path = useRef("");
   const panResponder = useRef(
@@ -20,7 +20,8 @@ const WhiteBoard = () => {
         path.current = "";
       },
       onPanResponderMove: (event, gesture) => {
-        path.current += `${gesture.moveX},${gesture.moveY} `;
+        //-60 để vị trí người dùng chạm vào trùng với vị trí của mà màn hình bị trừ xuống
+        path.current += `${gesture.moveX},${gesture.moveY-60} `;
         setPaths((previousPaths) => [...previousPaths, path.current]);
         // Emit draw event to server
         socket.emit("draw", path.current);
@@ -29,6 +30,9 @@ const WhiteBoard = () => {
   ).current;
 
   useEffect(() => {
+    // Join the room when component mounts
+    socket.emit("join", roomId);
+
     // Listen for draw event from server
     socket.on("draw", (newPath) => {
       setPaths((prevPaths) => [...prevPaths, newPath]);

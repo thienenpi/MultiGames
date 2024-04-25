@@ -5,30 +5,55 @@ import { CustomButton } from "../components";
 import styles from "./styles/home.style";
 import { useNavigation } from "@react-navigation/native";
 
-const Home = ({ navigation = useNavigation() }) => {
+const Home = () => {
   const { userInfo } = useContext(AuthContext);
-  
+  const navigation = useNavigation();
+
   return (
-    <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+    <View style={styles.container}>
       <Text>Welcome {userInfo.name}</Text>
       <CustomButton
         styles={styles}
-        label={"Drawing & Guessing"}
+        label={"Drawing & Guessing 0001"}
         isValid={true}
-        onPress={() => navigation.navigate("Guessing Word")}
+        onPress={() => navigation.navigate("Guessing Word", { roomId: "0001" })}
       ></CustomButton>
-       <CustomButton
+
+      <CustomButton
+        styles={styles}
+        label={"Drawing & Guessing 0002"}
+        isValid={true}
+        onPress={() => navigation.navigate("Guessing Word", { roomId: "0002" })}
+      ></CustomButton>
+
+      <CustomButton
+        styles={styles}
+        label={"Spy Main"}
+        isValid={true}
+        onPress={() => navigation.navigate("Spy Main")}
+      ></CustomButton>
+
+      <CustomButton
+        styles={styles}
+        label={"Spy Game"}
+        isValid={true}
+        onPress={() => navigation.navigate("Spy Game")}
+      ></CustomButton>
+
+      <CustomButton
         styles={styles}
         label={"CreateRoom"}
         isValid={true}
         onPress={() => navigation.navigate("CreateRoom")}
       ></CustomButton>
+
       <CustomButton
         styles={styles}
         label={"Setting"}
         isValid={true}
         onPress={() => navigation.navigate("Setting")}
       ></CustomButton>
+
       <CustomButton
         styles={styles}
         label={"Edit Profile"}

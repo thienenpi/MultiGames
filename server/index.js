@@ -20,6 +20,9 @@ mongoose
   .then(() => console.log("db connected"))
   .catch((error) => console.error(error));
 
+// Store clients per room
+const rooms = {};
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
@@ -29,40 +32,72 @@ app.get("/", (req, res) =>
 
 app.use("/api/roles", rolesRouter);
 app.use("/api/users", userRouter);
-app.post("/api/calculate", (req, res) => {
-  const a = req.body.a;
-  const b = req.body.b;
-  const result = a + b;
-
-  res.status(200).json(result);
-});
 
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  // Add new client to the list
-  clients.push(socket);
+  socket.on("join", (room) => {
+    console.log(`User joined room ${room}`)
+    socket.join(room);
 
-  // Listen for draw event from client
-  socket.on("draw", (data) => {
-    // Broadcast draw data to all other clients
-    clients.forEach((client) => {
-      if (client !== socket) {
-        client.emit("draw", data);
+    // Initialize room if not exists
+    if (!rooms[room]) {
+      rooms[room] = [];
+    }
+
+    // Add client to the room
+    rooms[room].push(socket);
+
+    // Listen for draw event from client
+    socket.on("draw", (data) => {
+      // Broadcast draw data to all other clients in the same room
+      socket.to(room).emit("draw", data);
+    });
+
+    // Handle disconnection
+    socket.on("disconnect", () => {
+      console.log("A user disconnected");
+
+      // Remove disconnected client from the room
+      const index = rooms[room].indexOf(socket);
+      if (index !== -1) {
+        rooms[room].splice(index, 1);
       }
     });
-  });
 
-  // Handle disconnection
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-    // Remove disconnected client from the list
-    const index = clients.indexOf(socket);
-    if (index !== -1) {
-      clients.splice(index, 1);
+    // delete room if no clients
+    if (rooms[room].length === 0) {
+      delete rooms[room];
     }
   });
 });
+
+// io.on("connection", (socket) => {
+//   console.log("A user connected");
+
+//   // Add new client to the list
+//   clients.push(socket);
+
+//   // Listen for draw event from client
+//   socket.on("draw", (data) => {
+//     // Broadcast draw data to all other clients
+//     clients.forEach((client) => {
+//       if (client !== socket) {
+//         client.emit("draw", data);
+//       }
+//     });
+//   });
+
+//   // Handle disconnection
+//   socket.on("disconnect", () => {
+//     console.log("A user disconnected");
+//     // Remove disconnected client from the list
+//     const index = clients.indexOf(socket);
+//     if (index !== -1) {
+//       clients.splice(index, 1);
+//     }
+//   });
+// });
 
 server.listen(port || process.env.PORT, () =>
   console.log(`Multigames listening on port ${port}!`)

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import styles from './styles/spy.style';
+import styles from './styles/spyGame.style';
 import {
   View,
   TextInput,
@@ -7,7 +7,9 @@ import {
   Text,
   ImageBackground,
   TouchableHighlight,
-  Image
+  Image,
+  Touchable,
+  TouchableOpacity
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -53,17 +55,17 @@ const SpyScreen = () => {
             ))}
           </View>
           <View style={{ flex: 4, justifyContent: 'flex-end', alignItems: 'center', borderRadius: 50, margin: 10 }}>
-            <View style={styles.containerReady}>
+            <TouchableOpacity style={styles.containerReady}>
               <LinearGradient colors={['#6B91FF', '#62C7FF']} start={[0, 0]} end={[1, 0]} style={styles.gradientButton}>
                 <Text style={{ color: 'white', fontSize: 18 }}>Sẵng sàng</Text>
               </LinearGradient>
-            </View>
+            </TouchableOpacity>
             <View style={{height: 20}}></View>
-            <View style={styles.containerStart}>
+            <TouchableOpacity style={styles.containerStart}>
               <LinearGradient colors={['#F3D14F', '#FA972B']} start={[0, 0]} end={[1, 0]} style={styles.gradientButton}>
                 <Text style={{ color: 'white', fontSize: 18 }}>Bắt đầu</Text>
               </LinearGradient>
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.column}>
             {players.slice(4, 8).map(player => (
