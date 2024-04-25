@@ -9,6 +9,7 @@ import MessageColumn from "./message/MessageColumn";
 import MessageCardView from "./message/MessageCardView";
 import ProfileRow from "./ProfileRow";
 import GameCard from "./GameCard";
+import RoomCardView from "./createroom/RoomCardView";
 
 export {
   CustomButton,
@@ -22,4 +23,5 @@ export {
   MessageCardView,
   ProfileRow,
   GameCard,
+  RoomCardView,
 };
