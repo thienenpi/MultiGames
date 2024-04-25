@@ -1,24 +1,26 @@
-const { StyleSheet } = require('react-native');
-import { COLORS, SIZES } from '../../constants';
+const { StyleSheet } = require("react-native");
+import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: COLORS.background,
   },
 
   header: {
-    // flex: 0.5,
+    flex: 2,
     marginBottom: SIZES.small,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     // backgroundColor: COLORS.button
   },
 
   body: {
-    flex: 1,
+    flex: 8,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   btnContainer: (backgroundColor) => ({
@@ -26,19 +28,19 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     width: SIZES.width - SIZES.xxLarge * 5,
     height: SIZES.xxLarge,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   }),
 
   btnLabel: {
-    fontFamily: 'sfProBold',
+    fontFamily: "sfProBold",
     fontSize: SIZES.large,
     color: COLORS.text,
   },
 
   ipfContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     width: SIZES.xxLarge * 2,
     borderRadius: SIZES.medium,
     borderColor: COLORS.text,
@@ -51,8 +53,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     fontSize: SIZES.medium,
-    color: COLORS.text
-  }
+    color: COLORS.text,
+  },
 });
 
 export default styles;
