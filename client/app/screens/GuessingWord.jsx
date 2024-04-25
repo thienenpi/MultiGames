@@ -1,20 +1,73 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native"; // Thêm TextInput từ react-native
-import React from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Modal,
+  Pressable,
+} from "react-native"; // Thêm TextInput từ react-native
+import React, { useState, useRef } from "react";
 import styles from "./styles/guessingWord.style";
 import { WhiteBoard } from "../components";
 import { useRoute } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import ViewShot from "react-native-view-shot";
 
 const GuessingWord = () => {
   const route = useRoute();
   const { roomId } = route.params;
-
+  const [isStart, setIsStart] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const viewShotRef = useRef(null);
+  const [capturedImage, setCapturedImage] = useState(null);
+  const handleButtonPress = () => {
+    captureAndSaveImage().then(hanldeDialog());
+  };
   const handleSendImage = () => {};
-
   const handleChooseIcon = () => {
     // Xử lý khi người dùng nhấn vào nút chọn bộ icon
   };
+  const handleStart = () => {
+    setIsStart(true); // Update state to show the whiteboard
+  };
+  const hanldeDialog = async () => {
+    setShowDialog(true);
+  };
+  const closeModal = () => {
+    setShowDialog(false);
+  };
+
+  const captureAndSaveImage = async () => {
+    try {
+      const uri = await viewShotRef.current.capture();
+      setCapturedImage(uri);
+    } catch (error) {
+      console.error("Error capturing image:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {showDialog && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={showDialog}
+          onRequestClose={closeModal}
+        >
+          <Pressable style={styles.dialogContainer} onPress={closeModal}>
+            <View style={styles.dialogBody}>
+              {capturedImage && (
+                <Image
+                  source={{ uri: capturedImage }}
+                  style={{ flex: 1, resizeMode: "center" }}
+                />
+              )}
+            </View>
+          </Pressable>
+        </Modal>
+      )}
       <View style={styles.appBar}>
         {/* <TouchableOpacity style={styles.menuButton}>
           <Image
@@ -28,9 +81,71 @@ const GuessingWord = () => {
         </View>
       </View>
       {/* Whiteboard và khung chat */}
-      <View style={styles.whiteBoard}>
-        <WhiteBoard roomId={roomId}></WhiteBoard>
-      </View>
+      {isStart ? (
+        <View style={styles.whiteBoard}>
+          <ViewShot
+            ref={viewShotRef}
+            style={{
+              position: "absolute",
+              top: 60,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          >
+            <WhiteBoard roomId={roomId}></WhiteBoard>
+          </ViewShot>
+        </View>
+      ) : (
+        <View style={styles.bannerCotainer}>
+          <Image
+            source={require("../../assets/draw_and_guess_logo.png")}
+            style={{
+              resizeMode: "contain",
+              marginTop: 90,
+              height: "60%",
+              width: "100%",
+            }}
+          />
+          <View style={styles.buttonContainers}>
+            <View style={styles.containerInvite}>
+              <LinearGradient
+                colors={["#2CB4FF", "#62C7FF"]}
+                start={[0, 0]}
+                end={[1, 0]}
+                style={styles.gradientButton}
+              >
+                <Image
+                  source={require("../../assets/find_icon.png")}
+                  style={{ flex: 1, resizeMode: "center" }}
+                />
+                <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
+                  Mời bạn
+                </Text>
+              </LinearGradient>
+            </View>
+            <TouchableOpacity
+              style={styles.containerStart}
+              onPress={handleStart}
+            >
+              <LinearGradient
+                colors={["#AB012B", "#FF003F"]}
+                start={[0, 0]}
+                end={[1, 0]}
+                style={styles.gradientButton}
+              >
+                <Image
+                  source={require("../../assets/create_icon.png")}
+                  style={{ flex: 1, resizeMode: "center" }}
+                />
+                <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
+                  Bắt đầu
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
       <View style={styles.chatBox}>
         {/* Các ô chứa hình ảnh user */}
         <View style={styles.userImagesContainer}>
@@ -73,7 +188,7 @@ const GuessingWord = () => {
           />
           {/* Icon button chọn bộ icon */}
           <TouchableOpacity
-            onPress={handleChooseIcon}
+            onPress={handleButtonPress}
             style={styles.iconButton}
           >
             <Image

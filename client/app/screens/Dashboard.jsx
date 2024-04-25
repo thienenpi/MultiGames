@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
-import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ProfileRow } from '../components';
 import { AuthContext } from "../context/AuthContext";
 import styles from './styles/dashboard.style';
+import { GameCard } from '../components';
 
 const Dashboard = () => {
     const { userInfo } = useContext(AuthContext);
@@ -34,19 +35,36 @@ const Dashboard = () => {
             <View style={styles.containerInfo}>
                 <View style={styles.row}>
                     <Text style={{ fontSize: 30, fontWeight: "600" }}>Let's Play</Text>
-                    <TouchableOpacity style={[styles.button, {paddingHorizontal: 10, paddingVertical: 4}]}>
-                        <Ionicons name="lock-open-outline" size={16} color="gray" style={{marginRight: 6}} />
-                        <Text style={[styles.buttonText, {fontSize: 14}]}>Game Room</Text>
+                    <TouchableOpacity style={[styles.button, { paddingHorizontal: 10, paddingVertical: 4 }]}>
+                        <Ionicons name="lock-open-outline" size={16} color="gray" style={{ marginRight: 6 }} />
+                        <Text style={[styles.buttonText, { fontSize: 14 }]}>Game Room</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.row, { justifyContent: "flex-start" }]}>
                     <Text style={{ fontSize: 14, color: "#333333", opacity: 0.5, marginRight: 10 }}>Recently played :</Text>
-                    <TouchableOpacity style={[styles.button, {borderRadius: 6, paddingVertical: 2}]}>
-                        <Ionicons name="pencil-outline" size={14} color="gray" style={{marginRight: 6}} />
+                    <TouchableOpacity style={[styles.button, { borderRadius: 6, paddingVertical: 2 }]}>
+                        <Ionicons name="pencil-outline" size={14} color="gray" style={{ marginRight: 6 }} />
                         <Text style={styles.buttonText}>Guess My Drawing</Text>
                     </TouchableOpacity>
                 </View>
             </View>
+            <TouchableOpacity>
+                <GameCard
+                    colorDark='rgba(0,0,180,0.8)'
+                    colorLight='rgba(0,0,180,0.5)'
+                    imagePath={require('../../assets/draw_logo.png')}
+                    text="Guess My Drawing"
+                />
+            </TouchableOpacity>
+            <TouchableOpacity>
+                <GameCard
+                    colorDark='rgba(0,180,0,0.8)'
+                    colorLight='rgba(0,180,0,0.5)'
+                    imagePath={require('../../assets/spy_logo.png')}
+                    text="Who's the Spy?"
+                />
+            </TouchableOpacity>
+
         </SafeAreaView>
     );
 };

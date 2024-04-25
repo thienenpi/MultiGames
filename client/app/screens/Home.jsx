@@ -10,7 +10,7 @@ const Home = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+    <View style={styles.container}>
       <Text>Welcome {userInfo.name}</Text>
       <CustomButton
         styles={styles}
@@ -19,8 +19,6 @@ const Home = () => {
         onPress={() => navigation.navigate("Guessing Word", { roomId: "0001" })}
       ></CustomButton>
 
-      <View style={{ height: 20 }}></View>
-
       <CustomButton
         styles={styles}
         label={"Drawing & Guessing 0002"}
@@ -28,7 +26,19 @@ const Home = () => {
         onPress={() => navigation.navigate("Guessing Word", { roomId: "0002" })}
       ></CustomButton>
 
-      <View style={{ height: 20 }}></View>
+      <CustomButton
+        styles={styles}
+        label={"Spy Main"}
+        isValid={true}
+        onPress={() => navigation.navigate("Spy Main")}
+      ></CustomButton>
+
+      <CustomButton
+        styles={styles}
+        label={"Spy Game"}
+        isValid={true}
+        onPress={() => navigation.navigate("Spy Game")}
+      ></CustomButton>
 
       <CustomButton
         styles={styles}
@@ -37,16 +47,12 @@ const Home = () => {
         onPress={() => navigation.navigate("CreateRoom")}
       ></CustomButton>
 
-      <View style={{ height: 20 }}></View>
-
       <CustomButton
         styles={styles}
         label={"Setting"}
         isValid={true}
         onPress={() => navigation.navigate("Setting")}
       ></CustomButton>
-
-      <View style={{ height: 20 }}></View>
 
       <CustomButton
         styles={styles}

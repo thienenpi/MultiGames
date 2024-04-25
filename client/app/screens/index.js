@@ -1,6 +1,8 @@
+import GuessingWord from "./GuessingWord";
 import Home from "./Home";
 import Profile from "./Profile";
-import GuessingWord from "./GuessingWord";
+import SpyMainScreen from "./SpyMainScreen";
+import SpyScreen from "./SpyGame";
 import CreateRoom from "./CreateRoom";
 import Shop from "./Shop";
 import ItemBag from "./ItemBag";
@@ -13,6 +15,8 @@ export {
   Home,
   Profile,
   GuessingWord,
+  SpyScreen,
+  SpyMainScreen,
   CreateRoom,
   Shop,
   ItemBag,
