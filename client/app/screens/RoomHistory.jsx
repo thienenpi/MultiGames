@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
 import React from "react";
 import styles from "./styles/roomHistory.style";
@@ -35,6 +36,8 @@ const roomHistoryData = [
 ];
 
 const RoomHistory = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <AppBar

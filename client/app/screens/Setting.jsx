@@ -1,78 +1,81 @@
-import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, SafeAreaView, Pressable } from 'react-native';
-import styles from './styles/setting.style';
+import { View, SafeAreaView } from 'react-native';
 import { HorizontalItem, AppBar } from '../components';
+import { AuthContext } from "../context/AuthContext";
+import styles from './styles/setting.style';
 
 const Setting = () => {
     const navigation = useNavigation();
+    const { logout } = useContext(AuthContext);
 
     return (
         <SafeAreaView style={styles.container}>
-            <AppBar 
+            <AppBar
                 title="Settings"
                 onPressLeftIcon={() => navigation.goBack()}
             />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Account Management"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
+                title="Account Management"
+                iconRight="arrow-forward"
+                isCenter={false}
+                onPress={() => { }}
+            />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Message Notification"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
+                title="Message Notification"
+                iconRight="arrow-forward"
+                isCenter={false}
+                onPress={() => { }}
+            />
             <HorizontalItem
-                    title="Privacy"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
+                title="Privacy"
+                iconRight="arrow-forward"
+                isCenter={false}
+                onPress={() => { }}
+            />
             <HorizontalItem
-                    title="General"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
+                title="General"
+                iconRight="arrow-forward"
+                isCenter={false}
+                onPress={() => { }}
+            />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Clear Cache"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
+                title="Clear Cache"
+                iconRight="arrow-forward"
+                isCenter={false}
+                onPress={() => { }}
+            />
             <HorizontalItem
-                    title="Quick Repair"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
+                title="Quick Repair"
+                iconRight="arrow-forward"
+                isCenter={false}
+                onPress={() => { }}
+            />
             <HorizontalItem
-                    title="Upload Log"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
+                title="Upload Log"
+                iconRight="arrow-forward"
+                isCenter={false}
+                onPress={() => { }}
+            />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="About Us"
-                    desc="V 1.0.0"
-                    iconRight="arrow-forward"
-                    isCenter={false}
-                    onPress={() => { }}
-                />
+                title="About Us"
+                desc="V 1.0.0"
+                iconRight="arrow-forward"
+                isCenter={false}
+                onPress={() => { }}
+            />
             <View style={styles.separator} />
             <HorizontalItem
-                    title="Log Out"
-                    isCenter={true}
-                    onPress={() => { }}
-                />
+                title="Log Out"
+                isCenter={true}
+                onPress={() => {
+                    logout();
+                }}
+            />
             <View style={styles.separator} />
         </SafeAreaView>
     );
