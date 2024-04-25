@@ -1,16 +1,18 @@
 import { useNavigation } from "@react-navigation/native";
-import { View } from "react-native";
+import { View, SafeAreaView } from "react-native";
 import { AppBar, CustomButton } from "../components";
-import styles from "./styles/createRoom.style";
 import { MaterialIcons } from "@expo/vector-icons";
+import styles from "./styles/createRoom.style";
 
 const CreateRoom = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
-      <AppBar style={styles}></AppBar>
-
+    <SafeAreaView style={styles.container}>
+      <AppBar
+        title='Create Room'
+        onPressLeftIcon={() => navigation.goBack()}
+      ></AppBar>
       <View style={styles.body}>
         <CustomButton
           isValid={true}
@@ -30,7 +32,8 @@ const CreateRoom = () => {
           }}
         ></CustomButton>
       </View>
-    </View>
+    </SafeAreaView>
+
   );
 };
 

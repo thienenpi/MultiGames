@@ -6,12 +6,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
+        paddingTop: 40,
         flexDirection: "row",
         justifyContent: 'space-between',
         alignItems: "center",
-        paddingTop: 20,
-        paddingBottom: 20,
+        paddingBottom: 15,
         paddingHorizontal: 16,
+        width: '100%',
     },
     headerContent: {
         flexDirection: 'row',

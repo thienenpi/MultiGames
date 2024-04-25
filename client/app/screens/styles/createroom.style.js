@@ -20,13 +20,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  btnContainer: (backgroundColor) => ({
+  btnContainer: (color) => ({
     backgroundColor: COLORS.background,
     width: SIZES.width,
     flexDirection: "row",
     alignItems: "center",
     height: SIZES.xxLarge,
-  }),
+  })
+  ,
 
   btnLabel: {
     fontSize: SIZES.large,

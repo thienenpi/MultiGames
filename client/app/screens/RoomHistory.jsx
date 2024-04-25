@@ -37,7 +37,10 @@ const roomHistoryData = [
 const RoomHistory = () => {
   return (
     <View style={styles.container}>
-      <AppBar style={styles}></AppBar>
+      <AppBar
+        title='Room History'
+        onPressLeftIcon={() => navigation.goBack()}
+      ></AppBar>
 
       <View style={styles.body}>
         <RoomColumn items={roomHistoryData}></RoomColumn>
