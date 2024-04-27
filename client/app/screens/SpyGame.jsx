@@ -52,7 +52,7 @@ const SpyScreen = () => {
           {/* Hai cột người chơi */}
           <View style={styles.column}>
             {players.slice(0, 4).map(player => (
-              <Player id={player.id} name={player.name}>
+              <Player key={player.id} id={player.id} name={player.name}>
               </Player>
               // <View key={player.id} style={styles.player}>
               //   <Text style={{color: 'white'}}>{player.name}</Text>
@@ -65,7 +65,7 @@ const SpyScreen = () => {
           </View>
           <View style={styles.column}>
             {players.slice(4, 8).map(player => (
-              <Player id={player.id} name={player.name} />
+              <Player key={player.id} id={player.id} name={player.name} />
             ))}
           </View>
         </View>

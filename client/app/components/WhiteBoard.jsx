@@ -9,7 +9,7 @@ const socket = io(BASE_URL.slice(0, -4), {
   path: "/api/whiteBoard/",
 });
 
-const WhiteBoard = ({ roomId,  }) => {
+const WhiteBoard = ({ roomId }) => {
   const [paths, setPaths] = useState([]);
   const path = useRef("");
   const panResponder = useRef(
@@ -49,8 +49,8 @@ const WhiteBoard = ({ roomId,  }) => {
         {paths.map((p, index) => (
           <Path
             key={index}
-            d={`M${p[0]}`}
-            stroke="red"
+            d={`M${p}`}
+            stroke="black"
             strokeWidth={2}
             fill="none"
           />

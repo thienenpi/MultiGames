@@ -25,13 +25,13 @@ const SpyMainScreen = () => {
                         <GameType
                             backgroundColor={COLORS.lightOrange}
                             textColor={COLORS.orange}
-                            imageUrl={'../../assets/micro_images.png'}
+                            imageUrl={require('../../assets/micro_images.png')}
                             gametypeName={'Chế độ giọng nói'}>
                         </GameType>
                         <GameType
                             backgroundColor={COLORS.lightOrange}
                             textColor={COLORS.orange}
-                            imageUrl={'../../assets/pencil_images.png'}
+                            imageUrl={require('../../assets/pencil_images.png')}
                             gametypeName={'Chế độ văn bản'}>
                         </GameType>
                     </View>
@@ -42,13 +42,13 @@ const SpyMainScreen = () => {
                         <GameType
                             backgroundColor={COLORS.brightBlue}
                             textColor={COLORS.darkBlue}
-                            imageUrl={'../../assets/micro_images.png'}
+                            imageUrl={require('../../assets/micro_images.png')}
                             gametypeName={'Chế độ giọng nói'}>
                         </GameType>
                         <GameType
                             backgroundColor={COLORS.brightBlue}
                             textColor={COLORS.darkBlue}
-                            imageUrl={'../../assets/pencil_images.png'}
+                            imageUrl={require('../../assets/pencil_images.png')}
                             gametypeName={'Chế độ văn bản'}>
                         </GameType>
                     </View>
@@ -68,7 +68,7 @@ const SpyMainScreen = () => {
                     </View>
                 </View>
             </ImageBackground>
-        </SafeAreaView >
+        </SafeAreaView>
     );
 };
 export default SpyMainScreen;
