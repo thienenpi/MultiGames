@@ -56,7 +56,7 @@ const CreateRoom = () => {
   return (
     <View style={styles.container}>
       <AppBar
-        title="Create Room"
+        title="Phòng Board"
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
       <View
@@ -73,6 +73,7 @@ const CreateRoom = () => {
             styles.button,
             { backgroundColor: "#62C7FF", flexDirection: "row" },
           ]}
+          onPress={() => navigation.navigate("AddRoom")}
         >
           <Ionicons name="add-circle" size={30} color="white" />
           <Text style={styles.buttonText}>Tạo phòng</Text>
@@ -80,6 +81,7 @@ const CreateRoom = () => {
         <TouchableOpacity
           style={[
             styles.button,
+
             { backgroundColor: "#FC356E", flexDirection: "row" },
           ]}
           onPress={showDialog}
@@ -120,27 +122,49 @@ const CreateRoom = () => {
         <Dialog.Input
           onChangeText={(number) => setRoomNumber(number)}
           placeholder="Nhập số phòng"
-          inputContainerStyle={{ borderBottomColor: "transparent" }}
+          underlineColorAndroid="transparent"
+          placeholderTextColor="#C7C7C7"
+          backgroundColor="#F5F5F5"
           style={{
-            borderColor: "#yourBorderColor", // Replace with your border color
+            borderColor: "#F5F5F5",
             borderWidth: 1,
             borderRadius: 5,
             padding: 10,
           }}
         ></Dialog.Input>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Dialog.Button
-            label="Hủy"
+          <TouchableOpacity
             onPress={handleCancel}
-            color="#FC356E"
-            style={{ marginLeft: 30 }}
-          />
-          <Dialog.Button
-            label="Xác nhận"
+            style={{
+              backgroundColor: "white",
+              borderColor: "#00CDF9",
+              borderWidth: 1,
+              borderRadius: 90,
+              flex: 1,
+              marginLeft: 10,
+              marginRight: 10,
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            <Text style={{ color: "#00CDF9", fontWeight: "bold" }}>Hủy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={handleConfirm}
-            color="#62C7FF"
-            style={{ marginRight: 30 }}
-          />
+            style={{
+              backgroundColor: "#00CDF9",
+              borderColor: "#00CDF9",
+              borderWidth: 1,
+              borderRadius: 90,
+              flex: 1,
+              marginRight: 10,
+              marginLeft: 10,
+              alignItems: "center",
+              padding: 10,
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: "bold" }}>Xác nhận</Text>
+          </TouchableOpacity>
         </View>
       </Dialog.Container>
     </View>

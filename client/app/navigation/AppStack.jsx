@@ -12,6 +12,7 @@ import {
   EditProfile,
   RoomHistory,
 } from "../screens";
+import AddRoom from "../screens/AddRoom";
 
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
@@ -74,6 +75,11 @@ const AppStack = () => {
       <Stack.Screen
         name="RoomHistory"
         component={RoomHistory}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="AddRoom"
+        component={AddRoom}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>
