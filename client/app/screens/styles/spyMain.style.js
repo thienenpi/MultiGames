@@ -8,27 +8,6 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         justifyContent: 'flex-start',
     },
-    headerContainer: {
-        height: 'auto',
-        width: 'auto',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(2, 138, 216, 0.6)',
-        padding: 20,
-        marginVertical: 20,
-        marginHorizontal: 40,
-    },
-    titleContainer: {
-        flexDirection: 'row',
-        backgroundColor: '#096BDD',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    gameNameContainer: {
-        flex: 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     gameOptionContainer: (_color) => ({
         height: 130,
         justifyContent: 'space-around',
@@ -38,22 +17,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         margin: 10,
     }),
-    gameType: (_color) => ({
-        height: 100,
-        width: 100,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderRadius: 5,
-        backgroundColor: _color
-    }),
-    gameName: {
-        borderRadius: 5,
-        width: '100%',
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'white'
-    },
     gameTypeContainer: {
         flex: 2,
         flexDirection: 'row',
@@ -87,7 +50,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-    }
-
+    },
 });
 export default styles;
