@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home, Message, Profile, Shop, Dashboard } from "../screens";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { COLORS } from "../constants";
 
 const Tab = createBottomTabNavigator();
@@ -11,12 +11,13 @@ const screenOptions = {
   tabBarActiveTintColor: "#F8C06D",
   tabBarInactiveTintColor: "#7C7773",
   tabBarLabelStyle: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: "sfProBold",
     color: COLORS.text,
   },
   tabBarStyle: [
     {
+      height: 55,
       display: "flex",
     },
     null,
@@ -51,7 +52,7 @@ const BottomNavigation = () => {
         component={Shop}
         options={{
           tabBarIcon: () => {
-            return <Ionicons name="storefront-outline" size={24}></Ionicons>;
+            return <FontAwesome name="shopping-bag" size={24} color="black" />;
           },
         }}
       ></Tab.Screen>

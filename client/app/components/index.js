@@ -11,6 +11,7 @@ import ProfileRow from "./ProfileRow";
 import GameCard from "./GameCard";
 import RoomCardView from "./roomHistory/RoomCardView";
 import RoomColumn from "./roomHistory/RoomColumn";
+import DrawingOptionsBar from "./drawing/DrawingOptionsBar";
 
 export {
   CustomButton,
@@ -26,4 +27,5 @@ export {
   GameCard,
   RoomCardView,
   RoomColumn,
+  DrawingOptionsBar,
 };
