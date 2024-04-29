@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
-
   buttonBuy: {
     backgroundColor: "#00BDF9",
     marginBottom: 20,

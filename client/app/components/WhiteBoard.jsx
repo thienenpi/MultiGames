@@ -9,7 +9,7 @@ const socket = io(BASE_URL.slice(0, -4), {
   path: "/api/whiteBoard/",
 });
 
-const WhiteBoard = ({ roomId,  }) => {
+const WhiteBoard = ({ roomId }) => {
   const [paths, setPaths] = useState([]);
   const path = useRef("");
   const panResponder = useRef(
@@ -46,16 +46,16 @@ const WhiteBoard = ({ roomId,  }) => {
   return (
     <View style={styles.container}>
       <Svg style={styles.svg}>
-        {paths.map((p, index) => (
-          <Path
-            key={index}
-            d={`M${p[0]}`}
-            stroke="red"
-            strokeWidth={2}
-            fill="none"
-          />
-        ))}
-      </Svg>
+  {paths.map((p, index) => (
+    <Path
+      key={index}
+      d={`M${p}`}
+      stroke={index >= 0 && index <= 20 ? "red" : "black"} // Đặt màu đỏ cho index từ 0 đến 10, còn lại màu đen
+      strokeWidth={2}
+      fill="none"
+    />
+  ))}
+</Svg>
       <View style={styles.touchArea} {...panResponder.panHandlers} />
     </View>
   );
