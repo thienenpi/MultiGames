@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../constants';
 import styles from './styles/appbar.style';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const AppBar = ({ title, showRightIcon, rightIconName, rightIconStyle, onPressLeftIcon, onPressRightIcon }) => {
   return (

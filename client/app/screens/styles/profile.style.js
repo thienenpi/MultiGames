@@ -9,18 +9,21 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    flex: 2,
+    flex: 1.5,
     marginBottom: SIZES.small,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    // backgroundColor: COLORS.button
+    width: SIZES.width,
   },
 
   body: {
     flex: 8,
     alignItems: "center",
     justifyContent: "center",
+    width: SIZES.width,
+  },
+
+  options: {
+    flex: 4,
+    width: SIZES.width,
   },
 
   btnContainer: (backgroundColor) => ({

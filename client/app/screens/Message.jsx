@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import styles from "./styles/message.style";
-import { AppBar, MessageColumn } from "../components";
+import { MessageColumn } from "../components";
 import { Ionicons } from "@expo/vector-icons";
 
 // create a sample for the items
