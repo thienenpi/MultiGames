@@ -11,6 +11,7 @@ import {
   Setting,
   EditProfile,
   RoomHistory,
+  RoomConfig,
 } from "../screens";
 import AddRoom from "../screens/AddRoom";
 
@@ -77,9 +78,16 @@ const AppStack = () => {
         component={RoomHistory}
         options={{ headerShown: false }}
       ></Stack.Screen>
+
       <Stack.Screen
         name="AddRoom"
         component={AddRoom}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+
+      <Stack.Screen
+        name="Room Config"
+        component={RoomConfig}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>

@@ -60,6 +60,13 @@ const Home = () => {
         isValid={true}
         onPress={() => navigation.navigate("EditProfile")}
       ></CustomButton>
+
+      <CustomButton
+        styles={styles}
+        label={"Room Config"}
+        isValid={true}
+        onPress={() => navigation.navigate("Room Config")}
+      ></CustomButton>
     </View>
   );
 };

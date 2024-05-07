@@ -11,6 +11,7 @@ import Message from "./Message";
 import Dashboard from "./Dashboard";
 import EditProfile from "./EditProfile";
 import RoomHistory from "./RoomHistory";
+import RoomConfig from "./RoomConfig";
 
 export {
   Home,
@@ -26,4 +27,5 @@ export {
   Dashboard,
   EditProfile,
   RoomHistory,
+  RoomConfig,
 };
