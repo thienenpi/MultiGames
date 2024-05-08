@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { AppBar, CustomButton, RoomCardView } from "../components";
-import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import styles from "./styles/createroom.style";
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
@@ -96,11 +96,11 @@ const CreateRoom = () => {
           isValid={true}
           icon={
             <View style={styles.btnIcon}>
-              <MaterialIcons
-                name="door-front"
+              <Ionicons
+                name="arrow-forward-circle-outline"
                 size={30}
                 color={"white"}
-              ></MaterialIcons>
+              ></Ionicons>
             </View>
           }
           styles={styles}
