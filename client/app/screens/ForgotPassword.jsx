@@ -1,49 +1,55 @@
+import React, { useState } from "react";
 import {
-  Text,
-  Button,
   View,
-  TouchableWithoutFeedback,
-  Image,
-  InputField,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
 } from "react-native";
-import React from "react";
 import styles from "./styles/forgotpassword.style";
-import { AppBar, MessageColumn } from "../components";
-import { Ionicons } from "@expo/vector-icons";
-const hideKeyboard = () => {
-  Keyboard.dismiss();
-};
-const sendOtp = () => {};
 const ForgotPassword = () => {
+  const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const sendOtp = () => {
+    // Logic to send OTP goes here
+  };
+
   return (
-    <TouchableWithoutFeedback onPress={hideKeyboard}>
-      <View style={styles.container}>
-        <View
-          style={{
-            height: 200,
-            width: 200,
-            alignSelf: "center",
-            marginTop: 10,
-            marginBottom: 20,
-          }}
-        >
-          <Image
-            style={{ flex: 1, width: undefined, height: undefined }}
-            source={require("../../assets/image_login.png")}
-          />
-        </View>
-        <InputField
-          icon={<Ionicons name="person" size={24}></Ionicons>}
-          label={"Nhập tên đầy đủ"}
-        />
-        <InputField
-          icon={<Ionicons name="call" size={24}></Ionicons>}
-          label={"Nhập số điện thoại"}
-          keyboardType={"numeric"}
-        />
-        <Button title="Gửi mã OTP" onPress={sendOtp} />
-      </View>
-    </TouchableWithoutFeedback>
+    <View style={styles.container}>
+      <Text style={styles.label}>
+        Tên người dùng
+        <Text style={styles.required}> *</Text>
+      </Text>
+
+      <TextInput
+        style={styles.input}
+        onChangeText={setUsername}
+        value={username}
+        placeholder="Nhập tên người dùng"
+      />
+      <Text style={styles.label}>
+        Số điện thoại
+        <Text style={styles.required}> *</Text>
+      </Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={setPhoneNumber}
+        value={phoneNumber}
+        keyboardType="numeric"
+        placeholder="Nhập số điện thoại"
+      />
+      <TouchableOpacity style={styles.button} onPress={sendOtp}>
+        <Text style={styles.buttonText}>Gửi mã OTP</Text>
+      </TouchableOpacity>
+      {/* <Button
+        style={styles.button}
+        // color={styles.button.backgroundColor}
+        title="Gửi mã OTP"
+        onPress={sendOtp}
+      /> */}
+    </View>
   );
 };
 

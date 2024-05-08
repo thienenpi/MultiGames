@@ -11,7 +11,14 @@ import ProfileRow from "./ProfileRow";
 import GameCard from "./GameCard";
 import RoomCardView from "./roomHistory/RoomCardView";
 import RoomColumn from "./roomHistory/RoomColumn";
-
+import { View, Text } from "react-native";
+const Otp = () => {
+  return (
+    <View>
+      <Text>OTP</Text>
+    </View>
+  );
+};
 export {
   CustomButton,
   CustomDatePicker,
@@ -26,4 +33,5 @@ export {
   GameCard,
   RoomCardView,
   RoomColumn,
+  Otp,
 };

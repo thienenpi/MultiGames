@@ -1,41 +1,42 @@
 import { StyleSheet } from "react-native";
 import { COLORS, SIZES } from "../../constants";
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    width: SIZES.width,
+    padding: 16,
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    marginHorizontal: 15,
+    fontWeight: "bold",
   },
 
-  appBar: {
-    flex: 1,
-    width: "100%",
-  },
-
-  header: {
-    flex: 1,
-    flexDirection: "row",
+  button: {
+    backgroundColor: "#00CDF9",
+    padding: 10,
     alignItems: "center",
-    width: "100%",
-    paddingHorizontal: SIZES.large,
+    borderRadius: 5,
+    marginTop: 16,
+    marginHorizontal: 15,
   },
-
-  headerText: {
-    flex: 1,
-    color: COLORS.back,
-    fontSize: SIZES.xLarge,
-    fontFamily: "sfProBold",
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
   },
-
-  headerIcon: {
-    fontSize: SIZES.xLarge,
+  input: {
+    marginHorizontal: 15,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+    borderRadius: 15,
   },
-
-  body: {
-    flex: 10,
-    width: "100%",
+  required: {
+    color: "red",
   },
 });
 
