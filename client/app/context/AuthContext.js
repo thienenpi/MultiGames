@@ -1,7 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useEffect, useState } from 'react';
-import { userLogin, userRegister } from '../api/UserApi';
-import { Alert } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useEffect, useState } from "react";
+import { userLogin, userRegister } from "../api/UserApi";
+import { Alert } from "react-native";
 
 export const AuthContext = createContext();
 
@@ -17,20 +17,23 @@ export const AuthProvider = ({ children }) => {
       const responseData = res.data;
       let userInfo = responseData;
       let userToken = responseData.token;
+      let userPhone = responseData.phone;
+      userInfo.phone = userPhone;
 
       setIsLoading(true);
       setUserInfo(userInfo);
       setUserToken(userToken);
 
-      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-      AsyncStorage.setItem('userToken', JSON.stringify(userToken));
+      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+      AsyncStorage.setItem("userToken", JSON.stringify(userToken));
+      // AsyncStorage.setItem("userPhone", JSON.stringify(userPhone));
 
       setIsLoading(false);
     } else {
-      Alert.alert(res.data, 'Please try again', [
+      Alert.alert(res.data, "Please try again", [
         {
-          text: 'Try again',
-          style: 'cancel',
+          text: "Try again",
+          style: "cancel",
         },
       ]);
     }
@@ -48,16 +51,16 @@ export const AuthProvider = ({ children }) => {
       setUserInfo(userInfo);
       setUserToken(userToken);
 
-      AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
-      AsyncStorage.setItem('userToken', JSON.stringify(userToken));
+      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+      AsyncStorage.setItem("userToken", JSON.stringify(userToken));
 
       setIsLoading(false);
-      console.log('token ', userToken);
+      console.log("token ", userToken);
     } else {
-      Alert.alert(res.data, 'Please try again with another password', [
+      Alert.alert(res.data, "Please try again with another password", [
         {
-          text: 'Try again',
-          style: 'cancel',
+          text: "Try again",
+          style: "cancel",
         },
       ]);
     }
@@ -66,8 +69,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setIsLoading(true);
     setUserToken(null);
-    AsyncStorage.removeItem('userToken');
-    AsyncStorage.removeItem('userInfo');
+    AsyncStorage.removeItem("userToken");
+    AsyncStorage.removeItem("userInfo");
     setIsLoading(false);
   };
 
@@ -75,8 +78,8 @@ export const AuthProvider = ({ children }) => {
     const isLoggedIn = async () => {
       try {
         setIsLoading(true);
-        let userInfo = await AsyncStorage.getItem('userInfo');
-        let userToken = await AsyncStorage.getItem('userToken');
+        let userInfo = await AsyncStorage.getItem("userInfo");
+        let userToken = await AsyncStorage.getItem("userToken");
         userInfo = JSON.parse(userInfo);
 
         if (userInfo) {
@@ -86,7 +89,7 @@ export const AuthProvider = ({ children }) => {
 
         setIsLoading(false);
       } catch (error) {
-        console.error('isLoggedIn error: ', error);
+        console.error("isLoggedIn error: ", error);
       }
     };
 

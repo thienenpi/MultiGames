@@ -1,26 +1,36 @@
-import { Image, Platform, View, Keyboard, TouchableWithoutFeedback, Pressable, TextInput, TouchableOpacity } from 'react-native';
-import React, { useContext, useState } from 'react';
-import styles from './styles/register.style';
-import InputField from '../components/InputField';
-import CustomButton from '../components/CustomButton';
-import { AuthContext } from '../context/AuthContext';
-import { Ionicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {
+  Image,
+  Platform,
+  View,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import React, { useContext, useState } from "react";
+import styles from "./styles/register.style";
+import InputField from "../components/InputField";
+import CustomButton from "../components/CustomButton";
+import { AuthContext } from "../context/AuthContext";
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const Register = () => {
   const { register } = useContext(AuthContext);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [date, setDate] = useState(new Date());
-  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [showPicker, setShowPicker] = useState(false);
 
   const onChange = ({ type }, selectedDate) => {
     if (type == "set") {
       const currentDate = selectedDate;
       setDate(currentDate);
-      
+
       if (Platform.OS === "android") {
         toggleDatapicker();
         setDateOfBirth(currentDate.toDateString());
@@ -35,15 +45,16 @@ const Register = () => {
       const data = {
         name: name,
         email: email,
+        phone: phoneNumber,
         password: password,
         birth: checkBirthEntered(dateOfBirth) ? dateOfBirth : null,
-        role_id: 'a',
-        status: 'a',
+        role_id: "a",
+        status: "a",
       };
 
       register({ data: data });
     } else {
-      console.log('Invalid birthday');
+      console.log("Invalid birthday");
     }
   };
 
@@ -56,13 +67,13 @@ const Register = () => {
   };
 
   const checkBirthEntered = () => {
-    return dateOfBirth !== '';
+    return dateOfBirth !== "";
   };
-  
+
   const checkBirthValid = () => {
     const today = new Date();
     const birthDate = new Date(dateOfBirth);
-  
+
     if (today.getFullYear() < birthDate.getFullYear()) {
       return false;
     } else if (today.getMonth() < birthDate.getMonth()) {
@@ -80,17 +91,24 @@ const Register = () => {
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
       <View style={styles.container}>
-      
-      <View style={{ height: 200, width: 200, alignSelf: 'center', marginTop: -20,marginBottom:50}}>
-        <Image
-          style={{ flex: 1, width: undefined, height: undefined }}
-          source={require('../../assets/image_login.png')}
-        />
-      </View>
+        <View
+          style={{
+            height: 200,
+            width: 200,
+            alignSelf: "center",
+            marginTop: 10,
+            marginBottom: 20,
+          }}
+        >
+          <Image
+            style={{ flex: 1, width: undefined, height: undefined }}
+            source={require("../../assets/image_login.png")}
+          />
+        </View>
         <InputField
           icon={<Ionicons name="person" size={24}></Ionicons>}
           // label={'Your (user)name'}
-          label ={'Nhập tên đầy đủ'}
+          label={"Nhập tên đầy đủ"}
           styles={styles}
           value={name}
           onChangeText={(text) => {
@@ -103,12 +121,25 @@ const Register = () => {
 
         <InputField
           icon={<Ionicons name="mail" size={24}></Ionicons>}
-          label={'Email'}
+          label={"Email"}
           value={email}
           styles={styles}
-          keyboardType={'email-address'}
+          keyboardType={"email-address"}
           onChangeText={(text) => {
             setEmail(text);
+          }}
+          onSubmitEditing={handleSubmit}
+        ></InputField>
+        <View style={{ height: 20 }}></View>
+
+        <InputField
+          icon={<Ionicons name="call" size={24}></Ionicons>}
+          label={"Nhập số điện thoại"}
+          value={phoneNumber}
+          styles={styles}
+          inputType={"numeric"}
+          onChangeText={(text) => {
+            setPhoneNumber(text);
           }}
           onSubmitEditing={handleSubmit}
         ></InputField>
@@ -117,10 +148,10 @@ const Register = () => {
 
         <InputField
           icon={<Ionicons name="keypad" size={24}></Ionicons>}
-          label={'Nhập mật khẩu'}
+          label={"Nhập mật khẩu"}
           value={password}
           styles={styles}
-          inputType={'password'}
+          inputType={"password"}
           onChangeText={(text) => {
             setPassword(text);
           }}
@@ -128,7 +159,7 @@ const Register = () => {
         ></InputField>
 
         <View style={{ height: 20 }}></View>
-        
+
         {showPicker && (
           <DateTimePicker
             mode="date"
@@ -137,9 +168,8 @@ const Register = () => {
             onChange={onChange}
           ></DateTimePicker>
         )}
-        
-        <Pressable
-          onPress={toggleDatapicker}>
+
+        <Pressable onPress={toggleDatapicker}>
           <View style={styles.dpContainer}>
             <Ionicons name="calendar-number" size={24}></Ionicons>
             <TextInput
@@ -148,27 +178,26 @@ const Register = () => {
               value={dateOfBirth}
               onChangeText={setDateOfBirth}
               editable={false}
-              onPressIn={toggleDatapicker}>
-            </TextInput>
+              onPressIn={toggleDatapicker}
+            ></TextInput>
           </View>
         </Pressable>
-        
+
         <View style={{ height: 20 }}></View>
 
         {showPicker && Platform.OS === "ios" && (
           <View
-            style={{ flexDirection: "row", 
-             justifyContent: "space-around" }}>
-            
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
+          >
             <CustomButton
-              label={'Cancel'}
+              label={"Cancel"}
               styles={styles}
               isValid={true}
               onPress={toggleDatapicker}
             ></CustomButton>
-            
+
             <CustomButton
-              label={'Confirm'}
+              label={"Confirm"}
               styles={styles}
               isValid={true}
               onPress={confirmIOSDate}
@@ -179,13 +208,11 @@ const Register = () => {
         <View style={{ height: 20 }}></View>
 
         <CustomButton
-          label={'Create account'}
+          label={"Đăng ký"}
           styles={styles}
           isValid={true}
           onPress={handleSubmit}
         ></CustomButton>
-      
-        
       </View>
     </TouchableWithoutFeedback>
   );
