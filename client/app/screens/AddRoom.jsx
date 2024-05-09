@@ -2,12 +2,14 @@ import React, { useState } from "react";
 
 import { View, Text, TouchableOpacity, Modal, Switch } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { AppBar, CustomButton, RoomCardView } from "../components";
-import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AppBar, CustomButton } from "../components";
+import { Ionicons } from "@expo/vector-icons";
+import { roomCreate } from '../api/RoomApi';
 import styles from "./styles/addroom.style";
 
 const AddRoom = () => {
   const navigation = useNavigation();
+  const [roomName, setRoomName] = useState('BMW_Rollroyce_Mercedes_Benz');
   const [playerCount, setPlayerCount] = useState(2);
   const [modalVisible, setModalVisible] = useState(false);
   const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
@@ -19,6 +21,28 @@ const AddRoom = () => {
     "Gián Điệp Không Lời - Chế đội văn bản",
     "Bạn Vẽ Tôi Đoán",
   ];
+
+  const handleSubmit = async () => {
+    try {
+      const data = {
+        name: roomName,
+        isPassword: isSwitchEnabled,
+        password: '123456',
+        mode: buttonTitles[selectedButton],
+        capacity: playerCount,
+        list_guest: [],
+      }
+      const res = await roomCreate({ data : data });
+      if (res.status === 200) {
+        alert('Room created successfully');
+      } else {
+        alert('Failed to create room');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred while creating the room');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -132,7 +156,7 @@ const AddRoom = () => {
           isValid={true}
           styles={styles}
           label={"Tạo phòng"}
-          onPress={() => console.log("Tạo phòng")}
+          onPress= {handleSubmit}
         />
       </View>
     </View>

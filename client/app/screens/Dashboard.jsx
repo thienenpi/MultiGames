@@ -5,9 +5,11 @@ import { ProfileRow } from '../components';
 import { AuthContext } from "../context/AuthContext";
 import styles from './styles/dashboard.style';
 import { GameCard } from '../components';
+import { useNavigation } from "@react-navigation/native";
 
 const Dashboard = () => {
     const { userInfo } = useContext(AuthContext);
+    const navigation = useNavigation();
 
     return (
         <SafeAreaView>
@@ -35,7 +37,9 @@ const Dashboard = () => {
             <View style={styles.containerInfo}>
                 <View style={styles.row}>
                     <Text style={{ fontSize: 30, fontWeight: "600" }}>Let's Play</Text>
-                    <TouchableOpacity style={[styles.button, { paddingHorizontal: 10, paddingVertical: 4 }]}>
+                    <TouchableOpacity 
+                        style={[styles.button, { paddingHorizontal: 10, paddingVertical: 4 }]} 
+                        onPress={() => navigation.navigate("CreateRoom")}>
                         <Ionicons name="lock-open-outline" size={16} color="gray" style={{ marginRight: 6 }} />
                         <Text style={[styles.buttonText, { fontSize: 14 }]}>Game Room</Text>
                     </TouchableOpacity>

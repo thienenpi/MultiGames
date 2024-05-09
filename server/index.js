@@ -12,6 +12,7 @@ const io = socketIo(server, {
 
 const rolesRouter = require("./routes/role");
 const userRouter = require("./routes/user");
+const roomRouter = require("./routes/room");
 
 dotenv.config();
 mongoose
@@ -31,6 +32,7 @@ app.get("/", (req, res) =>
 
 app.use("/api/roles", rolesRouter);
 app.use("/api/users", userRouter);
+app.use("/api/rooms", roomRouter);
 
 io.on("connection", (socket) => {
   console.log("A user connected");
