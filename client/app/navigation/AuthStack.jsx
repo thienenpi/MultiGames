@@ -4,6 +4,7 @@ import Onboarding from "../screens/Onboarding";
 import Login from "../screens/Login";
 import Register from "../screens/Register";
 import ForgotPassword from "../screens/ForgotPassword";
+import OTPVerified from "../screens/OTPVerified";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,11 @@ const AuthStack = () => {
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPassword}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OTPVerified"
+        component={OTPVerified}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

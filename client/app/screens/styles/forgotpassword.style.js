@@ -1,10 +1,13 @@
 import { StyleSheet } from "react-native";
 import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  inputContainer: {
+    paddingTop: 50,
     justifyContent: "center",
     padding: 16,
+  },
+  container: {
+    flex: 1,
   },
   label: {
     fontSize: 16,
@@ -37,6 +40,29 @@ const styles = StyleSheet.create({
   },
   required: {
     color: "red",
+  },
+  appBar: {
+    flex: 1,
+    width: "100%",
+  },
+
+  header: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: SIZES.large,
+  },
+
+  headerText: {
+    flex: 1,
+    color: COLORS.back,
+    fontSize: SIZES.xLarge,
+    fontFamily: "sfProBold",
+  },
+
+  headerIcon: {
+    fontSize: SIZES.xLarge,
   },
 });
 

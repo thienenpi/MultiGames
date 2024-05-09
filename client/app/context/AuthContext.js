@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
 import { userLogin, userRegister } from "../api/UserApi";
 import { Alert } from "react-native";
+import auth from "@react-native-firebase/auth";
 
 export const AuthContext = createContext();
 
@@ -24,9 +25,28 @@ export const AuthProvider = ({ children }) => {
       setUserInfo(userInfo);
       setUserToken(userToken);
 
-      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
-      AsyncStorage.setItem("userToken", JSON.stringify(userToken));
+      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo)).catch(
+        (error) => {
+          console.error("Error storing user info: ", error);
+        }
+      );
+
+      AsyncStorage.setItem("userToken", JSON.stringify(userToken)).catch(
+        (error) => {
+          console.error("Error storing user token: ", error);
+        }
+      );
+
       // AsyncStorage.setItem("userPhone", JSON.stringify(userPhone));
+      // auth()
+      //   .signInWithPhoneNumber(userPhone)
+      //   .then((confirmResult) => {
+      //     // Save the confirmation result to use in the OTP verification step
+      //     AsyncStorage.setItem("confirmResult", JSON.stringify(confirmResult));
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //   });
 
       setIsLoading(false);
     } else {
