@@ -6,6 +6,7 @@ import CustomButton from '../components/CustomButton';
 import { AuthContext } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
 
 const Register = () => {
   const { register } = useContext(AuthContext);
@@ -15,6 +16,7 @@ const Register = () => {
   const [date, setDate] = useState(new Date());
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [showPicker, setShowPicker] = useState(false);
+  const navigation = useNavigation();
 
   const onChange = ({ type }, selectedDate) => {
     if (type == "set") {
@@ -42,6 +44,7 @@ const Register = () => {
       };
 
       register({ data: data });
+      navigation.navigate('Login');
     } else {
       console.log('Invalid birthday');
     }

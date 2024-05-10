@@ -39,7 +39,7 @@ const Dashboard = () => {
                     <Text style={{ fontSize: 30, fontWeight: "600" }}>Let's Play</Text>
                     <TouchableOpacity 
                         style={[styles.button, { paddingHorizontal: 10, paddingVertical: 4 }]} 
-                        onPress={() => navigation.navigate("CreateRoom")}>
+                        onPress={() => navigation.navigate("BoardRoom")}>
                         <Ionicons name="lock-open-outline" size={16} color="gray" style={{ marginRight: 6 }} />
                         <Text style={[styles.buttonText, { fontSize: 14 }]}>Game Room</Text>
                     </TouchableOpacity>

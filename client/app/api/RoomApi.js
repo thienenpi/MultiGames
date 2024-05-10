@@ -1,8 +1,8 @@
 import ApiManager from './ApiManager';
 
-const roomCreate = async (data) => {
+const createRoom = async ({data}) => {
   try {
-    const url = '/rooms/create/';
+    const url = '/rooms/';
     const config = {
       method: 'POST',
       headers: {
@@ -10,7 +10,7 @@ const roomCreate = async (data) => {
       },
       data: data,
     };
-    console.log(data);
+
     const res = await ApiManager(url, config);
     return res;
   } catch (error) {
@@ -22,4 +22,4 @@ const roomCreate = async (data) => {
   }
 };
 
-export { roomCreate };
+export { createRoom };
