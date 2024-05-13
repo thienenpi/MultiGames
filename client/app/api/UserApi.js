@@ -10,7 +10,7 @@ const userLogin = async ({ data }) => {
       },
       data: data,
     };
-
+    
     const res = await ApiManager(url, config);
     return res;
   } catch (error) {
