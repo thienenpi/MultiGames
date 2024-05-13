@@ -33,6 +33,7 @@ const DrawingOptionsBar = ({
   onUpdateColor,
   size,
   onUpdateSize,
+  onClearDrawing,
 }) => {
   const onSelection = (color) => {
     onUpdateColor(color);
@@ -87,32 +88,11 @@ const DrawingOptionsBar = ({
         return <View style={styles.container}>{renderOption2()}</View>;
       case 3:
         const renderOption3 = () => {
-          const optionButtons = [
-            { size: 3 },
-            { size: 6 },
-            { size: 10 },
-            { size: 20 },
-            { size: 26 },
-          ];
-
           return (
             <View style={styles.container}>
-              {optionButtons.map((button, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.optionButton,
-                    selectedOption === button.size &&
-                      styles.selectedOptionButton,
-                  ]}
-                  onPress={() => handleOptionPress(button.size)}
-                >
-                  <FontAwesome name="circle" size={button.size} color="black" />
-                </TouchableOpacity>
-              ))}
               <TouchableOpacity
                 style={styles.clearButton}
-                onPress={() => handleOptionPress(null)}
+                onPress={onClearDrawing}
               >
                 <Ionicons name="trash-outline" size={24} color="gray" />
                 <Text style={styles.clearButtonText}>Clear</Text>

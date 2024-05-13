@@ -19,6 +19,7 @@ import ViewShot from "react-native-view-shot";
 const GuessingWord = () => {
   const route = useRoute();
   const { roomId } = route.params;
+
   const [isStart, setIsStart] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const viewShotRef = useRef(null);
@@ -29,6 +30,7 @@ const GuessingWord = () => {
   const [size, setSize] = useState(2);
   const [isRedo, setIsRedo] = useState(false);
   const [isUndo, setIsUndo] = useState(false);
+  const [isClear, setIsClear] = useState(false);
 
   const updateColor = (color) => {
     setColor(color);
@@ -36,6 +38,10 @@ const GuessingWord = () => {
 
   const updateSize = (size) => {
     setSize(size);
+  };
+
+  const updateIsClear = () => {
+    setIsClear((prev) => !prev);
   };
 
   const handleButtonPress = () => {
@@ -128,6 +134,8 @@ const GuessingWord = () => {
               onRedo={() => setIsRedo(false)}
               isUndo={isUndo}
               onUndo={() => setIsUndo(false)}
+              isClear={isClear}
+              onClearDrawing={updateIsClear}
             ></WhiteBoard>
             {showOptions && (
               <Animated.View style={styles.topBar}>
@@ -138,6 +146,7 @@ const GuessingWord = () => {
                   size={size}
                   option={option}
                   toggleOptions={toggleOptions}
+                  onClearDrawing={updateIsClear}
                 />
               </Animated.View>
             )}
@@ -231,16 +240,6 @@ const GuessingWord = () => {
             >
               <Ionicons
                 name={option === 3 ? "trash" : "trash-outline"}
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => toggleOptions(4)}
-            >
-              <Ionicons
-                name={option === 4 ? "grid" : "grid-outline"}
                 size={24}
                 color="black"
               />

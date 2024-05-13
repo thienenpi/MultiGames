@@ -17,6 +17,8 @@ const WhiteBoard = ({
   onUndo,
   isRedo,
   onRedo,
+  isClear,
+  onClearDrawing
 }) => {
   const [paths, setPaths] = useState([]);
   const [pathToDisplay, setPathToDisplay] = useState([]);
@@ -103,7 +105,12 @@ const WhiteBoard = ({
       redo();
       onRedo();
     }
-  }, [isRedo, isUndo, color]);
+
+    if (isClear) {
+      setPaths([]);
+      onClearDrawing();
+    }
+  }, [isRedo, isUndo, color, isClear]);
 
   const undo = () => {
     if (paths.length === 0) return;
