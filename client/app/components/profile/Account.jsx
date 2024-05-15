@@ -4,9 +4,11 @@ import styles from "../styles/account.style";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
 const Account = () => {
   const { userInfo } = useContext(AuthContext);
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -34,7 +36,7 @@ const Account = () => {
 
       {/* foward button */}
       <View style={styles.forward}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Edit Profile")}>
           <Ionicons name="chevron-forward" size={24}></Ionicons>
         </TouchableOpacity>
       </View>

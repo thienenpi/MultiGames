@@ -73,7 +73,7 @@ const BoardRoom = () => {
             styles.button,
             { backgroundColor: "#62C7FF", flexDirection: "row" },
           ]}
-          onPress={() => navigation.navigate("CreateRoom")}
+          onPress={() => navigation.navigate("Create Room")}
         >
           <Ionicons name="add-circle" size={30} color="white" />
           <Text style={styles.buttonText}>Tạo phòng</Text>
@@ -106,7 +106,7 @@ const BoardRoom = () => {
           styles={styles}
           label={"Phòng tôi đã từng chơi"}
           onPress={() => {
-            navigation.navigate("RoomHistory");
+            navigation.navigate("Room History");
           }}
         ></CustomButton>
       </View>

@@ -46,12 +46,11 @@ const CreateRoom = () => {
         password: password,
         mode: buttonTitles[selectedButton][0],
         capacity: 1,
-        // buttonTitles[selectedButton][1][lastIndex],
         list_guest: [],
-        chatGame: '',
+        chatGame: 'a',
       }
+      console.log(data)
       const res = await createRoom({ data: data });
-      console.log(data);
       if (res.status === 200) {
         alert('Room created successfully');
       } else {
