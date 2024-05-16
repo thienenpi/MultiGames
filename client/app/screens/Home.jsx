@@ -42,9 +42,9 @@ const Home = () => {
 
       <CustomButton
         styles={styles}
-        label={"CreateRoom"}
+        label={"Create Room"}
         isValid={true}
-        onPress={() => navigation.navigate("CreateRoom")}
+        onPress={() => navigation.navigate("Room Create")}
       ></CustomButton>
 
       <CustomButton
@@ -58,7 +58,7 @@ const Home = () => {
         styles={styles}
         label={"Edit Profile"}
         isValid={true}
-        onPress={() => navigation.navigate("EditProfile")}
+        onPress={() => navigation.navigate("Edit Profile")}
       ></CustomButton>
 
       <CustomButton

@@ -50,7 +50,7 @@ const Shop = () => {
         showRightIcon={true}
         rightIconStyle={{ fontSize: 24 }}
         onPressLeftIcon={() => navigation.goBack()}
-        onPressRightIcon={() => navigation.navigate('ItemBag')} />
+        onPressRightIcon={() => navigation.navigate('Item Bag')} />
       <View style={styles.separator} />
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceText}>Balance:</Text>

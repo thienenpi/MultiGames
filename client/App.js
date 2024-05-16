@@ -2,6 +2,8 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
 import { AuthProvider } from './app/context/AuthContext';
+import { RoomProvider } from './app/context/RoomContext';
+import RoomCreate from './app/screens/RoomCreate';
 import AppNavigation from './app/navigation/AppNavigation';
 
 export default function App() {
@@ -30,7 +32,9 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <AppNavigation></AppNavigation>
+      <RoomProvider>
+        <AppNavigation></AppNavigation>
+      </RoomProvider>
     </AuthProvider>
   );
 }

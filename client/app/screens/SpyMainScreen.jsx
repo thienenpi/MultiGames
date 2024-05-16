@@ -2,12 +2,9 @@ import React from 'react';
 import styles from './styles/spyMain.style'
 import {
     View,
-    TextInput,
-    Button,
     Text,
     ImageBackground,
     Image,
-    Touchable
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS } from '../constants';

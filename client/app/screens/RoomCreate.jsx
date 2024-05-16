@@ -3,13 +3,14 @@ import { View, Text, TouchableOpacity, Modal, Switch, Pressable, TextInput } fro
 import { useNavigation } from "@react-navigation/native";
 import { AppBar, CustomButton } from "../components";
 import { Ionicons } from "@expo/vector-icons";
-import { createRoom } from '../api/RoomApi';
 import { AuthContext } from "../context/AuthContext";
+import { RoomContext } from "../context/RoomContext";
 import styles from "./styles/createroom.style";
 
-const CreateRoom = () => {
+const RoomCreate = () => {
   const navigation = useNavigation();
   const { userInfo } = useContext(AuthContext);
+  const { createRoom } = useContext(RoomContext);
   const [modalVisibleCapacity, setModalVisibleCapacity] = useState(false);
   const [modalVisiblePassword, setModalVisiblePassword] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
@@ -36,31 +37,22 @@ const CreateRoom = () => {
     return result;
   }
 
-  const handleSubmit = async () => {
-    // const roomId = generateRoomId();
-    // try {
-      const data = {
-        name: "roomId",
-        owner: userInfo._id,
-        isPassword: isPassword,
-        password: password,
-        mode: buttonTitles[selectedButton][0],
-        capacity: 1,
-        // buttonTitles[selectedButton][1][lastIndex],
-        list_guest: [],
-        chatGame: '',
-      }
-      const res = await createRoom({ data: data });
-      console.log(data);
-      if (res.status === 200) {
-        alert('Room created successfully');
-      } else {
-        alert('Failed to create room');
-      }
-    // } catch (error) {
-    //   alert('An error occurred while creating the room');
-    // }
-  };
+  const handleCreateRoom  = () => {
+    const data = {
+      name: generateRoomId(),
+      owner: userInfo._id,
+      isPassword: isPassword,
+      password: password,
+      mode: buttonTitles[selectedButton][0],
+      capacity: 1,
+      buttonTitles: [selectedButton][1][lastIndex],
+      list_guest: [],
+      chatGame: 'empty',
+      status: 'empty',
+    }
+
+    // createRoom({ data: data });
+  }
 
   const handleCancel = () => {
     setModalVisiblePassword(false);
@@ -123,7 +115,8 @@ const CreateRoom = () => {
               }}
               onPress={() => {
                 setLastIndex(title[1].length - 1);
-                setSelectedButton(index);}}
+                setSelectedButton(index);
+              }}
             >
               <Text
                 style={{
@@ -380,7 +373,7 @@ const CreateRoom = () => {
           styles={styles}
           label={"Tạo phòng"}
           onPress={() => {
-            handleSubmit();
+            handleCreateRoom();
           }}
         />
       </View>
@@ -388,4 +381,4 @@ const CreateRoom = () => {
   );
 };
 
-export default CreateRoom;
+export default RoomCreate;
