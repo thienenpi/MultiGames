@@ -3,7 +3,7 @@ import Home from "./Home";
 import Profile from "./Profile";
 import SpyMainScreen from "./SpyMainScreen";
 import SpyScreen from "./SpyGame";
-import CreateRoom from "./CreateRoom";
+import BoardRoom from "./BoardRoom";
 import Shop from "./Shop";
 import ItemBag from "./ItemBag";
 import Setting from "./Setting";
@@ -11,6 +11,8 @@ import Message from "./Message";
 import Dashboard from "./Dashboard";
 import EditProfile from "./EditProfile";
 import RoomHistory from "./RoomHistory";
+import RoomConfig from "./RoomConfig";
+import CreateRoom from "./CreateRoom";
 
 export {
   Home,
@@ -18,7 +20,7 @@ export {
   GuessingWord,
   SpyScreen,
   SpyMainScreen,
-  CreateRoom,
+  BoardRoom,
   Shop,
   ItemBag,
   Setting,
@@ -26,4 +28,6 @@ export {
   Dashboard,
   EditProfile,
   RoomHistory,
+  RoomConfig,
+  CreateRoom,
 };

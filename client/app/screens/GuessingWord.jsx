@@ -6,7 +6,9 @@ import {
   Image,
   Modal,
   Pressable,
-} from "react-native"; // Thêm TextInput từ react-native
+  Animated,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState, useRef } from "react";
 import styles from "./styles/guessingWord.style";
 import { WhiteBoard } from "../components";
@@ -17,25 +19,61 @@ import ViewShot from "react-native-view-shot";
 const GuessingWord = () => {
   const route = useRoute();
   const { roomId } = route.params;
+
   const [isStart, setIsStart] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const viewShotRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [showOptions, setShowOptions] = useState(false);
+  const [option, setOption] = useState(0);
+  const [color, setColor] = useState("#000000");
+  const [size, setSize] = useState(2);
+  const [isRedo, setIsRedo] = useState(false);
+  const [isUndo, setIsUndo] = useState(false);
+  const [isClear, setIsClear] = useState(false);
+
+  const updateColor = (color) => {
+    setColor(color);
+  };
+
+  const updateSize = (size) => {
+    setSize(size);
+  };
+
+  const updateIsClear = () => {
+    setIsClear((prev) => !prev);
+  };
+
   const handleButtonPress = () => {
     captureAndSaveImage().then(hanldeDialog());
   };
+
   const handleSendImage = () => {};
+
   const handleChooseIcon = () => {
     // Xử lý khi người dùng nhấn vào nút chọn bộ icon
   };
+
   const handleStart = () => {
     setIsStart(true); // Update state to show the whiteboard
   };
+
   const hanldeDialog = async () => {
     setShowDialog(true);
   };
+
   const closeModal = () => {
     setShowDialog(false);
+  };
+
+  const toggleOptions = (optionNumber) => {
+    if (optionNumber === option) {
+      setOption(0);
+      setShowOptions(false);
+    } else {
+      setOption(optionNumber);
+      setShowOptions(true);
+    }
   };
 
   const captureAndSaveImage = async () => {
@@ -93,7 +131,30 @@ const GuessingWord = () => {
               bottom: 0,
             }}
           >
-            <WhiteBoard roomId={roomId}></WhiteBoard>
+            <WhiteBoard
+              roomId={roomId}
+              color={color}
+              size={size}
+              isRedo={isRedo}
+              onRedo={() => setIsRedo(false)}
+              isUndo={isUndo}
+              onUndo={() => setIsUndo(false)}
+              isClear={isClear}
+              onClearDrawing={updateIsClear}
+            ></WhiteBoard>
+            {showOptions && (
+              <Animated.View style={styles.topBar}>
+                <DrawingOptionsBar
+                  onUpdateColor={updateColor}
+                  onUpdateSize={updateSize}
+                  color={color}
+                  size={size}
+                  option={option}
+                  toggleOptions={toggleOptions}
+                  onClearDrawing={updateIsClear}
+                />
+              </Animated.View>
+            )}
           </ViewShot>
         </View>
       ) : (
@@ -145,6 +206,70 @@ const GuessingWord = () => {
             </TouchableOpacity>
           </View>
         </View>
+      )}
+      {isStart ? (
+        <View
+          style={[
+            styles.bottomBar,
+            {
+              borderTopColor: "lightgray",
+              borderTopWidth: 1,
+              borderTopHeight: 1,
+            },
+          ]}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => toggleOptions(1)}
+            >
+              <Ionicons
+                name={option === 1 ? "brush" : "brush-outline"}
+                size={24}
+                color="black"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => toggleOptions(2)}
+            >
+              <Ionicons
+                name={option === 2 ? "color-palette" : "color-palette-outline"}
+                size={24}
+                color="black"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => toggleOptions(3)}
+            >
+              <Ionicons
+                name={option === 3 ? "trash" : "trash-outline"}
+                size={24}
+                color="black"
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
+              <Ionicons name="download" size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => setIsUndo(true)}
+            >
+              <Ionicons name="arrow-back" size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => setIsRedo(true)}
+            >
+              <Ionicons name="arrow-forward" size={24} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <View style={[styles.bottomBar, { backgroundColor: "#79c060" }]}></View>
       )}
       <View style={styles.chatBox}>
         {/* Các ô chứa hình ảnh user */}

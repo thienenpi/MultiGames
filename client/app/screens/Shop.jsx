@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, Image, FlatList, SafeAreaView, Modal, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, Image, FlatList, Modal, Pressable, TouchableOpacity } from "react-native";
 import { Dimensions } from 'react-native';
 import styles from './styles/shop.style';
 import { Item, AppBar } from '../components';
@@ -43,14 +43,14 @@ const Shop = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <AppBar
         title="Shop"
         rightIconName="cart"
         showRightIcon={true}
         rightIconStyle={{ fontSize: 24 }}
         onPressLeftIcon={() => navigation.goBack()}
-        onPressRightIcon={() => navigation.navigate('ItemBag')} />
+        onPressRightIcon={() => navigation.navigate('Item Bag')} />
       <View style={styles.separator} />
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceText}>Balance:</Text>
@@ -105,7 +105,7 @@ const Shop = () => {
           </View>
         </View>
       </Modal>}
-    </SafeAreaView>
+    </View>
   );
 };
 

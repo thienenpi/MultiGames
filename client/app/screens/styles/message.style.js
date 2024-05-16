@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: SIZES.width,
+    top: SIZES.xxLarge
   },
 
   appBar: {

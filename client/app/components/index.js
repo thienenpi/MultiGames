@@ -19,6 +19,10 @@ const Otp = () => {
     </View>
   );
 };
+import Account from "./profile/Account";
+import Recommendation from "./profile/Recommendation";
+import OptionRow from "./profile/OptionRow";
+
 export {
   CustomButton,
   CustomDatePicker,
@@ -34,4 +38,7 @@ export {
   RoomCardView,
   RoomColumn,
   Otp,
+  Account,
+  Recommendation,
+  OptionRow,
 };

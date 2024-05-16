@@ -28,13 +28,6 @@ const Home = () => {
 
       <CustomButton
         styles={styles}
-        label={"Spy Main"}
-        isValid={true}
-        onPress={() => navigation.navigate("Spy Main")}
-      ></CustomButton>
-
-      <CustomButton
-        styles={styles}
         label={"Spy Game"}
         isValid={true}
         onPress={() => navigation.navigate("Spy Game")}
@@ -42,23 +35,9 @@ const Home = () => {
 
       <CustomButton
         styles={styles}
-        label={"CreateRoom"}
+        label={"Room Config"}
         isValid={true}
-        onPress={() => navigation.navigate("CreateRoom")}
-      ></CustomButton>
-
-      <CustomButton
-        styles={styles}
-        label={"Setting"}
-        isValid={true}
-        onPress={() => navigation.navigate("Setting")}
-      ></CustomButton>
-
-      <CustomButton
-        styles={styles}
-        label={"Edit Profile"}
-        isValid={true}
-        onPress={() => navigation.navigate("EditProfile")}
+        onPress={() => navigation.navigate("Room Config")}
       ></CustomButton>
     </View>
   );

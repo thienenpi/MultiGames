@@ -5,14 +5,15 @@ import {
   GuessingWord,
   SpyScreen,
   SpyMainScreen,
-  CreateRoom,
+  BoardRoom,
   Shop,
   ItemBag,
   Setting,
   EditProfile,
   RoomHistory,
+  RoomConfig,
+  CreateRoom
 } from "../screens";
-import AddRoom from "../screens/AddRoom";
 
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
@@ -43,8 +44,8 @@ const AppStack = () => {
       ></Stack.Screen>
 
       <Stack.Screen
-        name="CreateRoom"
-        component={CreateRoom}
+        name="Board Room"
+        component={BoardRoom}
         options={{ headerShown: false }}
       ></Stack.Screen>
 
@@ -55,7 +56,7 @@ const AppStack = () => {
       ></Stack.Screen>
 
       <Stack.Screen
-        name="ItemBag"
+        name="Item Bag"
         component={ItemBag}
         options={{ headerShown: false }}
       ></Stack.Screen>
@@ -67,19 +68,26 @@ const AppStack = () => {
       ></Stack.Screen>
 
       <Stack.Screen
-        name="EditProfile"
+        name="Edit Profile"
         component={EditProfile}
         options={{ headerShown: false }}
       ></Stack.Screen>
 
       <Stack.Screen
-        name="RoomHistory"
+        name="Room History"
         component={RoomHistory}
         options={{ headerShown: false }}
       ></Stack.Screen>
+
       <Stack.Screen
-        name="AddRoom"
-        component={AddRoom}
+        name="Create Room"
+        component={CreateRoom}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+
+      <Stack.Screen
+        name="Room Config"
+        component={RoomConfig}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>
