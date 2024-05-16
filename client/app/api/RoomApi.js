@@ -1,8 +1,8 @@
 import ApiManager from './ApiManager';
 
-const roomCreate = async ({data}) => {
+const createRoom = async ({data}) => {
   try {
-    const url = '/rooms/';
+    const url = '/rooms/create';
     const config = {
       method: 'POST',
       headers: {
@@ -22,9 +22,9 @@ const roomCreate = async ({data}) => {
   }
 };
 
-const roomGet = async ({data}) => {
+const getRoom = async ({data}) => {
   try {
-    const url = '/rooms/' + data.id;
+    const url = '/rooms/room_id=' + data.id;
     const config = {
       method: 'GET',
       headers: {
@@ -43,7 +43,7 @@ const roomGet = async ({data}) => {
   }
 };
 
-const roomsGet = async ({data}) => {
+const getRooms = async ({data}) => {
   try {
     const url = '/rooms/';
     const config = {
@@ -64,9 +64,9 @@ const roomsGet = async ({data}) => {
   }
 };
 
-const roomActiveGamesGet = async ({data}) => {
+const getRoomsActive = async ({data}) => {
   try {
-    const url = '/rooms/' + data.id + '/games/';
+    const url = '/rooms/active/';
     const config = {
       method: 'GET',
       headers: {
@@ -85,72 +85,9 @@ const roomActiveGamesGet = async ({data}) => {
   }
 };
 
-const playersGet = async ({data}) => {
+const updateRoom = async ({data}) => {
   try {
-    const url = '/rooms/' + data.id + '/players/';
-    const config = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const res = await ApiManager(url, config);
-    return res;
-  } catch (error) {
-    if (error.response) {
-      return error.response;
-    } else {
-      throw error;
-    }
-  }
-};
-
-const gamesGet = async ({data}) => {
-  try {
-    const url = '/rooms/' + data.id + '/games/';
-    const config = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const res = await ApiManager(url, config);
-    return res;
-  } catch (error) {
-    if (error.response) {
-      return error.response;
-    } else {
-      throw error;
-    }
-  }
-};
-
-const gameGet = async ({data}) => {
-  try {
-    const url = '/rooms/' + data.id + '/games/' + data.gameId;
-    const config = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const res = await ApiManager(url, config);
-    return res;
-  } catch (error) {
-    if (error.response) {
-      return error.response;
-    } else {
-      throw error;
-    }
-  }
-};
-
-const roomUpdate = async ({data}) => {
-  try {
-    const url = '/rooms/' + data.id;
+    const url = '/rooms/room_id=' + data.id;
     const config = {
       method: 'PUT',
       headers: {
@@ -170,9 +107,9 @@ const roomUpdate = async ({data}) => {
   }
 };
 
-const roomDelete = async ({data}) => {
+const deleteRoom = async ({data}) => {
   try {
-    const url = '/rooms/' + data.id;
+    const url = '/rooms/room_id=' + data.id;
     const config = {
       method: 'DELETE',
       headers: {
@@ -191,105 +128,161 @@ const roomDelete = async ({data}) => {
   }
 };
 
-const gameCreate = async ({data}) => {
-  try {
-    const url = '/rooms/' + data.id + '/games/';
-    const config = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    };
+// const playersGet = async ({data}) => {
+//   try {
+//     const url = '/rooms/' + data.id + '/players/';
+//     const config = {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     };
 
-    const res = await ApiManager(url, config);
-    return res;
-  } catch (error) {
-    if (error.response) {
-      return error.response;
-    } else {
-      throw error;
-    }
-  }
-};
+//     const res = await ApiManager(url, config);
+//     return res;
+//   } catch (error) {
+//     if (error.response) {
+//       return error.response;
+//     } else {
+//       throw error;
+//     }
+//   }
+// };
 
-const gameUpdate = async ({data}) => {
-  try {
-    const url = '/rooms/' + data.id + '/games/' + data.gameId;
-    const config = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    };
+// const gamesGet = async ({data}) => {
+//   try {
+//     const url = '/rooms/' + data.id + '/games/';
+//     const config = {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     };
 
-    const res = await ApiManager(url, config);
-    return res;
-  } catch (error) {
-    if (error.response) {
-      return error.response;
-    } else {
-      throw error;
-    }
-  }
-};
+//     const res = await ApiManager(url, config);
+//     return res;
+//   } catch (error) {
+//     if (error.response) {
+//       return error.response;
+//     } else {
+//       throw error;
+//     }
+//   }
+// };
 
-const gameDelete = async ({data}) => {
-  try {
-    const url = '/rooms/' + data.id + '/games/' + data.gameId;
-    const config = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+// const gameGet = async ({data}) => {
+//   try {
+//     const url = '/rooms/' + data.id + '/games/' + data.gameId;
+//     const config = {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     };
 
-    const res = await ApiManager(url, config);
-    return res;
-  } catch (error) {
-    if (error.response) {
-      return error.response;
-    } else {
-      throw error;
-    }
-  }
-};
+//     const res = await ApiManager(url, config);
+//     return res;
+//   } catch (error) {
+//     if (error.response) {
+//       return error.response;
+//     } else {
+//       throw error;
+//     }
+//   }
+// };
 
-const playerCreate = async ({data}) => {
-  try {
-    const url = '/rooms/' + data.id + '/players/';
-    const config = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    };
+// const gameCreate = async ({data}) => {
+//   try {
+//     const url = '/rooms/' + data.id + '/games/';
+//     const config = {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       data: data,
+//     };
 
-    const res = await ApiManager(url, config);
-    return res;
-  } catch (error) {
-    if (error.response) {
-      return error.response;
-    } else {
-      throw error;
-    }
-  }
-};
+//     const res = await ApiManager(url, config);
+//     return res;
+//   } catch (error) {
+//     if (error.response) {
+//       return error.response;
+//     } else {
+//       throw error;
+//     }
+//   }
+// };
+
+// const gameUpdate = async ({data}) => {
+//   try {
+//     const url = '/rooms/' + data.id + '/games/' + data.gameId;
+//     const config = {
+//       method: 'PUT',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       data: data,
+//     };
+
+//     const res = await ApiManager(url, config);
+//     return res;
+//   } catch (error) {
+//     if (error.response) {
+//       return error.response;
+//     } else {
+//       throw error;
+//     }
+//   }
+// };
+
+// const gameDelete = async ({data}) => {
+//   try {
+//     const url = '/rooms/' + data.id + '/games/' + data.gameId;
+//     const config = {
+//       method: 'DELETE',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     };
+
+//     const res = await ApiManager(url, config);
+//     return res;
+//   } catch (error) {
+//     if (error.response) {
+//       return error.response;
+//     } else {
+//       throw error;
+//     }
+//   }
+// };
+
+// const playerCreate = async ({data}) => {
+//   try {
+//     const url = '/rooms/' + data.id + '/players/';
+//     const config = {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       data: data,
+//     };
+
+//     const res = await ApiManager(url, config);
+//     return res;
+//   } catch (error) {
+//     if (error.response) {
+//       return error.response;
+//     } else {
+//       throw error;
+//     }
+//   }
+// };
 
 export { 
-  roomCreate, 
-  roomGet, 
-  roomsGet, 
-  roomActiveGamesGet, 
-  playersGet, 
-  gamesGet, 
-  gameGet, 
-  roomUpdate, 
-  roomDelete, 
-  gameCreate, 
-  gameUpdate, 
-  gameDelete, 
-  playerCreate
+  createRoom,
+  updateRoom,
+  deleteRoom,
+  getRooms,
+  getRoom,
+  getRoomsActive,
 };

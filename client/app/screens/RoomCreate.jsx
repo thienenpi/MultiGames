@@ -1,16 +1,15 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TouchableOpacity, Modal, Switch, Pressable, TextInput } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Modal, Switch, Pressable, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AppBar, CustomButton } from "../components";
 import { Ionicons } from "@expo/vector-icons";
 import { AuthContext } from "../context/AuthContext";
-import { RoomContext } from "../context/RoomContext";
+import { createRoom } from "../api/RoomApi";
 import styles from "./styles/createroom.style";
 
 const RoomCreate = () => {
   const navigation = useNavigation();
   const { userInfo } = useContext(AuthContext);
-  const { createRoom } = useContext(RoomContext);
   const [modalVisibleCapacity, setModalVisibleCapacity] = useState(false);
   const [modalVisiblePassword, setModalVisiblePassword] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
@@ -31,27 +30,37 @@ const RoomCreate = () => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 10; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
   }
 
-  const handleCreateRoom  = () => {
-    const data = {
-      name: generateRoomId(),
-      owner: userInfo._id,
-      isPassword: isPassword,
-      password: password,
-      mode: buttonTitles[selectedButton][0],
-      capacity: 1,
-      buttonTitles: [selectedButton][1][lastIndex],
-      list_guest: [],
-      chatGame: 'empty',
-      status: 'empty',
-    }
+  const handleCreateRoom = async () => {
+    try {
+      const data = {
+        name: "roomName",
+        isPassword: true,
+        password: "123456",
+        mode: "buttonTitles",
+        capacity: 1,
+        list_guest: [],
+        owner: "room",
+        chatGame: "a",
+        status: "active"
+      }
 
-    // createRoom({ data: data });
+      const res = await createRoom({ data: data });
+
+      if (res.status === 200) {
+        Alert.alert('Room created successfully');
+      } else {
+        console.log(res);
+        Alert.alert('Failed to create room');
+      }
+    } catch {
+      Alert.alert('An error occurred while creating the room');
+    }
   }
 
   const handleCancel = () => {
