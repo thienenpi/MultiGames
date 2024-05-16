@@ -36,7 +36,7 @@ const Recommendation = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate(items[0].screen)}>
+      <TouchableOpacity onPress={() => {}}>
         <View style={styles.item}>
           <Image
             source={{
@@ -48,7 +48,7 @@ const Recommendation = () => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate(items[1].screen)}>
+      <TouchableOpacity onPress={() => {}}>
         <View style={styles.item}>
           <Image
             source={{

@@ -27,6 +27,7 @@ const GuessingWord = () => {
   const route = useRoute();
   const { userInfo } = useContext(AuthContext);
   const { roomId } = route.params;
+
   const [isStart, setIsStart] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const viewShotRef = useRef(null);
@@ -36,12 +37,30 @@ const GuessingWord = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [messageHistory, setMessageHistory] = useState([]);
+  const [color, setColor] = useState("#000000");
+  const [size, setSize] = useState(2);
+  const [isRedo, setIsRedo] = useState(false);
+  const [isUndo, setIsUndo] = useState(false);
+  const [isClear, setIsClear] = useState(false);
+
+  const updateColor = (color) => {
+    setColor(color);
+  };
+
+  const updateSize = (size) => {
+    setSize(size);
+  };
+
+  const updateIsClear = () => {
+    setIsClear((prev) => !prev);
+  };
 
   const handleButtonPress = () => {
     captureAndSaveImage().then(hanldeDialog());
   };
 
-  const handleSendImage = () => { };
+  const handleSendImage = () => {};
+
   const handleChooseIcon = () => {
     // Xử lý khi người dùng nhấn vào nút chọn bộ icon
   };
@@ -150,11 +169,30 @@ const GuessingWord = () => {
               left: 0,
               right: 0,
               bottom: 0,
-            }}>
-            <WhiteBoard roomId={roomId}></WhiteBoard>
+            }}
+          >
+            <WhiteBoard
+              roomId={roomId}
+              color={color}
+              size={size}
+              isRedo={isRedo}
+              onRedo={() => setIsRedo(false)}
+              isUndo={isUndo}
+              onUndo={() => setIsUndo(false)}
+              isClear={isClear}
+              onClearDrawing={updateIsClear}
+            ></WhiteBoard>
             {showOptions && (
               <Animated.View style={styles.topBar}>
-                <DrawingOptionsBar option={option} toggleOptions={toggleOptions} />
+                <DrawingOptionsBar
+                  onUpdateColor={updateColor}
+                  onUpdateSize={updateSize}
+                  color={color}
+                  size={size}
+                  option={option}
+                  toggleOptions={toggleOptions}
+                  onClearDrawing={updateIsClear}
+                />
               </Animated.View>
             )}
           </ViewShot>
@@ -210,40 +248,68 @@ const GuessingWord = () => {
         </View>
       )}
       {isStart ? (
-        <View style={[styles.bottomBar, {
-          borderTopColor: "lightgray",
-          borderTopWidth: 1,
-          borderTopHeight: 1,
-        }]}>
+        <View
+          style={[
+            styles.bottomBar,
+            {
+              borderTopColor: "lightgray",
+              borderTopWidth: 1,
+              borderTopHeight: 1,
+            },
+          ]}
+        >
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => toggleOptions(1)}>
-              <Ionicons name={option === 1 ? "brush" : "brush-outline"} size={24} color="black" />
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => toggleOptions(1)}
+            >
+              <Ionicons
+                name={option === 1 ? "brush" : "brush-outline"}
+                size={24}
+                color="black"
+              />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton} onPress={() => toggleOptions(2)}>
-              <Ionicons name={option === 2 ? "color-palette" : "color-palette-outline"} size={24} color="black" />
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => toggleOptions(2)}
+            >
+              <Ionicons
+                name={option === 2 ? "color-palette" : "color-palette-outline"}
+                size={24}
+                color="black"
+              />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton} onPress={() => toggleOptions(3)}>
-              <Ionicons name={option === 3 ? "trash" : "trash-outline"} size={24} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton} onPress={() => toggleOptions(4)}>
-              <Ionicons name={option === 4 ? "grid" : "grid-outline"} size={24} color="black" />
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => toggleOptions(3)}
+            >
+              <Ionicons
+                name={option === 3 ? "trash" : "trash-outline"}
+                size={24}
+                color="black"
+              />
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => { }} >
+            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
               <Ionicons name="download" size={24} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton} onPress={() => { }} >
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => setIsUndo(true)}
+            >
               <Ionicons name="arrow-back" size={24} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton} onPress={() => { }} >
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={() => setIsRedo(true)}
+            >
               <Ionicons name="arrow-forward" size={24} />
             </TouchableOpacity>
           </View>
         </View>
       ) : (
-        <View style={[styles.bottomBar, { backgroundColor: "#79c060" }]}>
-        </View>
+        <View style={[styles.bottomBar, { backgroundColor: "#79c060" }]}></View>
       )}
       <View style={styles.chatBox}>
         {/* Các ô chứa hình ảnh user */}
