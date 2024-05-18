@@ -28,37 +28,9 @@ const Home = () => {
 
       <CustomButton
         styles={styles}
-        label={"Spy Main"}
-        isValid={true}
-        onPress={() => navigation.navigate("Spy Main")}
-      ></CustomButton>
-
-      <CustomButton
-        styles={styles}
         label={"Spy Game"}
         isValid={true}
         onPress={() => navigation.navigate("Spy Game")}
-      ></CustomButton>
-
-      <CustomButton
-        styles={styles}
-        label={"Create Room"}
-        isValid={true}
-        onPress={() => navigation.navigate("Room Create")}
-      ></CustomButton>
-
-      <CustomButton
-        styles={styles}
-        label={"Setting"}
-        isValid={true}
-        onPress={() => navigation.navigate("Setting")}
-      ></CustomButton>
-
-      <CustomButton
-        styles={styles}
-        label={"Edit Profile"}
-        isValid={true}
-        onPress={() => navigation.navigate("Edit Profile")}
       ></CustomButton>
 
       <CustomButton

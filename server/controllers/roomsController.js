@@ -1,12 +1,14 @@
-const Room = require('../models/Rooms');
+const Room = require("../models/Rooms");
 
 const createRoom = async (req, res) => {
   try {
     const newRoom = new Room(req.body);
     await newRoom.save();
-    res.status(200).json('Created room');
+    res.status(200).json("Created room");
   } catch (error) {
-    res.status(500).json('Failed to create room', error);
+    res
+      .status(500)
+      .json({ message: "Failed to create room", error: error.message });
   }
 };
 
@@ -15,7 +17,7 @@ const getRooms = async (req, res) => {
     const rooms = await Room.find();
     res.status(200).json(rooms);
   } catch (error) {
-    res.status(500).json('Failed to retrieve rooms', error);
+    res.status(500).json("Failed to retrieve rooms", error);
   }
 };
 
@@ -24,35 +26,34 @@ const getRoom = async (req, res) => {
     const room = await Room.findById(req.params.id);
     res.status(200).json(room);
   } catch (error) {
-    res.status(500).json('Failed to retrieve room', error);
+    res.status(500).json("Failed to retrieve room", error);
   }
 };
 
 const updateRoom = async (req, res) => {
   try {
     await Room.findByIdAndUpdate(req.params.id, req.body);
-    res.status(200).json('Room updated');
+    res.status(200).json("Room updated");
+  } catch (error) {
+    res.status(500).json("Failed to update room", error);
   }
-  catch (error) {
-    res.status(500).json('Failed to update room', error);
-  }
-}
+};
 
 const deleteRoom = async (req, res) => {
   try {
     await Room.findByIdAndDelete(req.params.id);
-    res.status(200).json('Room deleted');
+    res.status(200).json("Room deleted");
   } catch (error) {
-    res.status(500).json('Failed to delete room', error);
+    res.status(500).json("Failed to delete room", error);
   }
 };
 
 const getRoomActive = async (req, res) => {
   try {
-    const rooms = await Room.find({ status: 'active' });
+    const rooms = await Room.find({ status: "active" });
     res.status(200).json(rooms);
   } catch (error) {
-    res.status(500).json('Failed to retrieve room active games', error);
+    res.status(500).json("Failed to retrieve room active games", error);
   }
 };
 
@@ -118,5 +119,5 @@ module.exports = {
   // gamesGet,
   // gameGet,
   // gamePlayersGet,
-  // gamePlayerGet 
-}
+  // gamePlayerGet
+};

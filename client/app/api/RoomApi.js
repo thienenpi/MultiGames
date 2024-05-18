@@ -1,12 +1,12 @@
-import ApiManager from './ApiManager';
+import ApiManager from "./ApiManager";
 
-const createRoom = async ({data}) => {
+const createRoom = async ({ data }) => {
   try {
     const url = '/rooms/create';
     const config = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       data: data,
     };

@@ -35,6 +35,7 @@ const items = [
     currentPlayers: 0,
   },
 ];
+
 const renderItem = ({ item }) => <RoomCardView item={item}></RoomCardView>;
 
 const RoomBoard = () => {
