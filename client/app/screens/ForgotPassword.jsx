@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import styles from "./styles/forgotpassword.style";
 // import auth from "@react-native-firebase/app";
-import auth from "@react-native-firebase/auth";
+// import auth from "@react-native-firebase/auth";
 
 import { HorizontalItem, AppBar } from "../components";
 ``;

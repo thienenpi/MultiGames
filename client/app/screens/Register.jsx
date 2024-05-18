@@ -6,24 +6,6 @@ import {
   TouchableWithoutFeedback,
   Pressable,
   TextInput,
-  TouchableOpacity,
-} from "react-native";
-import React, { useContext, useState } from "react";
-import styles from "./styles/register.style";
-import InputField from "../components/InputField";
-import CustomButton from "../components/CustomButton";
-import { AuthContext } from "../context/AuthContext";
-import { Ionicons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import {
-  Image,
-  Platform,
-  View,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Pressable,
-  TextInput,
-  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import styles from "./styles/register.style";
