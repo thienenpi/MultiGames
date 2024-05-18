@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TouchableOpacity, Modal, Switch, Pressable, TextInput } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Modal, Switch, Pressable, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AppBar, CustomButton } from "../components";
 import { Ionicons } from "@expo/vector-icons";
-import { createRoom } from '../api/RoomApi';
 import { AuthContext } from "../context/AuthContext";
+import { createRoom } from "../api/RoomApi";
 import styles from "./styles/createroom.style";
 
-const CreateRoom = () => {
+const RoomCreate = () => {
   const navigation = useNavigation();
   const { userInfo } = useContext(AuthContext);
   const [modalVisibleCapacity, setModalVisibleCapacity] = useState(false);
@@ -30,36 +30,38 @@ const CreateRoom = () => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 10; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
   }
 
-  const handleSubmit = async () => {
-    // const roomId = generateRoomId();
-    // try {
+  const handleCreateRoom = async () => {
+    try {
       const data = {
-        name: "roomId",
-        owner: userInfo._id,
-        isPassword: isPassword,
-        password: password,
-        mode: buttonTitles[selectedButton][0],
+        name: "roomName",
+        isPassword: true,
+        password: "123456",
+        mode: "buttonTitles",
         capacity: 1,
         list_guest: [],
-        chatGame: 'a',
+        owner: "room",
+        chatGame: "a",
+        status: "active"
       }
-      console.log(data)
+
       const res = await createRoom({ data: data });
+
       if (res.status === 200) {
-        alert('Room created successfully');
+        Alert.alert('Room created successfully');
       } else {
-        alert('Failed to create room');
+        console.log(res);
+        Alert.alert('Failed to create room');
       }
-    // } catch (error) {
-    //   alert('An error occurred while creating the room');
-    // }
-  };
+    } catch {
+      Alert.alert('An error occurred while creating the room');
+    }
+  }
 
   const handleCancel = () => {
     setModalVisiblePassword(false);
@@ -122,7 +124,8 @@ const CreateRoom = () => {
               }}
               onPress={() => {
                 setLastIndex(title[1].length - 1);
-                setSelectedButton(index);}}
+                setSelectedButton(index);
+              }}
             >
               <Text
                 style={{
@@ -379,7 +382,7 @@ const CreateRoom = () => {
           styles={styles}
           label={"Tạo phòng"}
           onPress={() => {
-            handleSubmit();
+            handleCreateRoom();
           }}
         />
       </View>
@@ -387,4 +390,4 @@ const CreateRoom = () => {
   );
 };
 
-export default CreateRoom;
+export default RoomCreate;

@@ -35,9 +35,10 @@ const items = [
     currentPlayers: 0,
   },
 ];
+
 const renderItem = ({ item }) => <RoomCardView item={item}></RoomCardView>;
 
-const BoardRoom = () => {
+const RoomBoard = () => {
   const navigation = useNavigation();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [roomNumber, setRoomNumber] = useState("");
@@ -73,7 +74,7 @@ const BoardRoom = () => {
             styles.button,
             { backgroundColor: "#62C7FF", flexDirection: "row" },
           ]}
-          onPress={() => navigation.navigate("Create Room")}
+          onPress={() => navigation.navigate("Room Create")}
         >
           <Ionicons name="add-circle" size={30} color="white" />
           <Text style={styles.buttonText}>Tạo phòng</Text>
@@ -171,4 +172,4 @@ const BoardRoom = () => {
   );
 };
 
-export default BoardRoom;
+export default RoomBoard;

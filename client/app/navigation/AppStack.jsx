@@ -5,14 +5,14 @@ import {
   GuessingWord,
   SpyScreen,
   SpyMainScreen,
-  BoardRoom,
   Shop,
   ItemBag,
   Setting,
   EditProfile,
+  RoomBoard,
   RoomHistory,
   RoomConfig,
-  CreateRoom
+  RoomCreate,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -44,8 +44,8 @@ const AppStack = () => {
       ></Stack.Screen>
 
       <Stack.Screen
-        name="Board Room"
-        component={BoardRoom}
+        name="Room Board"
+        component={RoomBoard}
         options={{ headerShown: false }}
       ></Stack.Screen>
 
@@ -80,8 +80,8 @@ const AppStack = () => {
       ></Stack.Screen>
 
       <Stack.Screen
-        name="Create Room"
-        component={CreateRoom}
+        name="Room Create"
+        component={RoomCreate}
         options={{ headerShown: false }}
       ></Stack.Screen>
 
