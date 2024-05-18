@@ -11,13 +11,13 @@ const screenOptions = {
   tabBarActiveTintColor: "#F8C06D",
   tabBarInactiveTintColor: "#7C7773",
   tabBarLabelStyle: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: "sfProBold",
     color: COLORS.text,
   },
   tabBarStyle: [
     {
-    //   height: 55,
+      //   height: 55,
       display: "flex",
     },
     null,

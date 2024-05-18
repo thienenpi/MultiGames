@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './styles/spyGame.style';
-import { COLORS } from '../constants';
 import {
   View,
   TextInput,
@@ -13,19 +12,17 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Player from '../components/spy_game/Player';
-import GradientButton from '../components/spy_game/GradientButton';
-import ChatHistory from '../components/spy_game/ChatBox';
+import { LinearGradient } from 'expo-linear-gradient';
 const SpyScreen = () => {
   const players = [
-    { id: 1, name: 'A' },
-    { id: 2, name: 'B' },
-    { id: 3, name: 'C' },
-    { id: 4, name: 'D' },
-    { id: 5, name: 'E' },
-    { id: 6, name: 'F' },
-    { id: 7, name: 'G' },
-    { id: 8, name: 'H' },
+    { id: 1, name: '+' },
+    { id: 2, name: '+' },
+    { id: 3, name: '+' },
+    { id: 4, name: '+' },
+    { id: 5, name: '+' },
+    { id: 6, name: '+' },
+    { id: 7, name: '+' },
+    { id: 8, name: '+' },
   ];
   return (
     <SafeAreaView style={{ flexDirection: 'column' }}>
@@ -35,11 +32,11 @@ const SpyScreen = () => {
             <Image source={require('../../assets/menu.png')} style={{ width: 32, height: 32 }} />
           </TouchableHighlight>
           <View style={styles.roomBanner}>
-            <Text style={styles.roomAddressText}>
+            <Text style={{ fontSize: 22, fontWeight: 'bold', color: 'white' }}>
               Số phòng VF3346338
             </Text>
-            <View style={styles.roomNameContainer}>
-              <Text style={styles.roomNameText}>
+            <View style={styles.roomName}>
+              <Text style={{ fontSize: 14, color: 'white' }}>
                 Phòng VFX1231239897819
               </Text>
             </View>
@@ -52,26 +49,36 @@ const SpyScreen = () => {
           {/* Hai cột người chơi */}
           <View style={styles.column}>
             {players.slice(0, 4).map(player => (
-              <Player key={player.id} id={player.id} name={player.name}>
-              </Player>
-              // <View key={player.id} style={styles.player}>
-              //   <Text style={{color: 'white'}}>{player.name}</Text>
-              // </View>
+              <View key={player.id} style={styles.player}>
+                <Text style={{color: 'white'}}>{player.name}</Text>
+              </View>
             ))}
           </View>
-          <View style={styles.centerContainer}>
-            <GradientButton gradientColors={COLORS.blueGradient} text={"Sẵng Sàn"}></GradientButton>
-            <GradientButton gradientColors={COLORS.yellowGradient} text={"Bắt Đầu"}></GradientButton>
+          <View style={{ flex: 4, justifyContent: 'flex-end', alignItems: 'center', borderRadius: 50, margin: 10 }}>
+            <TouchableOpacity style={styles.containerReady}>
+              <LinearGradient colors={['#6B91FF', '#62C7FF']} start={[0, 0]} end={[1, 0]} style={styles.gradientButton}>
+                <Text style={{ color: 'white', fontSize: 18 }}>Sẵng sàng</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <View style={{height: 20}}></View>
+            <TouchableOpacity style={styles.containerStart}>
+              <LinearGradient colors={['#F3D14F', '#FA972B']} start={[0, 0]} end={[1, 0]} style={styles.gradientButton}>
+                <Text style={{ color: 'white', fontSize: 18 }}>Bắt đầu</Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
           <View style={styles.column}>
             {players.slice(4, 8).map(player => (
-              <Player key={player.id} id={player.id} name={player.name} />
+              <View key={player.id} style={styles.player}>
+                <Text style={{color: 'white'}}>{player.name}</Text>
+              </View>
             ))}
           </View>
         </View>
         {/* Chat history */}
-            <ChatHistory/>
+        <View style={styles.chatHistory}>
           {/* Placeholder for chat messages */}
+        </View>
         {/* Input box */}
         <View style={styles.inputContainer}>
           <TextInput

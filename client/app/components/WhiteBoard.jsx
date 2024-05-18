@@ -18,7 +18,7 @@ const WhiteBoard = ({
   isRedo,
   onRedo,
   isClear,
-  onClearDrawing
+  onClearDrawing,
 }) => {
   const [paths, setPaths] = useState([]);
   const [pathToDisplay, setPathToDisplay] = useState([]);

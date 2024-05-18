@@ -11,7 +11,14 @@ import ProfileRow from "./ProfileRow";
 import GameCard from "./GameCard";
 import RoomCardView from "./roomHistory/RoomCardView";
 import RoomColumn from "./roomHistory/RoomColumn";
-import DrawingOptionsBar from "./drawing/DrawingOptionsBar";
+import { View, Text } from "react-native";
+const Otp = () => {
+  return (
+    <View>
+      <Text>OTP</Text>
+    </View>
+  );
+};
 import Account from "./profile/Account";
 import Recommendation from "./profile/Recommendation";
 import OptionRow from "./profile/OptionRow";
@@ -30,7 +37,7 @@ export {
   GameCard,
   RoomCardView,
   RoomColumn,
-  DrawingOptionsBar,
+  Otp,
   Account,
   Recommendation,
   OptionRow,

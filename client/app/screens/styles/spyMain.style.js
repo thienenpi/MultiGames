@@ -3,16 +3,11 @@ import { Dimensions } from "react-native";
 const windowHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
   background: {
     height: windowHeight,
     resizeMode: "contain",
     justifyContent: "flex-start",
   },
-
   gameOptionContainer: (_color) => ({
     height: 130,
     justifyContent: "space-around",
@@ -22,13 +17,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     margin: 10,
   }),
-
   gameTypeContainer: {
     flex: 2,
     flexDirection: "row",
     justifyContent: "space-around",
   },
-
   gameText: {
     flex: 1,
     fontWeight: "bold",
@@ -36,24 +29,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
-
   buttonContainers: {
     flexDirection: "row",
     justifyContent: "space-around",
     paddingHorizontal: 20,
     margin: 10,
   },
-
   containerFindRoom: {
     borderRadius: 5,
     overflow: "hidden",
   },
-
   containerCreateRoom: {
     borderRadius: 5,
     overflow: "hidden",
   },
-
   gradientButton: {
     width: 150,
     height: 50,

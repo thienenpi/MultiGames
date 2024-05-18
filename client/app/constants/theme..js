@@ -12,17 +12,7 @@ const COLORS = {
   secondary: "#8C281F",
   disable: "#8C8C87",
   button: "#00BDF9",
-  price: "#00CF00",
-  darkBlue: "#2667C3",
-  darkerBlue: "#11568E",
-  lightBlue: "#47A6FF",
-  brightBlue: "#B6EDFF",
-  blurBlue: "rgba(2, 138, 216, 0.6)",
-  yellowGradient: ['#F3D14F', '#FA972B'],
-  blueGradient: ['#6B91FF', '#62C7FF'],
-  redGradient: ['#AB012B', '#FF003F'],
-  lightOrange: "#F2E19E",
-  orange: '#FCB043'
+  price: "#00CF00"
 };
 
 const SIZES = {

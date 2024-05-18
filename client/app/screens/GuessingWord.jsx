@@ -8,16 +8,24 @@ import {
   Pressable,
   Animated,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import React, { useState, useRef } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import React, { useState, useRef, useContext, useEffect } from "react";
 import styles from "./styles/guessingWord.style";
-import { WhiteBoard, DrawingOptionsBar } from "../components";
+import { WhiteBoard } from "../components";
 import { useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import ViewShot from "react-native-view-shot";
 
+import ChatHistory from "../components/ChatHistory";
+import { AuthContext } from "../context/AuthContext";
+import io from "socket.io-client";
+import { BASE_URL } from "../utils/config";
+const socket = io(BASE_URL.slice(0, -4), {
+  path: "/api/whiteBoard/",
+});
 const GuessingWord = () => {
   const route = useRoute();
+  const { userInfo } = useContext(AuthContext);
   const { roomId } = route.params;
 
   const [isStart, setIsStart] = useState(false);
@@ -26,6 +34,9 @@ const GuessingWord = () => {
   const [capturedImage, setCapturedImage] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [option, setOption] = useState(0);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [messageHistory, setMessageHistory] = useState([]);
   const [color, setColor] = useState("#000000");
   const [size, setSize] = useState(2);
   const [isRedo, setIsRedo] = useState(false);
@@ -77,7 +88,6 @@ const GuessingWord = () => {
   };
 
   const captureAndSaveImage = async () => {
-    setShowOptions(false);
     try {
       const uri = await viewShotRef.current.capture();
       setCapturedImage(uri);
@@ -86,6 +96,40 @@ const GuessingWord = () => {
     }
   };
 
+  const sendMessage = () => {
+    if (message.trim() !== '') {
+      const newMessage = {
+        sender: userInfo.name,
+        content: message
+      };
+      socket.emit('message', newMessage);
+      setMessage('');
+    }
+  };
+  useEffect(() => {
+    // Join the room when component mounts
+    socket.on('message', (data) => {
+      setMessageHistory((prevMessageHistory) => [...prevMessageHistory, data])
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    getAllMessage();
+  }, [])
+  const getAllMessage = () => {
+    socket.emit('startChat', roomId);
+    socket.emit('getChatHistory', roomId);
+    socket.on('chatHistory', (chats) => {
+      setMessageHistory(chats);
+    })
+    // Clean up on unmount
+    return () => {
+      socket.off('chatHistory');
+    };
+  }
   return (
     <View style={styles.container}>
       {showDialog && (
@@ -108,6 +152,12 @@ const GuessingWord = () => {
         </Modal>
       )}
       <View style={styles.appBar}>
+        {/* <TouchableOpacity style={styles.menuButton}>
+          <Image
+            source={require('../../assets/send.png')}
+            style={styles.menuIcon}
+          />
+        </TouchableOpacity>  */}
         <View style={styles.roomInfoContainer}>
           <Text style={styles.roomName}>Tên Phòng</Text>
           <Text style={styles.roomId}>ID Phòng: 123456</Text>
@@ -274,9 +324,7 @@ const GuessingWord = () => {
           ))}
         </View>
         {/* Khung chứa các câu trả lời */}
-        <View style={styles.answersContainer}>
-          {/* Các câu trả lời sẽ được render ở đây */}
-        </View>
+        <ChatHistory message={messageHistory} />
         {/* Ô nhập câu trả lời */}
         {/* <View style={styles.inputContainer}>
           <TextInput
@@ -291,6 +339,7 @@ const GuessingWord = () => {
             />
           </TouchableOpacity>
         </View> */}
+        {/* <View style={styles.container}> */}
         <View style={styles.inputContainer}>
           {/* Icon button gửi ảnh */}
           <TouchableOpacity onPress={handleSendImage} style={styles.iconButton}>
@@ -302,15 +351,18 @@ const GuessingWord = () => {
           {/* TextInput */}
           <TextInput
             style={styles.input}
+            value={message}
+            onChangeText={text => setMessage(text)}
             placeholder="Nhập câu trả lời..."
             placeholderTextColor="#888"
           />
           {/* Icon button chọn bộ icon */}
           <TouchableOpacity
-            onPress={handleButtonPress}
+            onPress={sendMessage}
             style={styles.iconButton}
           >
             <Image
+              // source={require('../../assets/choose-icon.png')}
               source={require("../../assets/send.png")}
               style={styles.icon}
             />
@@ -318,6 +370,7 @@ const GuessingWord = () => {
         </View>
       </View>
     </View>
+    // </View>
   );
 };
 
