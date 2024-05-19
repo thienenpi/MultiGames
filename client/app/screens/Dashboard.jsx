@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { ProfileRow } from "../components";
+import { useNavigation } from "@react-navigation/native";
+
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
-import { GameCard } from "../components";
-import { useNavigation } from "@react-navigation/native";
+import { ProfileRow, GameCard } from "../components";
+import { getRoomActive } from "../api/RoomApi";
 
 const Dashboard = () => {
   const { userInfo } = useContext(AuthContext);
@@ -42,7 +43,7 @@ const Dashboard = () => {
               styles.button,
               { paddingHorizontal: 10, paddingVertical: 4 },
             ]}
-            onPress={() => navigation.navigate("Board Room")}
+            onPress={() => navigation.navigate("Room Board")}
           >
             <Ionicons
               name="lock-open-outline"
@@ -77,7 +78,21 @@ const Dashboard = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={async () => {
+          const res = await getRoomActive();
+          const roomInfo = res.data;
+          console.log(roomInfo);
+
+          // if roomInfo is empty, navigate to create room
+          if (!roomInfo) {
+            navigation.navigate("Room Create");
+            return;
+          }
+
+          navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+        }}
+      >
         <GameCard
           colorDark="rgba(0,0,180,0.8)"
           colorLight="rgba(0,0,180,0.5)"

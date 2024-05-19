@@ -32,7 +32,17 @@ const getRoom = async (req, res) => {
 
 const updateRoom = async (req, res) => {
   try {
-    await Room.findByIdAndUpdate(req.params.id, req.body);
+    // find room
+    const room = await Room.findById(req.params.id);
+
+    // if room is not found
+    if (!room) {
+      res.status(404).json("Room not found");
+      return;
+    }
+
+    // update room
+    await room.updateOne({ $set: req.body });
     res.status(200).json("Room updated");
   } catch (error) {
     res.status(500).json("Failed to update room", error);
@@ -50,7 +60,15 @@ const deleteRoom = async (req, res) => {
 
 const getRoomActive = async (req, res) => {
   try {
-    const rooms = await Room.find({ status: "active" });
+    const rooms = await Room.findOne({ status: "active" });
+
+    // check if there is no active room
+    if (!rooms) {
+      // response with null
+      res.status(200).json(null);
+      return;
+    }
+
     res.status(200).json(rooms);
   } catch (error) {
     res.status(500).json("Failed to retrieve room active games", error);

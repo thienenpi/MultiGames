@@ -7,8 +7,8 @@ router.post('/register/', authController.register);
 
 router.post('/', userController.createUser);
 router.get('/', userController.getAllUsers);
-router.get('/:id', userController.getUserById);
-router.put('/:id', userController.updateUser);
+router.get('/id=:id', userController.getUserById);
+router.put('/id=:id', userController.updateUser);
 
 
 module.exports = router;

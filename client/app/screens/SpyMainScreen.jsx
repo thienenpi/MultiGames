@@ -1,22 +1,14 @@
 import React from "react";
 import styles from "./styles/spyMain.style";
-import {
-  View,
-  TextInput,
-  Button,
-  Text,
-  ImageBackground,
-  Image,
-  Touchable,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, ImageBackground, Image } from "react-native";
 import { COLORS } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";
-import GameHeader from "../components/spy_game/GameHeader";
-import GameType from "../components/spy_game/GameType";
+import GameHeader from "../components/spyGame/GameHeader";
+import GameType from "../components/spyGame/GameType";
+
 const SpyMainScreen = () => {
   return (
-    <SafeAreaView style={{ flexDirection: "column" }}>
+    <View style={{ flexDirection: "column" }}>
       <ImageBackground
         source={require("../../assets/spy_game_main_background.png")}
         style={styles.background}
@@ -91,7 +83,7 @@ const SpyMainScreen = () => {
           </View>
         </View>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 export default SpyMainScreen;

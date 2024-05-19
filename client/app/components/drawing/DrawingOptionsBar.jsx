@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ColorPicker } from "react-native-status-color-picker";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
@@ -118,9 +118,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
   },
+
   row: {
     flexDirection: "row",
   },
+
   optionButton: {
     margin: 8,
     height: 50,
@@ -129,14 +131,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
   optionText: {
     fontSize: 16,
     fontWeight: "bold",
   },
+
   selectedOptionButton: {
     borderWidth: 2,
     borderColor: "green",
   },
+
   clearButton: {
     margin: 8,
     height: 50,
@@ -145,6 +150,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
   clearButtonText: {
     color: "gray",
   },
