@@ -178,7 +178,7 @@ const GuessingWord = () => {
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
       </View>
-      {/* Whiteboard và khung chat */}
+      {/* Whiteboard */}
       {isStart ? (
         <View style={styles.whiteBoard}>
           <ViewShot
@@ -267,6 +267,7 @@ const GuessingWord = () => {
           </View>
         </View>
       )}
+      {/* Drawing options */}
       {isStart ? (
         <View
           style={[
@@ -331,6 +332,7 @@ const GuessingWord = () => {
       ) : (
         <View style={[styles.bottomBar, { backgroundColor: "#79c060" }]}></View>
       )}
+      {/* Chat box */}
       <View style={styles.chatBox}>
         {/* Các ô chứa hình ảnh user */}
         <View style={styles.userImagesContainer}>

@@ -82,7 +82,6 @@ const Dashboard = () => {
         onPress={async () => {
           const res = await getRoomActive();
           const roomInfo = res.data;
-          console.log(roomInfo);
 
           // if roomInfo is empty, navigate to create room
           if (!roomInfo) {

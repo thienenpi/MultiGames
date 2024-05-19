@@ -28,6 +28,7 @@ const WhiteBoard = ({
   //   const [redoStack, setRedoStack] = useState([]);
 
   const path = useRef("");
+  const count = useRef(0);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -35,6 +36,7 @@ const WhiteBoard = ({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: (event, gesture) => {
         path.current = `${gesture.x0},${gesture.y0 - 60} `;
+        count.current = 0;
 
         setPaths((previousPaths) => [
           ...previousPaths,
@@ -63,6 +65,12 @@ const WhiteBoard = ({
       onPanResponderMove: (event, gesture) => {
         //-60 để vị trí người dùng chạm vào trùng với vị trí của mà màn hình bị trừ xuống
         path.current += `${gesture.moveX},${gesture.moveY - 60} `;
+        count.current += 1;
+
+        if (count.current === 1) {
+          setPathToDisplay([]);
+          count.current = 0;
+        }
 
         setPathToDisplay((previousPaths) => [
           ...previousPaths,
