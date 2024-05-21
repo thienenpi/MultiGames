@@ -21,7 +21,7 @@ const RoomBoard = () => {
     setDialogVisible(true);
   };
 
-  async function fetchActiveRoom() {
+  async function fetchRoomsOwner() {
     try {
       const id = userInfo._id;
       const res = await getRoomsOwner({id});
@@ -35,7 +35,7 @@ const RoomBoard = () => {
 
   useEffect(() => {
     if (isFocused) {
-      fetchActiveRoom();
+      fetchRoomsOwner();
     }
   }, [isFocused]);
 

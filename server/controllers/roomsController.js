@@ -56,6 +56,15 @@ const getRoomsOwner = async (req, res) => {
   }
 };
 
+const getRoomsGuest = async (req, res) => {
+  try {
+    const rooms = await Room.find({ list_guest: req.params.id });
+    res.status(200).json(rooms);
+  } catch (error) {
+    res.status(500).json("Failed to retrieve rooms guest", error);
+  }
+};
+
 const updateRoom = async (req, res) => {
   try {
     // find room
@@ -141,6 +150,7 @@ module.exports = {
   getRooms,
   getActiveRoom,
   getRoomsOwner,
+  getRoomsGuest,
   updateRoom,
   deleteRoom,
   // playersGet,
