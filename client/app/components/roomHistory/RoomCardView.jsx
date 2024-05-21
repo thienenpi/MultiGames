@@ -14,18 +14,18 @@ const RoomCardView = ({ item }) => {
       <View style={styles.container}>
         <ImageBackground
           source={{
-            uri: item.avatarUrl,
+            uri: "https://picsum.photos/200",
           }}
           style={styles.avatar}
           imageStyle={styles.avatar}
         ></ImageBackground>
 
         <View style={styles.roomInfo}>
-          <Text style={styles.roomID}>Số phòng {item.roomID}</Text>
+          <Text style={styles.roomID}>Số phòng {item.name}</Text>
 
           <View style={styles.roomState}>
             <Text style={styles.waiting}>
-              Đang chờ {item.currentPlayers}/{item.maxPlayers}
+              Đang chờ {item.list_guest}/{item.capacity}
             </Text>
 
             <View style={styles.gameType}>
@@ -34,7 +34,7 @@ const RoomCardView = ({ item }) => {
                   color: COLORS.background,
                 }}
               >
-                {item.gameType === 0 ? "Bạn vẽ tôi đoán" : "Ai là gián điệp"}
+                {item.mode}
               </Text>
             </View>
           </View>
