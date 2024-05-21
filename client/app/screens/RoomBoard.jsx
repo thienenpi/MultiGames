@@ -26,8 +26,6 @@ const RoomBoard = () => {
       const id = userInfo._id;
       const res = await getRoomsOwner({id});
       if (res.status === 200) {
-        console.log(userInfo._id)
-        console.log(res.data);
         setItems(res.data);
       }
     } catch (error) {

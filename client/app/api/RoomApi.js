@@ -95,8 +95,6 @@ const getRoomsOwner = async ({ id }) => {
       },
     };
 
-    console.log(id);
-
     const res = await ApiManager(url, config);
     return res;
   } catch (error) {
