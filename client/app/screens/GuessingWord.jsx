@@ -13,17 +13,12 @@ import React, { useState, useRef, useContext, useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import ViewShot from "react-native-view-shot";
-import io from "socket.io-client";
 
 import { AuthContext } from "../context/AuthContext";
-import { BASE_URL } from "../utils/config";
+import { socket } from "../utils/config";
 import styles from "./styles/guessingWord.style";
 import { WhiteBoard, DrawingOptionsBar, ChatHistory } from "../components";
 import { getUserById } from "../api/UserApi";
-
-const socket = io(BASE_URL.slice(0, -4), {
-  path: "/api/whiteBoard/",
-});
 
 const GuessingWord = () => {
   const route = useRoute();
@@ -105,6 +100,7 @@ const GuessingWord = () => {
         sender: userInfo.name,
         content: message,
       };
+
       socket.emit("message", newMessage);
       setMessage("");
     }

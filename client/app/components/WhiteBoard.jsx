@@ -2,12 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, PanResponder } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import styles from "./styles/whiteBoard.style";
-import io from "socket.io-client";
-import { BASE_URL } from "../utils/config";
-
-const socket = io(BASE_URL.slice(0, -4), {
-  path: "/api/whiteBoard/",
-});
+import { socket } from "../utils/config";
 
 const WhiteBoard = ({
   roomId,
@@ -60,7 +55,11 @@ const WhiteBoard = ({
           },
         ]);
         // Emit draw event to server
-        socket.emit("draw", path.current);
+        socket.emit("draw", {
+          path: path.current,
+          color: colorRef.current,
+          size: sizeRef.current,
+        });
       },
       onPanResponderMove: (event, gesture) => {
         //-60 để vị trí người dùng chạm vào trùng với vị trí của mà màn hình bị trừ xuống
@@ -95,6 +94,11 @@ const WhiteBoard = ({
 
     // Listen for draw event from server
     socket.on("draw", (newPath) => {
+      if (newPath.length === 0) {
+        setPaths([]);
+        return;
+      }
+
       setPaths((prevPaths) => [...prevPaths, newPath]);
     });
 
@@ -117,6 +121,7 @@ const WhiteBoard = ({
     if (isClear) {
       setPaths([]);
       onClearDrawing();
+      socket.emit("draw", []);
     }
   }, [isRedo, isUndo, color, isClear]);
 
