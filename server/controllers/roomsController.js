@@ -12,6 +12,15 @@ const createRoom = async (req, res) => {
   }
 };
 
+const getRoom = async (req, res) => {
+  try {
+    const room = await Room.findById(req.params.id);
+    res.status(200).json(room);
+  } catch (error) {
+    res.status(500).json("Failed to retrieve room", error);
+  }
+};
+
 const getRooms = async (req, res) => {
   try {
     const rooms = await Room.find();
@@ -21,12 +30,29 @@ const getRooms = async (req, res) => {
   }
 };
 
-const getRoom = async (req, res) => {
+const getActiveRoom = async (req, res) => {
   try {
-    const room = await Room.findById(req.params.id);
-    res.status(200).json(room);
+    const rooms = await Room.findOne({ status: "active" });
+
+    // check if there is no active room
+    if (!rooms) {
+      // response with null
+      res.status(200).json(null);
+      return;
+    }
+
+    res.status(200).json(rooms);
   } catch (error) {
-    res.status(500).json("Failed to retrieve room", error);
+    res.status(500).json("Failed to retrieve room active games", error);
+  }
+};
+
+const getRoomsOwner = async (req, res) => {
+  try {
+    const rooms = await Room.find({ owner: req.params.id });
+    res.status(200).json(rooms);
+  } catch (error) {
+    res.status(500).json("Failed to retrieve rooms owner", error);
   }
 };
 
@@ -55,23 +81,6 @@ const deleteRoom = async (req, res) => {
     res.status(200).json("Room deleted");
   } catch (error) {
     res.status(500).json("Failed to delete room", error);
-  }
-};
-
-const getRoomActive = async (req, res) => {
-  try {
-    const rooms = await Room.findOne({ status: "active" });
-
-    // check if there is no active room
-    if (!rooms) {
-      // response with null
-      res.status(200).json(null);
-      return;
-    }
-
-    res.status(200).json(rooms);
-  } catch (error) {
-    res.status(500).json("Failed to retrieve room active games", error);
   }
 };
 
@@ -128,11 +137,12 @@ const getRoomActive = async (req, res) => {
 
 module.exports = {
   createRoom,
-  getRooms,
   getRoom,
+  getRooms,
+  getActiveRoom,
+  getRoomsOwner,
   updateRoom,
   deleteRoom,
-  getRoomActive,
   // playersGet,
   // gamesGet,
   // gameGet,

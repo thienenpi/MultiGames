@@ -39,23 +39,24 @@ const RoomCreate = () => {
   const handleCreateRoom = async () => {
     try {
       const data = {
-        name: "roomName",
-        isPassword: true,
-        password: "123456",
-        mode: "buttonTitles",
-        capacity: 1,
+        name: generateRoomId(),
+        isPassword: isPassword,
+        password: password === '' ? "null" : password,
+        mode: buttonTitles[selectedButton][0],
+        capacity: buttonTitles[selectedButton][1][lastIndex],
         list_guest: [],
-        owner: "room",
-        chatGame: "a",
+        owner: userInfo._id,
+        chatGame: "null",
         status: "active"
       }
+
+      console.log(data);
 
       const res = await createRoom({ data: data });
 
       if (res.status === 200) {
         Alert.alert('Room created successfully');
       } else {
-        console.log(res);
         Alert.alert('Failed to create room');
       }
     } catch {
