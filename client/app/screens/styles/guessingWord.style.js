@@ -3,22 +3,24 @@ import { COLORS, SIZES } from "../../constants";
 
 const styles = StyleSheet.create({
   dialogContainer: {
-    position: "absolute", // Đảm bảo component lớn nhất nằm trên cùng
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(50, 50, 50, 0.5)", // Background color của component lớn nhất
+    backgroundColor: "rgba(50, 50, 50, 0.5)",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1,
   },
+
   dialogBody: {
     height: "50%",
     width: "80%",
     backgroundColor: "white",
     borderRadius: 20,
   },
+
   container: {
     flex: 1,
     justifyContent: "center",
@@ -30,10 +32,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     flexDirection: "row",
+    alignItems: 'flex-end',
     backgroundColor: "#fff",
-    height: 60,
+    height: 100,
     width: SIZES.width,
-    paddingHorizontal: 10,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     backgroundColor: "#79c060",
@@ -49,26 +52,30 @@ const styles = StyleSheet.create({
     flex: 1,
     width: SIZES.width,
     backgroundColor: "#79c060",
-    padding: 10, // Thêm padding để tạo khoảng cách giữa các phần tử trong khung chatBox
+    padding: 10,
+    // backgroundColor: COLORS.button
   },
 
   userImagesContainer: {
     flexDirection: "row",
+    flex: 1,
     justifyContent: "space-between",
-    marginBottom: 10, // Khoảng cách giữa userImagesContainer và inputContainer
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: "#ccc",
   },
 
   userImage: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#ccc", // Màu nền tạm thời
+    backgroundColor: "#ccc",
   },
 
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff", // Màu nền của ô nhập câu trả lời và nút gửi
+    backgroundColor: "#fff",
     borderRadius: 20,
     paddingHorizontal: 10,
   },
@@ -105,7 +112,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
-  
+
   roomName: {
     fontSize: 16,
     fontWeight: "bold",
@@ -116,44 +123,46 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "white",
   },
-  //Input container
+
   iconButton: {
     padding: 10,
   },
+
   icon: {
     width: 24,
     height: 24,
-    // Thêm các style khác cho icon nếu cần
   },
+
   input: {
     flex: 1,
-    // Thêm các style khác cho TextInput nếu cần
   },
+
   bannerCotainer: {
     flex: 1,
     width: SIZES.width,
     backgroundColor: "#79c060",
-    justifyContent: "center",
     alignItems: "flex-end",
   },
+
   buttonContainers: {
     flex: 1,
     width: SIZES.width,
-    height: 40,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "flex-end",
     paddingHorizontal: 20,
-    margin: 10,
   },
+
   containerInvite: {
     borderRadius: 5,
     overflow: "hidden",
   },
+
   containerStart: {
     borderRadius: 5,
     overflow: "hidden",
   },
+
   gradientButton: {
     width: 150,
     height: 50,
@@ -161,6 +170,38 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+
+  bottomBar: {
+    height: 40,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    alignItems: "center",
+  },
+
+  topBar: {
+    height: 60,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    borderTopColor: "lightgray",
+    borderTopWidth: 1,
+    borderTopHeight: 1,
+    backgroundColor: "white",
+  },
+
+  separator: {
+    height: 1,
+    backgroundColor: "lightgray",
+  },
+
+  optionButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    padding: 8,
   },
 });
 export default styles;

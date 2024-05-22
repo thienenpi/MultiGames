@@ -17,14 +17,14 @@ const EditProfile = () => {
       <HorizontalItem
         title="Avatar"
         isAvt={true}
-        iconRight="arrow-forward"
+        iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />
       <HorizontalItem
         title="Nickname"
         desc="Huynh Phat"
-        iconRight="arrow-forward"
+        iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />
@@ -35,7 +35,7 @@ const EditProfile = () => {
         colorIconDesc="red"
         desc="Not set"
         colorDesc="red"
-        iconRight="arrow-forward"
+        iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />
@@ -49,28 +49,28 @@ const EditProfile = () => {
       <HorizontalItem
         title="Gender"
         desc="Male"
-        iconRight="arrow-forward"
+        iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />
       <HorizontalItem
         title="Birthday"
         desc="24/09/2003"
-        iconRight="arrow-forward"
+        iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />
       <HorizontalItem
         title="Region"
         desc="Vietnam"
-        iconRight="arrow-forward"
+        iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />
       <HorizontalItem
         title="Signature"
         desc=""
-        iconRight="arrow-forward"
+        iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />

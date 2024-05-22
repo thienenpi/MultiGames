@@ -8,40 +8,38 @@ import {
   Pressable,
   Animated,
 } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState, useRef, useContext, useEffect } from "react";
-import styles from "./styles/guessingWord.style";
-import { WhiteBoard } from "../components";
 import { useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import ViewShot from "react-native-view-shot";
 
-import ChatHistory from "../components/ChatHistory";
 import { AuthContext } from "../context/AuthContext";
-import io from "socket.io-client";
-import { BASE_URL } from "../utils/config";
-const socket = io(BASE_URL.slice(0, -4), {
-  path: "/api/whiteBoard/",
-});
+import { socket } from "../utils/config";
+import styles from "./styles/guessingWord.style";
+import { WhiteBoard, DrawingOptionsBar, ChatHistory } from "../components";
+import { getUserById } from "../api/UserApi";
+
 const GuessingWord = () => {
   const route = useRoute();
   const { userInfo } = useContext(AuthContext);
-  const { roomId } = route.params;
+  const { roomInfo } = route.params;
+  const viewShotRef = useRef(null);
 
   const [isStart, setIsStart] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const viewShotRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [option, setOption] = useState(0);
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  //   const [messages, setMessages] = useState([]);
   const [messageHistory, setMessageHistory] = useState([]);
   const [color, setColor] = useState("#000000");
   const [size, setSize] = useState(2);
   const [isRedo, setIsRedo] = useState(false);
   const [isUndo, setIsUndo] = useState(false);
   const [isClear, setIsClear] = useState(false);
+  const [usersInRoom, setUsersInRoom] = useState([]);
 
   const updateColor = (color) => {
     setColor(color);
@@ -97,39 +95,58 @@ const GuessingWord = () => {
   };
 
   const sendMessage = () => {
-    if (message.trim() !== '') {
+    if (message.trim() !== "") {
       const newMessage = {
         sender: userInfo.name,
-        content: message
+        content: message,
       };
-      socket.emit('message', newMessage);
-      setMessage('');
+
+      socket.emit("message", newMessage);
+      setMessage("");
     }
   };
+
   useEffect(() => {
     // Join the room when component mounts
-    socket.on('message', (data) => {
-      setMessageHistory((prevMessageHistory) => [...prevMessageHistory, data])
+    socket.on("message", (data) => {
+      setMessageHistory((prevMessageHistory) => [...prevMessageHistory, data]);
     });
+
     return () => {
       socket.disconnect();
     };
   }, []);
 
   useEffect(() => {
-    getAllMessage();
-  }, [])
-  const getAllMessage = () => {
-    socket.emit('startChat', roomId);
-    socket.emit('getChatHistory', roomId);
-    socket.on('chatHistory', (chats) => {
-      setMessageHistory(chats);
-    })
-    // Clean up on unmount
-    return () => {
-      socket.off('chatHistory');
+    const getAllUsers = async () => {
+      setUsersInRoom([]);
+      for (let userId of roomInfo.list_guest) {
+        const res = await getUserById({ id: userId });
+
+        if (res.status === 200) {
+          const user = res.data;
+          setUsersInRoom((prevUsers) => [...prevUsers, user]);
+        }
+      }
     };
-  }
+
+    const getAllMessage = () => {
+      socket.emit("startChat", roomInfo._id);
+      socket.emit("getChatHistory", roomInfo._id);
+
+      socket.on("chatHistory", (chats) => {
+        setMessageHistory(chats);
+      });
+      // Clean up on unmount
+      return () => {
+        socket.off("chatHistory");
+      };
+    };
+
+    getAllMessage();
+    getAllUsers();
+  }, []);
+
   return (
     <View style={styles.container}>
       {showDialog && (
@@ -152,18 +169,12 @@ const GuessingWord = () => {
         </Modal>
       )}
       <View style={styles.appBar}>
-        {/* <TouchableOpacity style={styles.menuButton}>
-          <Image
-            source={require('../../assets/send.png')}
-            style={styles.menuIcon}
-          />
-        </TouchableOpacity>  */}
         <View style={styles.roomInfoContainer}>
-          <Text style={styles.roomName}>Tên Phòng</Text>
-          <Text style={styles.roomId}>ID Phòng: 123456</Text>
+          <Text style={styles.roomName}>{roomInfo._id}</Text>
+          <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
       </View>
-      {/* Whiteboard và khung chat */}
+      {/* Whiteboard */}
       {isStart ? (
         <View style={styles.whiteBoard}>
           <ViewShot
@@ -177,7 +188,7 @@ const GuessingWord = () => {
             }}
           >
             <WhiteBoard
-              roomId={roomId}
+              roomId={roomInfo._id}
               color={color}
               size={size}
               isRedo={isRedo}
@@ -208,7 +219,7 @@ const GuessingWord = () => {
             source={require("../../assets/draw_and_guess_logo.png")}
             style={{
               resizeMode: "contain",
-              marginTop: 90,
+              marginTop: 110,
               height: "60%",
               width: "100%",
             }}
@@ -252,6 +263,7 @@ const GuessingWord = () => {
           </View>
         </View>
       )}
+      {/* Drawing options */}
       {isStart ? (
         <View
           style={[
@@ -316,30 +328,23 @@ const GuessingWord = () => {
       ) : (
         <View style={[styles.bottomBar, { backgroundColor: "#79c060" }]}></View>
       )}
+      {/* Chat box */}
       <View style={styles.chatBox}>
         {/* Các ô chứa hình ảnh user */}
         <View style={styles.userImagesContainer}>
-          {[...Array(6)].map((_, index) => (
-            <View key={index} style={styles.userImage}></View>
-          ))}
+          {
+            // Hiển thị hình ảnh của các user trong phòng
+            usersInRoom.map((user) => (
+              <Image
+                key={user._id}
+                source={{ uri: user.avatarUrl }}
+                style={styles.userImage}
+              />
+            ))
+          }
         </View>
         {/* Khung chứa các câu trả lời */}
         <ChatHistory message={messageHistory} />
-        {/* Ô nhập câu trả lời */}
-        {/* <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Nhập câu trả lời..."
-            placeholderTextColor="#888"
-          />
-          <TouchableOpacity style={styles.sendButton}>
-            <Image
-              source={require('../../assets/send.png')} // Đặt đường dẫn ảnh của nút gửi ở đây
-              style={styles.sendIcon}
-            />
-          </TouchableOpacity>
-        </View> */}
-        {/* <View style={styles.container}> */}
         <View style={styles.inputContainer}>
           {/* Icon button gửi ảnh */}
           <TouchableOpacity onPress={handleSendImage} style={styles.iconButton}>
@@ -352,17 +357,13 @@ const GuessingWord = () => {
           <TextInput
             style={styles.input}
             value={message}
-            onChangeText={text => setMessage(text)}
+            onChangeText={(text) => setMessage(text)}
             placeholder="Nhập câu trả lời..."
             placeholderTextColor="#888"
           />
           {/* Icon button chọn bộ icon */}
-          <TouchableOpacity
-            onPress={sendMessage}
-            style={styles.iconButton}
-          >
+          <TouchableOpacity onPress={sendMessage} style={styles.iconButton}>
             <Image
-              // source={require('../../assets/choose-icon.png')}
               source={require("../../assets/send.png")}
               style={styles.icon}
             />
@@ -370,7 +371,6 @@ const GuessingWord = () => {
         </View>
       </View>
     </View>
-    // </View>
   );
 };
 

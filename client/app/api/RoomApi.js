@@ -2,7 +2,7 @@ import ApiManager from "./ApiManager";
 
 const createRoom = async ({ data }) => {
   try {
-    const url = '/rooms/create';
+    const url = "/rooms/create";
     const config = {
       method: "POST",
       headers: {
@@ -22,13 +22,13 @@ const createRoom = async ({ data }) => {
   }
 };
 
-const getRoom = async ({data}) => {
+const getRoom = async ({ data }) => {
   try {
-    const url = '/rooms/room_id=' + data.id;
+    const url = "/rooms/room_id=" + data.id;
     const config = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     };
 
@@ -43,13 +43,13 @@ const getRoom = async ({data}) => {
   }
 };
 
-const getRooms = async ({data}) => {
+const getRooms = async () => {
   try {
-    const url = '/rooms/';
+    const url = "/rooms/";
     const config = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     };
 
@@ -64,13 +64,13 @@ const getRooms = async ({data}) => {
   }
 };
 
-const getRoomsActive = async ({data}) => {
+const getRoomActive = async () => {
   try {
-    const url = '/rooms/active/';
+    const url = "/rooms/active/";
     const config = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     };
 
@@ -85,13 +85,13 @@ const getRoomsActive = async ({data}) => {
   }
 };
 
-const updateRoom = async ({data}) => {
+const updateRoom = async ({ data }) => {
   try {
-    const url = '/rooms/room_id=' + data.id;
+    const url = "/rooms/room_id=" + data.id;
     const config = {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       data: data,
     };
@@ -107,13 +107,13 @@ const updateRoom = async ({data}) => {
   }
 };
 
-const deleteRoom = async ({data}) => {
+const deleteRoom = async ({ data }) => {
   try {
-    const url = '/rooms/room_id=' + data.id;
+    const url = "/rooms/room_id=" + data.id;
     const config = {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     };
 
@@ -278,11 +278,11 @@ const deleteRoom = async ({data}) => {
 //   }
 // };
 
-export { 
+export {
   createRoom,
   updateRoom,
   deleteRoom,
   getRooms,
   getRoom,
-  getRoomsActive,
+  getRoomActive,
 };
