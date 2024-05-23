@@ -32,16 +32,6 @@ const WhiteBoard = ({
       onPanResponderGrant: (event, gesture) => {
         path.current = `${gesture.x0},${gesture.y0 - 60} `;
         count.current = 0;
-
-        setPaths((previousPaths) => [
-          ...previousPaths,
-          {
-            path: path.current,
-            color: colorRef.current,
-            size: sizeRef.current,
-          },
-        ]);
-        // path.current = `${gesture.moveX},${gesture.moveY - 60} `;
       },
       onPanResponderEnd: () => {
         setPathToDisplay([]);
@@ -97,9 +87,22 @@ const WhiteBoard = ({
       if (newPath.length === 0) {
         setPaths([]);
         return;
+      } else if (newPath === "undo") {
+        setPaths((prevPaths) => {
+          setUndoStack((prevUndoStack) => [
+            prevPaths[prevPaths.length - 1],
+            ...prevUndoStack,
+          ]);
+          return prevPaths.slice(0, -1);
+        });
+      } else if (newPath === "redo") {
+        setUndoStack((prevUndoStack) => {
+          setPaths((prevPaths) => [...prevPaths, prevUndoStack[0]]);
+          return prevUndoStack.slice(1);
+        });
+      } else {
+        setPaths((prevPaths) => [...prevPaths, newPath]);
       }
-
-      setPaths((prevPaths) => [...prevPaths, newPath]);
     });
 
     return () => {
@@ -111,15 +114,20 @@ const WhiteBoard = ({
     if (isUndo) {
       undo();
       onUndo();
+
+      socket.emit("draw", "undo");
     }
 
     if (isRedo) {
       redo();
       onRedo();
+
+      socket.emit("draw", "redo");
     }
 
     if (isClear) {
       setPaths([]);
+      setUndoStack([]);
       onClearDrawing();
       socket.emit("draw", []);
     }
