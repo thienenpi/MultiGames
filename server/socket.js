@@ -12,47 +12,59 @@ const socketSetup = (server) => {
   io.on("connection", (socket) => {
     console.log("A user connected");
 
-    socket.on("startChat", (room) => {
+    const joinHandler = (room) => {
       socket.join(room);
-      socket.on("message", (message) => {
-        console.log(message);
-        if (!chatHistory[room]) {
-          chatHistory[room] = [];
-        }
-        chatHistory[room].push(message);
-        io.to(room).emit("message", message);
-      });
-
-      socket.on("getChatHistory", (roomId) => {
-        const history = chatHistory[roomId] || [];
-        socket.emit("chatHistory", history);
-      });
-    });
-
-    socket.on("join", (room) => {
-      console.log(`User joined room ${room}`);
-      socket.join(room);
+      console.log(`A user joined ${room}`);
 
       if (!rooms[room]) {
         rooms[room] = [];
       }
+
       rooms[room].push(socket);
+
+      // Remove any existing listeners to avoid memory leaks
+      socket.removeAllListeners("draw");
+      socket.removeAllListeners("message");
 
       socket.on("draw", (data) => {
         socket.to(room).emit("draw", data);
       });
 
-      socket.on("disconnect", () => {
-        console.log("A user disconnected");
-        const index = rooms[room].indexOf(socket);
-        if (index !== -1) {
-          rooms[room].splice(index, 1);
+      socket.on("message", (message) => {
+        console.log(message);
+
+        if (!chatHistory[room]) {
+          chatHistory[room] = [];
         }
-        if (rooms[room].length === 0) {
-          delete rooms[room];
-          delete chatHistory[room];
-        }
+
+        chatHistory[room].push(message);
+        socket.to(room).emit("message", message);
       });
+    };
+
+    socket.on("join", joinHandler);
+
+    socket.on("getChatHistory", (room) => {
+      if (chatHistory[room]) {
+        chatHistory[room].forEach((message) => {
+          socket.emit("message", message);
+        });
+      }
+    });
+
+    socket.on("leave", (room) => {
+      console.log(`A user leaved from ${room}`);
+
+      const index = rooms[room].indexOf(socket);
+
+      if (index !== -1) {
+        rooms[room].splice(index, 1);
+      }
+
+      if (rooms[room].length === 0) {
+        delete rooms[room];
+        delete chatHistory[room];
+      }
     });
   });
 };

@@ -74,17 +74,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: COLORS.text,
   },
+
   avatar: {
     width: SIZES.xLarge * 2.5,
     height: SIZES.xLarge * 2.5,
     borderRadius: SIZES.xLarge * 2.5,
   },
+
   roomInfo: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
+
   roomID: {
     fontSize: SIZES.large * 0.9,
     fontFamily: "sfPro",
@@ -92,16 +95,19 @@ const styles = StyleSheet.create({
     width: SIZES.width / 2,
     overflow: "hidden",
   },
+
   roomState: {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     gap: SIZES.xSmall / 2,
   },
+
   waiting: {
     fontSize: SIZES.medium,
     fontFamily: "sfPro",
   },
+
   gameType: {
     fontSize: SIZES.medium,
     fontFamily: "sfPro",
@@ -110,6 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   gameTypeText: {
     color: COLORS.background,
   },

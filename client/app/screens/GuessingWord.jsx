@@ -95,7 +95,7 @@ const GuessingWord = () => {
 
   const closeModal = () => {
     setShowDownloadImageDialog(false);
-    setIsFull(false);
+    setShowKeywordDialog(false);
   };
 
   const toggleOptions = (optionNumber) => {
@@ -126,9 +126,32 @@ const GuessingWord = () => {
 
       socket.emit("message", newMessage);
       setMessage("");
+      setMessageHistory((prevMessageHistory) => [
+        ...prevMessageHistory,
+        newMessage,
+      ]);
     }
   };
 
+  useEffect(() => {
+    socket.emit("join", roomInfo._id);
+
+    // Join the room when component mounts
+    socket.on("message", (data) => {
+      if (data !== null) {
+        setMessageHistory((prevMessageHistory) => [
+          ...prevMessageHistory,
+          data,
+        ]);
+      }
+    });
+
+    return () => {
+      socket.emit("leave", roomInfo._id);
+    };
+  }, []);
+
+  useEffect(() => {
   const getAllUsers = async () => {
     setUsersInRoom([]);
     for (let userId of roomInfo.list_guest) {
@@ -141,294 +164,267 @@ const GuessingWord = () => {
     }
   };
 
-  const getAllMessage = () => {
-    socket.emit("startChat", roomInfo._id);
-    socket.emit("getChatHistory", roomInfo._id);
+  setMessageHistory([]);
+  socket.emit("getChatHistory", roomInfo._id);
 
-    socket.on("chatHistory", (chats) => {
-      setMessageHistory(chats);
-    });
-    // Clean up on unmount
-    return () => {
-      socket.off("chatHistory");
-    };
-  };
+  getAllUsers();
 
-  const checkRoomFull = async () => {
-    const idRoom = roomInfo._id;
-    const res = await isRoomFull({ id: idRoom });
-    setShowKeywordDialog(res.data);
-  };
+  checkRoomFull();
+}, []);
 
-  useEffect(() => {
-    // Join the room when component mounts
-    socket.on("message", (data) => {
-      setMessageHistory((prevMessageHistory) => [...prevMessageHistory, data]);
-    });
+return (
+  <View style={styles.container}>
 
-    getAllMessage();
-    getAllUsers();
+    {/* Show keyword dialog */}
+    {showKeywordDialog && <KeywordSelection isShow={true} keyword={"1234"}></KeywordSelection>}
 
-    checkRoomFull();
+    {/* Show invite dialog */}
+    {showInviteDialog && (
+      <Alert
+        title="Mời bạn"
+      ></Alert>)}
 
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+    {/* Show add friend dialog */}
+    {showAddFriendDialog && (
+      <Alert
+        title="Thêm bạn"
+      ></Alert>)}
 
-  return (
-    <View style={styles.container}>
-      
-      {/* Show keyword dialog */}
-      {showKeywordDialog && <KeywordSelection isShow={true} keyword={"1234"}></KeywordSelection>}
+    {/* Show result dialog */}
+    {showResultDialog && (
+      <Alert
+        title="Kết quả"
+      ></Alert>
+    )}
 
-      {/* Show invite dialog */}
-      {showInviteDialog && (
-        <Alert
-          title="Mời bạn"
-        ></Alert>)}
-
-      {/* Show add friend dialog */}
-      {showAddFriendDialog && (
-        <Alert
-          title="Thêm bạn"
-        ></Alert>)}
-
-      {/* Show result dialog */}
-      {showResultDialog && (
-        <Alert
-          title="Kết quả"
-        ></Alert>
-      )}
-
-      {/* Show download image dialog */}
-      {showDownloadImageDialog && (
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={showDownloadImageDialog}
-          onRequestClose={closeModal}
-        >
-          <Pressable style={styles.overlay} onPress={closeModal} />
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              {capturedImage && (
-                <Image
-                  source={{ uri: capturedImage }}
-                  style={{ flex: 1, resizeMode: "center" }}
-                />
-              )}
-            </View>
-          </View>
-        </Modal>
-      )}
-
-      <View style={styles.appBar}>
-        <Ionicons name="menu" size={30} color="white" />
-        <CustomTimer controller={gameTimeController} />
-        <View style={styles.roomInfoContainer}>
-          <Text style={styles.roomName}>{roomInfo.name}</Text>
-          <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
-        </View>
-      </View>
-      {/* Whiteboard */}
-      {isStart ? (
-        <View style={styles.whiteBoard}>
-          <ViewShot
-            ref={viewShotRef}
-            style={{
-              position: "absolute",
-              top: 60,
-              left: 0,
-              right: 0,
-              bottom: 0,
-            }}
-          >
-            <WhiteBoard
-              roomId={roomInfo._id}
-              color={color}
-              size={size}
-              isRedo={isRedo}
-              onRedo={() => setIsRedo(false)}
-              isUndo={isUndo}
-              onUndo={() => setIsUndo(false)}
-              isClear={isClear}
-              onClearDrawing={updateIsClear}
-            ></WhiteBoard>
-            {showOptions && (
-              <Animated.View style={styles.topBar}>
-                <DrawingOptionsBar
-                  onUpdateColor={updateColor}
-                  onUpdateSize={updateSize}
-                  color={color}
-                  size={size}
-                  option={option}
-                  toggleOptions={toggleOptions}
-                  onClearDrawing={updateIsClear}
-                />
-              </Animated.View>
-            )}
-          </ViewShot>
-        </View>
-      ) : (
-        <View style={styles.bannerCotainer}>
-          <Image
-            source={require("../../assets/draw_and_guess_logo.png")}
-            style={{
-              resizeMode: "contain",
-              marginTop: 110,
-              height: "60%",
-              width: "100%",
-            }}
-          />
-          <View style={styles.buttonContainers}>
-            <View style={styles.containerInvite}>
-              <LinearGradient
-                colors={["#2CB4FF", "#62C7FF"]}
-                start={[0, 0]}
-                end={[1, 0]}
-                style={styles.gradientButton}
-              >
-                <Image
-                  source={require("../../assets/find_icon.png")}
-                  style={{ flex: 1, resizeMode: "center" }}
-                />
-                <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  Mời bạn
-                </Text>
-              </LinearGradient>
-            </View>
-            <TouchableOpacity
-              style={styles.containerStart}
-              onPress={handleStart}
-            >
-              <LinearGradient
-                colors={["#AB012B", "#FF003F"]}
-                start={[0, 0]}
-                end={[1, 0]}
-                style={styles.gradientButton}
-              >
-                <Image
-                  source={require("../../assets/create_icon.png")}
-                  style={{ flex: 1, resizeMode: "center" }}
-                />
-                <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  Bắt đầu
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-      {/* Drawing options */}
-      {isStart ? (
-        <View
-          style={[
-            styles.bottomBar,
-            {
-              borderTopColor: "lightgray",
-              borderTopWidth: 1,
-              borderTopHeight: 1,
-            },
-          ]}
-        >
-          <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => toggleOptions(1)}
-            >
-              <Ionicons
-                name={option === 1 ? "brush" : "brush-outline"}
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => toggleOptions(2)}
-            >
-              <Ionicons
-                name={option === 2 ? "color-palette" : "color-palette-outline"}
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => toggleOptions(3)}
-            >
-              <Ionicons
-                name={option === 3 ? "trash" : "trash-outline"}
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => { }}>
-              <Ionicons name="download" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => setIsUndo(true)}
-            >
-              <Ionicons name="arrow-back" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => setIsRedo(true)}
-            >
-              <Ionicons name="arrow-forward" size={24} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ) : (
-        <View style={[styles.bottomBar, { backgroundColor: "#79c060" }]}></View>
-      )}
-      {/* Chat box */}
-      <View style={styles.chatBox}>
-        {/* Các ô chứa hình ảnh user */}
-        <View style={styles.userImagesContainer}>
-          {
-            // Hiển thị hình ảnh của các user trong phòng
-            usersInRoom.map((user) => (
+    {/* Show download image dialog */}
+    {showDownloadImageDialog && (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showDownloadImageDialog}
+        onRequestClose={closeModal}
+      >
+        <Pressable style={styles.overlay} onPress={closeModal} />
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {capturedImage && (
               <Image
-                key={user._id}
-                source={{ uri: user.avatarUrl }}
-                style={styles.userImage}
+                source={{ uri: capturedImage }}
+                style={{ flex: 1, resizeMode: "center" }}
               />
-            ))
-          }
+            )}
+          </View>
         </View>
-        {/* Khung chứa các câu trả lời */}
-        <ChatHistory message={messageHistory} />
-        <View style={styles.inputContainer}>
-          {/* Icon button gửi ảnh */}
-          <TouchableOpacity onPress={handleSendImage} style={styles.iconButton}>
-            <Image
-              source={require("../../assets/send_image.png")}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          {/* TextInput */}
-          <TextInput
-            style={styles.input}
-            value={message}
-            onChangeText={(text) => setMessage(text)}
-            placeholder="Nhập câu trả lời..."
-            placeholderTextColor="#888"
-          />
-          {/* Icon button chọn bộ icon */}
-          <TouchableOpacity onPress={sendMessage} style={styles.iconButton}>
-            <Image
-              source={require("../../assets/send.png")}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        </View>
+      </Modal>
+    )}
+
+    <View style={styles.appBar}>
+      <Ionicons name="menu" size={30} color="white" />
+      <CustomTimer controller={gameTimeController} />
+      <View style={styles.roomInfoContainer}>
+        <Text style={styles.roomName}>{roomInfo.name}</Text>
+        <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
       </View>
     </View>
-  );
+    {/* Whiteboard */}
+    {isStart ? (
+      <View style={styles.whiteBoard}>
+        <ViewShot
+          ref={viewShotRef}
+          style={{
+            position: "absolute",
+            top: 60,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        >
+          <WhiteBoard
+            roomId={roomInfo._id}
+            color={color}
+            size={size}
+            isRedo={isRedo}
+            onRedo={() => setIsRedo(false)}
+            isUndo={isUndo}
+            onUndo={() => setIsUndo(false)}
+            isClear={isClear}
+            onClearDrawing={updateIsClear}
+          ></WhiteBoard>
+          {showOptions && (
+            <Animated.View style={styles.topBar}>
+              <DrawingOptionsBar
+                onUpdateColor={updateColor}
+                onUpdateSize={updateSize}
+                color={color}
+                size={size}
+                option={option}
+                toggleOptions={toggleOptions}
+                onClearDrawing={updateIsClear}
+              />
+            </Animated.View>
+          )}
+        </ViewShot>
+      </View>
+    ) : (
+      <View style={styles.bannerCotainer}>
+        <Image
+          source={require("../../assets/draw_and_guess_logo.png")}
+          style={{
+            resizeMode: "contain",
+            marginTop: 110,
+            height: "60%",
+            width: "100%",
+          }}
+        />
+        <View style={styles.buttonContainers}>
+          <View style={styles.containerInvite}>
+            <LinearGradient
+              colors={["#2CB4FF", "#62C7FF"]}
+              start={[0, 0]}
+              end={[1, 0]}
+              style={styles.gradientButton}
+            >
+              <Image
+                source={require("../../assets/find_icon.png")}
+                style={{ flex: 1, resizeMode: "center" }}
+              />
+              <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
+                Mời bạn
+              </Text>
+            </LinearGradient>
+          </View>
+          <TouchableOpacity
+            style={styles.containerStart}
+            onPress={handleStart}
+          >
+            <LinearGradient
+              colors={["#AB012B", "#FF003F"]}
+              start={[0, 0]}
+              end={[1, 0]}
+              style={styles.gradientButton}
+            >
+              <Image
+                source={require("../../assets/create_icon.png")}
+                style={{ flex: 1, resizeMode: "center" }}
+              />
+              <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
+                Bắt đầu
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )}
+    {/* Drawing options */}
+    {isStart ? (
+      <View
+        style={[
+          styles.bottomBar,
+          {
+            borderTopColor: "lightgray",
+            borderTopWidth: 1,
+            borderTopHeight: 1,
+          },
+        ]}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => toggleOptions(1)}
+          >
+            <Ionicons
+              name={option === 1 ? "brush" : "brush-outline"}
+              size={24}
+              color="black"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => toggleOptions(2)}
+          >
+            <Ionicons
+              name={option === 2 ? "color-palette" : "color-palette-outline"}
+              size={24}
+              color="black"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => toggleOptions(3)}
+          >
+            <Ionicons
+              name={option === 3 ? "trash" : "trash-outline"}
+              size={24}
+              color="black"
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity style={styles.optionButton} onPress={() => { }}>
+            <Ionicons name="download" size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => setIsUndo(true)}
+          >
+            <Ionicons name="arrow-back" size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => setIsRedo(true)}
+          >
+            <Ionicons name="arrow-forward" size={24} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    ) : (
+      <View style={[styles.bottomBar, { backgroundColor: "#79c060" }]}></View>
+    )}
+    {/* Chat box */}
+    <View style={styles.chatBox}>
+      {/* Các ô chứa hình ảnh user */}
+      <View style={styles.userImagesContainer}>
+        {
+          // Hiển thị hình ảnh của các user trong phòng
+          usersInRoom.map((user) => (
+            <Image
+              key={user._id}
+              source={{ uri: user.avatarUrl }}
+              style={styles.userImage}
+            />
+          ))
+        }
+      </View>
+      {/* Khung chứa các câu trả lời */}
+      <ChatHistory message={messageHistory} />
+      <View style={styles.inputContainer}>
+        {/* Icon button gửi ảnh */}
+        <TouchableOpacity onPress={handleSendImage} style={styles.iconButton}>
+          <Image
+            source={require("../../assets/send_image.png")}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        {/* TextInput */}
+        <TextInput
+          style={styles.input}
+          value={message}
+          onChangeText={(text) => setMessage(text)}
+          placeholder="Nhập câu trả lời..."
+          placeholderTextColor="#888"
+        />
+        {/* Icon button chọn bộ icon */}
+        <TouchableOpacity onPress={sendMessage} style={styles.iconButton}>
+          <Image
+            source={require("../../assets/send.png")}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+);
 };
 
 export default GuessingWord;
