@@ -6,15 +6,18 @@ const CustomTimer = ({ controller }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (timer === 0) {
-        clearInterval(interval);
-        return;
-      }
-      setTimer(timer - 1);
-      controller.timeDown();
+      setTimer(prevTimer => {
+        if (prevTimer <= 0) {
+          controller.setNextStatusAndTime();
+          return controller.getTime();
+        }
+        controller.timeDown();
+        return prevTimer - 1;
+      });
     }, 1000);
+
     return () => clearInterval(interval);
-  }, [timer, controller]);
+  }, [controller]);
 
   return <Text style={styles.timer}>{timer}</Text>;
 };

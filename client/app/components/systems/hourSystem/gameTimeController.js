@@ -1,4 +1,4 @@
-import { Game_Mode, Spy_Game_Status, Drawing_Game_Status } from "../../../constants";
+import { Game_Mode, Spy_Game_Status, Drawing_Game_Status, SPY_GAME_TIME, DRAWING_GAME_TIME } from "../../../constants";
 
 
 class GameTimeController {
@@ -75,29 +75,62 @@ class GameTimeController {
         }
     }
 
-    setDrawingGameTime() {
-        if (this.status === Drawing_Game_Status.WAITING) {
-            this.time = 10;
-        } else if (this.status === Drawing_Game_Status.WORD_SELECTION) {
-            this.time = 10;
-        } else if (this.status === Drawing_Game_Status.DRAWING) {
-            this.time = 60;
-        } else if (this.status === Drawing_Game_Status.RESULT) {
-            this.time = 10;
+    // set time for each status in spy game
+    setSpyGameTime() {
+        if (this.status === Spy_Game_Status.WORD_VIEW) {
+            this.time = SPY_GAME_TIME.WORD_VIEW_TIME;
+        } else if (this.status === Spy_Game_Status.DESCRIPTION) {
+            this.time = SPY_GAME_TIME.DESCRIPTION_TIME;
+        } else if (this.status === Spy_Game_Status.VOTE) {
+            this.time = SPY_GAME_TIME.VOTE_TIME;
+        } else if (this.status === Spy_Game_Status.RESULT) {
+            this.time = SPY_GAME_TIME.RESULT_TIME;
         }
     }
 
-    setSpyGameTime() {
-        if (this.status === Spy_Game_Status.WAITING) {
-            this.time = 10;
-        } else if (this.status === Spy_Game_Status.WORD_VIEW) {
-            this.time = 10;
+    // set next status in spy game
+    setSpyGameNextStatus() {
+        if (this.status === Spy_Game_Status.WORD_VIEW) {
+            this.status = Spy_Game_Status.DESCRIPTION;
         } else if (this.status === Spy_Game_Status.DESCRIPTION) {
-            this.time = 60;
+            this.status = Spy_Game_Status.VOTE;
         } else if (this.status === Spy_Game_Status.VOTE) {
-            this.time = 10;
+            this.status = Spy_Game_Status.RESULT;
         } else if (this.status === Spy_Game_Status.RESULT) {
-            this.time = 10;
+            this.status = Spy_Game_Status.WORD_VIEW;
+        }
+    }
+
+    // set time for each status in drawing game
+    setDrawingGameTime() {
+        if (this.status === Drawing_Game_Status.WORD_SELECTION) {
+            this.time = DRAWING_GAME_TIME.WORD_SELECTION_TIME;
+        } else if (this.status === Drawing_Game_Status.DRAWING) {
+            this.time = DRAWING_GAME_TIME.DRAWING_TIME;
+        } else if (this.status === Drawing_Game_Status.RESULT) {
+            this.time = DRAWING_GAME_TIME.RESULT_TIME;
+        }
+    }
+
+    // set next status in drawing game
+    setDrawingGameNextStatus() {
+        if (this.status === Drawing_Game_Status.WORD_SELECTION) {
+            this.status = Drawing_Game_Status.DRAWING;
+        } else if (this.status === Drawing_Game_Status.DRAWING) {
+            this.status = Drawing_Game_Status.RESULT;
+        } else if (this.status === Drawing_Game_Status.RESULT) {
+            this.status = Drawing_Game_Status.WORD_SELECTION;
+        }
+    }
+
+    setNextStatusAndTime() {
+        if (this.mode === Game_Mode.DRAWING) {
+            this.setDrawingGameNextStatus();
+            this.setDrawingGameTime();
+        }
+        else if (this.mode === Game_Mode.SPY) {
+            this.setSpyGameNextStatus();
+            this.setSpyGameTime();
         }
     }
 }

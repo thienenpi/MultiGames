@@ -2,23 +2,27 @@ import { StyleSheet } from "react-native";
 import { COLORS, SIZES } from "../../constants";
 
 const styles = StyleSheet.create({
-  dialogContainer: {
-    position: "absolute",
+  overlay: {
+    position: 'absolute',
     top: 0,
+    bottom: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(50, 50, 50, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 
-  dialogBody: {
-    height: "50%",
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  
+  modalView: {
+    height: "48%",
     width: "80%",
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 10,
+    alignItems: "center",
   },
 
   container: {

@@ -7,6 +7,7 @@ import {
   Modal,
   Pressable,
   Animated,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState, useRef, useContext, useEffect } from "react";
@@ -17,8 +18,16 @@ import ViewShot from "react-native-view-shot";
 import { AuthContext } from "../context/AuthContext";
 import { socket } from "../utils/config";
 import styles from "./styles/guessingWord.style";
-import { WhiteBoard, DrawingOptionsBar, ChatHistory, CustomTimer, GameTimeController } from "../components";
+import {
+  WhiteBoard,
+  DrawingOptionsBar,
+  ChatHistory,
+  CustomTimer,
+  GameTimeController,
+  KeywordSelection,
+} from "../components";
 import { getUserById } from "../api/UserApi";
+import { isRoomFull } from "../api/RoomApi";
 import { Drawing_Game_Status } from "../constants/gamestatus";
 
 const GuessingWord = () => {
@@ -28,7 +37,6 @@ const GuessingWord = () => {
   const viewShotRef = useRef(null);
 
   const [isStart, setIsStart] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [option, setOption] = useState(0);
@@ -41,11 +49,17 @@ const GuessingWord = () => {
   const [isUndo, setIsUndo] = useState(false);
   const [isClear, setIsClear] = useState(false);
   const [usersInRoom, setUsersInRoom] = useState([]);
-  
-  const gameTimeController = new GameTimeController();
+
+  const [showDownloadImageDialog, setShowDownloadImageDialog] = useState(false);
+  const [showKeywordDialog, setShowKeywordDialog] = useState(false);
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [showAddFriendDialog, setShowAddFriendDialog] = useState(false);
+  const [showResultDialog, setShowResultDialog] = useState(false);
+
   // Set game time
+  const gameTimeController = new GameTimeController();
   gameTimeController.setModeDrawing();
-  gameTimeController.setStatus(Drawing_Game_Status.WAITING);
+  gameTimeController.setStatus(Drawing_Game_Status.WORD_SELECTION);
 
   const updateColor = (color) => {
     setColor(color);
@@ -64,7 +78,7 @@ const GuessingWord = () => {
   };
 
   const handleSendImage = () => {
-    
+
   };
 
   const handleChooseIcon = () => {
@@ -76,11 +90,12 @@ const GuessingWord = () => {
   };
 
   const hanldeDialog = async () => {
-    setShowDialog(true);
+    setShowDownloadImageDialog(true);
   };
 
   const closeModal = () => {
-    setShowDialog(false);
+    setShowDownloadImageDialog(false);
+    setIsFull(false);
   };
 
   const toggleOptions = (optionNumber) => {
@@ -114,58 +129,89 @@ const GuessingWord = () => {
     }
   };
 
+  const getAllUsers = async () => {
+    setUsersInRoom([]);
+    for (let userId of roomInfo.list_guest) {
+      const res = await getUserById({ id: userId });
+
+      if (res.status === 200) {
+        const user = res.data;
+        setUsersInRoom((prevUsers) => [...prevUsers, user]);
+      }
+    }
+  };
+
+  const getAllMessage = () => {
+    socket.emit("startChat", roomInfo._id);
+    socket.emit("getChatHistory", roomInfo._id);
+
+    socket.on("chatHistory", (chats) => {
+      setMessageHistory(chats);
+    });
+    // Clean up on unmount
+    return () => {
+      socket.off("chatHistory");
+    };
+  };
+
+  const checkRoomFull = async () => {
+    const idRoom = roomInfo._id;
+    const res = await isRoomFull({ id: idRoom });
+    setShowKeywordDialog(res.data);
+  };
+
   useEffect(() => {
     // Join the room when component mounts
     socket.on("message", (data) => {
       setMessageHistory((prevMessageHistory) => [...prevMessageHistory, data]);
     });
 
+    getAllMessage();
+    getAllUsers();
+
+    checkRoomFull();
+
     return () => {
       socket.disconnect();
     };
   }, []);
 
-  useEffect(() => {
-    const getAllUsers = async () => {
-      setUsersInRoom([]);
-      for (let userId of roomInfo.list_guest) {
-        const res = await getUserById({ id: userId });
-
-        if (res.status === 200) {
-          const user = res.data;
-          setUsersInRoom((prevUsers) => [...prevUsers, user]);
-        }
-      }
-    };
-
-    const getAllMessage = () => {
-      socket.emit("startChat", roomInfo._id);
-      socket.emit("getChatHistory", roomInfo._id);
-
-      socket.on("chatHistory", (chats) => {
-        setMessageHistory(chats);
-      });
-      // Clean up on unmount
-      return () => {
-        socket.off("chatHistory");
-      };
-    };
-
-    getAllMessage();
-    getAllUsers();    
-  }, []);
-
   return (
     <View style={styles.container}>
-      {showDialog && (
+      
+      {/* Show keyword dialog */}
+      {showKeywordDialog && <KeywordSelection isShow={true} keyword={"1234"}></KeywordSelection>}
+
+      {/* Show invite dialog */}
+      {showInviteDialog && (
+        <Alert
+          title="Mời bạn"
+        ></Alert>)}
+
+      {/* Show add friend dialog */}
+      {showAddFriendDialog && (
+        <Alert
+          title="Thêm bạn"
+        ></Alert>)}
+
+      {/* Show result dialog */}
+      {showResultDialog && (
+        <Alert
+          title="Kết quả"
+        ></Alert>
+      )}
+
+      {/* Show download image dialog */}
+      {showDownloadImageDialog && (
         <Modal
           animationType="fade"
           transparent={true}
-          visible={showDialog}
+          visible={showDownloadImageDialog}
           onRequestClose={closeModal}
         >
-          <Pressable style={styles.dialogContainer} onPress={closeModal}>
-            <View style={styles.dialogBody}>
+          <Pressable style={styles.overlay} onPress={closeModal} />
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
               {capturedImage && (
                 <Image
                   source={{ uri: capturedImage }}
@@ -173,9 +219,10 @@ const GuessingWord = () => {
                 />
               )}
             </View>
-          </Pressable>
+          </View>
         </Modal>
       )}
+
       <View style={styles.appBar}>
         <Ionicons name="menu" size={30} color="white" />
         <CustomTimer controller={gameTimeController} />

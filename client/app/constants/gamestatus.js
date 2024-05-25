@@ -1,5 +1,4 @@
 const Spy_Game_Status = {
-    WAITING: 'waiting',
     WORD_VIEW: 'word_view',
     DESCRIPTION: 'description',
     VOTE: 'vote',
@@ -7,7 +6,6 @@ const Spy_Game_Status = {
 };
 
 const Drawing_Game_Status = {
-    WAITING: 'waiting',
     WORD_SELECTION: 'word_selection',
     DRAWING: 'drawing',
     RESULT: 'result',
