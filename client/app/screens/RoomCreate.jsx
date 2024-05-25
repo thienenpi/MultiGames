@@ -45,6 +45,7 @@ const RoomCreate = () => {
         mode: buttonTitles[selectedButton][0],
         capacity: buttonTitles[selectedButton][1][lastIndex],
         list_guest: [],
+        history_guest: [],
         owner: userInfo._id,
         chatGame: "null",
         status: "active"

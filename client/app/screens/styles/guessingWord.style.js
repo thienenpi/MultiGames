@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: 'flex-end',
     backgroundColor: "#fff",
-    height: 100,
+    height: 80,
     width: SIZES.width,
-    paddingVertical: 10,
+    paddingVertical: 5,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     backgroundColor: "#79c060",
@@ -114,13 +114,13 @@ const styles = StyleSheet.create({
   },
 
   roomName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     color: "white",
   },
 
   roomId: {
-    fontSize: 14,
+    fontSize: 10,
     color: "white",
   },
 

@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import { getRoomsOwner } from "../api/RoomApi";
 import Dialog from "react-native-dialog";
 import styles from "./styles/boardroom.style";
-  
+
 const renderItem = ({ item }) => <RoomCardView item={item}></RoomCardView>;
 
 const RoomBoard = () => {
@@ -24,7 +24,7 @@ const RoomBoard = () => {
   async function fetchRoomsOwner() {
     try {
       const id = userInfo._id;
-      const res = await getRoomsOwner({id});
+      const res = await getRoomsOwner({ id });
       if (res.status === 200) {
         setItems(res.data);
       }
@@ -32,7 +32,7 @@ const RoomBoard = () => {
       Alert.alert("Error", "Error retrieving data from the server");
     }
   }
-
+  
   useEffect(() => {
     if (isFocused) {
       fetchRoomsOwner();
@@ -47,6 +47,7 @@ const RoomBoard = () => {
     // Xử lý số phòng ở đây
     setDialogVisible(false);
   };
+
   return (
     <View style={styles.container}>
       <AppBar

@@ -17,7 +17,7 @@ import ViewShot from "react-native-view-shot";
 import { AuthContext } from "../context/AuthContext";
 import { socket } from "../utils/config";
 import styles from "./styles/guessingWord.style";
-import { WhiteBoard, DrawingOptionsBar, ChatHistory } from "../components";
+import { WhiteBoard, DrawingOptionsBar, ChatHistory, CustomTimer } from "../components";
 import { getUserById } from "../api/UserApi";
 
 const GuessingWord = () => {
@@ -40,6 +40,7 @@ const GuessingWord = () => {
   const [isUndo, setIsUndo] = useState(false);
   const [isClear, setIsClear] = useState(false);
   const [usersInRoom, setUsersInRoom] = useState([]);
+  const [timer, setTimer] = useState(60);
 
   const updateColor = (color) => {
     setColor(color);
@@ -57,7 +58,9 @@ const GuessingWord = () => {
     captureAndSaveImage().then(hanldeDialog());
   };
 
-  const handleSendImage = () => {};
+  const handleSendImage = () => {
+    
+  };
 
   const handleChooseIcon = () => {
     // Xử lý khi người dùng nhấn vào nút chọn bộ icon
@@ -169,8 +172,10 @@ const GuessingWord = () => {
         </Modal>
       )}
       <View style={styles.appBar}>
+        <Ionicons name="menu" size={30} color="white" />
+        <CustomTimer timer={timer} setTimer={setTimer} />
         <View style={styles.roomInfoContainer}>
-          <Text style={styles.roomName}>{roomInfo._id}</Text>
+          <Text style={styles.roomName}>{roomInfo.name}</Text>
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
       </View>
@@ -308,7 +313,7 @@ const GuessingWord = () => {
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
+            <TouchableOpacity style={styles.optionButton} onPress={() => { }}>
               <Ionicons name="download" size={24} />
             </TouchableOpacity>
             <TouchableOpacity

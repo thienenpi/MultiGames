@@ -9,6 +9,7 @@ const RoomSchema = new mongoose.Schema(
     mode: { type: String, required: true },
     owner: { type: String, required: true },
     list_guest: { type: Array, required: true },
+    history_guest: { type: Array, required: true },
     chatGame: { type: String, required: true },
     status: { type: String, required: true },
   },
