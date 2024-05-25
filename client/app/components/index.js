@@ -17,6 +17,7 @@ import OptionRow from "./profile/OptionRow";
 import DrawingOptionsBar from "./drawing/DrawingOptionsBar";
 import ChatHistory from "./ChatHistory";
 import CustomTimer from "./systems/hourSystem/CustomTimer";
+import GameTimeController from "./systems/hourSystem/gameTimeController";
 
 export {
   CustomButton,
@@ -38,4 +39,5 @@ export {
   DrawingOptionsBar,
   ChatHistory,
   CustomTimer,
+  GameTimeController,
 };

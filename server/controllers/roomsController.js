@@ -93,56 +93,18 @@ const deleteRoom = async (req, res) => {
   }
 };
 
-//-----------------------------------------------------------------------------------
-
-// const playersGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('players');
-//     res.status(200).json(room.players);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve players', error);
-//   }
-// };
-
-// const gamesGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('games');
-//     res.status(200).json(room.games);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve games', error);
-//   }
-// };
-
-// const gameGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('games');
-//     const game = room.games.find(game => game._id == req.params.gameId);
-//     res.status(200).json(game);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve game', error);
-//   }
-// };
-
-// const gamePlayersGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('games');
-//     const game = room.games.find(game => game._id == req.params.gameId);
-//     res.status(200).json(game.players);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve game players', error);
-//   }
-// };
-
-// const gamePlayerGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('games');
-//     const game = room.games.find(game => game._id == req.params.gameId);
-//     const player = game.players.find(player => player._id == req.params.playerId);
-//     res.status(200).json(player);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve game player', error);
-//   }
-// };
+const isRoomFull = async (req, res) => {
+  try {
+    const room = await Room.findById(req.params.id);
+    if (room.list_guest.length === room.capacity) {
+      res.status(200).json(true);
+    } else {
+      res.status(200).json(false);
+    }
+  } catch (error) {
+    res.status(500).json("Failed to check room full", error);
+  }
+};
 
 module.exports = {
   createRoom,
@@ -153,9 +115,5 @@ module.exports = {
   getRoomsGuest,
   updateRoom,
   deleteRoom,
-  // playersGet,
-  // gamesGet,
-  // gameGet,
-  // gamePlayersGet,
-  // gamePlayerGet
+  isRoomFull,
 };

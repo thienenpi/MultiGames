@@ -1,11 +1,20 @@
 // Spy Game Time
-export const WORD_VIEW_TIME = 4000; // Thời gian xem từ trong 4 giây
-export const DESCRIPTION_TIME = 40000; // Thời gian mô tả trong 40 giây
-export const VOTE_TIME = 15000; // Thời gian vote trong 15 giây
+const SPY_GAME_TIME = {
+    WORD_VIEW_TIME: 4, // Thời gian xem từ trong 4 giây
+    DESCRIPTION_TIME: 40, // Thời gian mô tả trong 40 giây
+    VOTE_TIME: 15, // Thời gian vote trong 15 giây
+};
 
 // Drawing Game Time
-export const WORD_SELECTION_TIME = 15000; // Thời gian chọn từ trong 15 giây
-export const DRAWING_TIME = 70000; // Thời gian vẽ trong 70 giây
+const DRAWING_GAME_TIME = {
+    WORD_SELECTION_TIME: 15, // Thời gian chọn từ trong 15 giây
+    DRAWING_TIME: 70, // Thời gian vẽ trong 70 giây
+};
 
 // General Game Time
-export const SHOW_RESULT_TIME = 20000; // Thời gian hiển thị kết quả trong 20 giây
+const GENERAL_GAME_TIME = {
+    WAITING_TIME: 3, // Thời gian chờ trong 3 giây
+    RESULT_TIME: 20, // Thời gian hiển thị kết quả trong 20 giây
+};
+
+export { SPY_GAME_TIME, DRAWING_GAME_TIME, GENERAL_GAME_TIME };

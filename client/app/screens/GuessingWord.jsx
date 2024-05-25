@@ -17,8 +17,9 @@ import ViewShot from "react-native-view-shot";
 import { AuthContext } from "../context/AuthContext";
 import { socket } from "../utils/config";
 import styles from "./styles/guessingWord.style";
-import { WhiteBoard, DrawingOptionsBar, ChatHistory, CustomTimer } from "../components";
+import { WhiteBoard, DrawingOptionsBar, ChatHistory, CustomTimer, GameTimeController } from "../components";
 import { getUserById } from "../api/UserApi";
+import { Drawing_Game_Status } from "../constants/gamestatus";
 
 const GuessingWord = () => {
   const route = useRoute();
@@ -40,7 +41,11 @@ const GuessingWord = () => {
   const [isUndo, setIsUndo] = useState(false);
   const [isClear, setIsClear] = useState(false);
   const [usersInRoom, setUsersInRoom] = useState([]);
-  const [timer, setTimer] = useState(60);
+  
+  const gameTimeController = new GameTimeController();
+  // Set game time
+  gameTimeController.setModeDrawing();
+  gameTimeController.setStatus(Drawing_Game_Status.WAITING);
 
   const updateColor = (color) => {
     setColor(color);
@@ -147,7 +152,7 @@ const GuessingWord = () => {
     };
 
     getAllMessage();
-    getAllUsers();
+    getAllUsers();    
   }, []);
 
   return (
@@ -173,7 +178,7 @@ const GuessingWord = () => {
       )}
       <View style={styles.appBar}>
         <Ionicons name="menu" size={30} color="white" />
-        <CustomTimer timer={timer} setTimer={setTimer} />
+        <CustomTimer controller={gameTimeController} />
         <View style={styles.roomInfoContainer}>
           <Text style={styles.roomName}>{roomInfo.name}</Text>
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
