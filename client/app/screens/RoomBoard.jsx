@@ -1,50 +1,43 @@
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { AppBar, CustomButton, RoomCardView } from "../components";
+import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "./styles/boardroom.style";
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { AuthContext } from "../context/AuthContext";
+import { getRoomsOwner } from "../api/RoomApi";
 import Dialog from "react-native-dialog";
-
-const items = [
-  {
-    _id: 1,
-    roomID: "0001",
-    avatarUrl: "https://picsum.photos/200",
-    gameType: 0,
-    state: 0,
-    maxPlayers: 6,
-    currentPlayers: 0,
-  },
-  {
-    _id: 2,
-    roomID: "0002",
-    avatarUrl: "https://picsum.photos/200",
-    gameType: 0,
-    state: 0,
-    maxPlayers: 6,
-    currentPlayers: 0,
-  },
-  {
-    _id: 3,
-    roomID: "0003",
-    avatarUrl: "https://picsum.photos/200",
-    gameType: 1,
-    state: 0,
-    maxPlayers: 6,
-    currentPlayers: 0,
-  },
-];
+import styles from "./styles/boardroom.style";
 
 const renderItem = ({ item }) => <RoomCardView item={item}></RoomCardView>;
 
 const RoomBoard = () => {
   const navigation = useNavigation();
+  const { userInfo } = useContext(AuthContext);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [roomNumber, setRoomNumber] = useState("");
+  const [items, setItems] = useState([]);
+  const isFocused = useIsFocused();
   const showDialog = () => {
     setDialogVisible(true);
   };
+
+  async function fetchRoomsOwner() {
+    try {
+      const id = userInfo._id;
+      const res = await getRoomsOwner({ id });
+      if (res.status === 200) {
+        setItems(res.data);
+      }
+    } catch (error) {
+      Alert.alert("Error", "Error retrieving data from the server");
+    }
+  }
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchRoomsOwner();
+    }
+  }, [isFocused]);
 
   const handleCancel = () => {
     setDialogVisible(false);

@@ -23,6 +23,7 @@ const COLORS = {
   redGradient: ["#AB012B", "#FF003F"],
   lightOrange: "#F2E19E",
   orange: "#FCB043",
+  green: "#00CF00",
 };
 
 const SIZES = {

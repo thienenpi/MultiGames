@@ -22,9 +22,9 @@ const createRoom = async ({ data }) => {
   }
 };
 
-const getRoom = async ({ data }) => {
+const getRoom = async ({ id }) => {
   try {
-    const url = "/rooms/room_id=" + data.id;
+    const url = `/rooms/id=${id}`;
     const config = {
       method: "GET",
       headers: {
@@ -64,7 +64,7 @@ const getRooms = async () => {
   }
 };
 
-const getRoomActive = async () => {
+const getActiveRoom = async () => {
   try {
     const url = "/rooms/active/";
     const config = {
@@ -85,9 +85,51 @@ const getRoomActive = async () => {
   }
 };
 
-const updateRoom = async ({ data }) => {
+const getRoomsOwner = async ({ id }) => {
   try {
-    const url = "/rooms/room_id=" + data.id;
+    const url = `/rooms/ownerId=${id}`;
+    const config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
+const getRoomsGuest = async ({ id }) => {
+  try {
+    const url = `/rooms/guestId=${id}`;
+    const config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
+const updateRoom = async ({ id }) => {
+  try {
+    const url = `/rooms/id=${id}`;
     const config = {
       method: "PUT",
       headers: {
@@ -107,9 +149,9 @@ const updateRoom = async ({ data }) => {
   }
 };
 
-const deleteRoom = async ({ data }) => {
+const deleteRoom = async ({ id }) => {
   try {
-    const url = "/rooms/room_id=" + data.id;
+    const url = `/rooms/id=${id}`;
     const config = {
       method: "DELETE",
       headers: {
@@ -280,9 +322,11 @@ const deleteRoom = async ({ data }) => {
 
 export {
   createRoom,
+  getRoom,
+  getRooms,
+  getActiveRoom,
+  getRoomsOwner,
+  getRoomsGuest,
   updateRoom,
   deleteRoom,
-  getRooms,
-  getRoom,
-  getRoomActive,
 };
