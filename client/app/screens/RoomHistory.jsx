@@ -1,42 +1,31 @@
 import { useNavigation } from "@react-navigation/native";
-import { View } from "react-native";
-import React from "react";
+import { View, Alert } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
 import styles from "./styles/roomHistory.style";
 import { AppBar, RoomColumn } from "../components";
-
-// give me an array of room history data
-const roomHistoryData = [
-  {
-    _id: 1,
-    roomID: "0001",
-    avatarUrl: "https://picsum.photos/200",
-    gameType: 0,
-    state: 0,
-    maxPlayers: 6,
-    currentPlayers: 0,
-  },
-  {
-    _id: 2,
-    roomID: "0002",
-    avatarUrl: "https://picsum.photos/200",
-    gameType: 0,
-    state: 0,
-    maxPlayers: 6,
-    currentPlayers: 0,
-  },
-  {
-    _id: 3,
-    roomID: "0003",
-    avatarUrl: "https://picsum.photos/200",
-    gameType: 1,
-    state: 0,
-    maxPlayers: 6,
-    currentPlayers: 0,
-  },
-];
+import { AuthContext } from "../context/AuthContext";
+import { getRoomsGuest } from "../api/RoomApi";
 
 const RoomHistory = () => {
   const navigation = useNavigation();
+  const { userInfo } = useContext(AuthContext);
+  const [roomHistoryData, setRoomHistoryData] = useState([]);
+
+  async function fetchRoomsGuest() {
+    try {
+      const id = userInfo._id;
+      const res = await getRoomsGuest({id});
+      if (res.status === 200) {
+        setRoomHistoryData(res.data);
+      }
+    } catch (error) {
+      Alert.alert("Error", "Error retrieving data from the server");
+    }
+  }
+
+  useEffect(() => {
+    fetchRoomsGuest();
+  }, []);
 
   return (
     <View style={styles.container}>

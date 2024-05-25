@@ -95,7 +95,26 @@ const getRoomsOwner = async ({ id }) => {
       },
     };
 
-    console.log(id);
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
+const getRoomsGuest = async ({ id }) => {
+  try {
+    const url = `/rooms/guestId=${id}`;
+    const config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
     const res = await ApiManager(url, config);
     return res;
@@ -106,7 +125,7 @@ const getRoomsOwner = async ({ id }) => {
       throw error;
     }
   }
-}
+};
 
 const updateRoom = async ({ id }) => {
   try {
@@ -303,10 +322,11 @@ const deleteRoom = async ({ id }) => {
 
 export {
   createRoom,
-  updateRoom,
   getRoom,
   getRooms,
   getActiveRoom,
   getRoomsOwner,
+  getRoomsGuest,
+  updateRoom,
   deleteRoom,
 };

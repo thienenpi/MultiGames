@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard } from "../components";
-import { getRoomActive } from "../api/RoomApi";
+import { getActiveRoom } from "../api/RoomApi";
 
 const Dashboard = () => {
   const { userInfo } = useContext(AuthContext);
@@ -80,7 +80,7 @@ const Dashboard = () => {
       </View>
       <TouchableOpacity
         onPress={async () => {
-          const res = await getRoomActive();
+          const res = await getActiveRoom();
           const roomInfo = res.data;
 
           // if roomInfo is empty, navigate to create room

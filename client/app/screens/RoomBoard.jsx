@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import { getRoomsOwner } from "../api/RoomApi";
 import Dialog from "react-native-dialog";
 import styles from "./styles/boardroom.style";
-  
+
 const renderItem = ({ item }) => <RoomCardView item={item}></RoomCardView>;
 
 const RoomBoard = () => {
@@ -21,13 +21,11 @@ const RoomBoard = () => {
     setDialogVisible(true);
   };
 
-  async function fetchActiveRoom() {
+  async function fetchRoomsOwner() {
     try {
       const id = userInfo._id;
-      const res = await getRoomsOwner({id});
+      const res = await getRoomsOwner({ id });
       if (res.status === 200) {
-        console.log(userInfo._id)
-        console.log(res.data);
         setItems(res.data);
       }
     } catch (error) {
@@ -37,7 +35,7 @@ const RoomBoard = () => {
 
   useEffect(() => {
     if (isFocused) {
-      fetchActiveRoom();
+      fetchRoomsOwner();
     }
   }, [isFocused]);
 
