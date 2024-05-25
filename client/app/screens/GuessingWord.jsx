@@ -103,17 +103,28 @@ const GuessingWord = () => {
 
       socket.emit("message", newMessage);
       setMessage("");
+      setMessageHistory((prevMessageHistory) => [
+        ...prevMessageHistory,
+        newMessage,
+      ]);
     }
   };
 
   useEffect(() => {
+    socket.emit("join", roomInfo._id);
+
     // Join the room when component mounts
     socket.on("message", (data) => {
-      setMessageHistory((prevMessageHistory) => [...prevMessageHistory, data]);
+      if (data !== null) {
+        setMessageHistory((prevMessageHistory) => [
+          ...prevMessageHistory,
+          data,
+        ]);
+      }
     });
 
     return () => {
-      socket.disconnect();
+      socket.emit("leave", roomInfo._id);
     };
   }, []);
 
@@ -130,20 +141,9 @@ const GuessingWord = () => {
       }
     };
 
-    const getAllMessage = () => {
-      socket.emit("startChat", roomInfo._id);
-      socket.emit("getChatHistory", roomInfo._id);
+    setMessageHistory([]);
+    socket.emit("getChatHistory", roomInfo._id);
 
-      socket.on("chatHistory", (chats) => {
-        setMessageHistory(chats);
-      });
-      // Clean up on unmount
-      return () => {
-        socket.off("chatHistory");
-      };
-    };
-
-    getAllMessage();
     getAllUsers();
   }, []);
 
