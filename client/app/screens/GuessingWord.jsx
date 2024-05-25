@@ -14,7 +14,7 @@ import React, { useState, useRef, useContext, useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import ViewShot from "react-native-view-shot";
-
+import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { socket } from "../utils/config";
 import styles from "./styles/guessingWord.style";
@@ -33,6 +33,7 @@ import { Drawing_Game_Status } from "../constants/gamestatus";
 const GuessingWord = () => {
   const route = useRoute();
   const { userInfo } = useContext(AuthContext);
+  const navigation = useNavigation();
   const { roomInfo } = route.params;
   const viewShotRef = useRef(null);
 
@@ -133,6 +134,12 @@ const GuessingWord = () => {
     }
   };
 
+  const checkRoomFull = async () => {
+    const idRoom = roomInfo._id;
+    const res = await isRoomFull({ id: idRoom });
+    setShowKeywordDialog(res.data);
+  };
+
   useEffect(() => {
     socket.emit("join", roomInfo._id);
 
@@ -169,7 +176,7 @@ const GuessingWord = () => {
 
   getAllUsers();
 
-  checkRoomFull();
+  // checkRoomFull();
 }, []);
 
 return (
@@ -226,6 +233,9 @@ return (
         <Text style={styles.roomName}>{roomInfo.name}</Text>
         <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
       </View>
+      <Pressable onPress={() => navigation.navigate("Room Config")}>
+        <Ionicons name="settings" size={26} color="white" style={{margin:4}} />
+      </Pressable>
     </View>
     {/* Whiteboard */}
     {isStart ? (
