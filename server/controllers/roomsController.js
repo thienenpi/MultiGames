@@ -12,6 +12,15 @@ const createRoom = async (req, res) => {
   }
 };
 
+const getRoom = async (req, res) => {
+  try {
+    const room = await Room.findById(req.params.id);
+    res.status(200).json(room);
+  } catch (error) {
+    res.status(500).json("Failed to retrieve room", error);
+  }
+};
+
 const getRooms = async (req, res) => {
   try {
     const rooms = await Room.find();
@@ -21,12 +30,38 @@ const getRooms = async (req, res) => {
   }
 };
 
-const getRoom = async (req, res) => {
+const getActiveRoom = async (req, res) => {
   try {
-    const room = await Room.findById(req.params.id);
-    res.status(200).json(room);
+    const rooms = await Room.findOne({ status: "active" });
+
+    // check if there is no active room
+    if (!rooms) {
+      // response with null
+      res.status(200).json(null);
+      return;
+    }
+
+    res.status(200).json(rooms);
   } catch (error) {
-    res.status(500).json("Failed to retrieve room", error);
+    res.status(500).json("Failed to retrieve room active games", error);
+  }
+};
+
+const getRoomsOwner = async (req, res) => {
+  try {
+    const rooms = await Room.find({ owner: req.params.id });
+    res.status(200).json(rooms);
+  } catch (error) {
+    res.status(500).json("Failed to retrieve rooms owner", error);
+  }
+};
+
+const getRoomsGuest = async (req, res) => {
+  try {
+    const rooms = await Room.find({ list_guest: req.params.id });
+    res.status(200).json(rooms);
+  } catch (error) {
+    res.status(500).json("Failed to retrieve rooms guest", error);
   }
 };
 
@@ -58,84 +93,27 @@ const deleteRoom = async (req, res) => {
   }
 };
 
-const getRoomActive = async (req, res) => {
+const isRoomFull = async (req, res) => {
   try {
-    const rooms = await Room.findOne({ status: "active" });
-
-    // check if there is no active room
-    if (!rooms) {
-      // response with null
-      res.status(200).json(null);
-      return;
+    const room = await Room.findById(req.params.id);
+    if (room.list_guest.length === room.capacity) {
+      res.status(200).json(true);
+    } else {
+      res.status(200).json(false);
     }
-
-    res.status(200).json(rooms);
   } catch (error) {
-    res.status(500).json("Failed to retrieve room active games", error);
+    res.status(500).json("Failed to check room full", error);
   }
 };
 
-//-----------------------------------------------------------------------------------
-
-// const playersGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('players');
-//     res.status(200).json(room.players);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve players', error);
-//   }
-// };
-
-// const gamesGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('games');
-//     res.status(200).json(room.games);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve games', error);
-//   }
-// };
-
-// const gameGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('games');
-//     const game = room.games.find(game => game._id == req.params.gameId);
-//     res.status(200).json(game);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve game', error);
-//   }
-// };
-
-// const gamePlayersGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('games');
-//     const game = room.games.find(game => game._id == req.params.gameId);
-//     res.status(200).json(game.players);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve game players', error);
-//   }
-// };
-
-// const gamePlayerGet = async (req, res) => {
-//   try {
-//     const room = await Room.findById(req.params.id).populate('games');
-//     const game = room.games.find(game => game._id == req.params.gameId);
-//     const player = game.players.find(player => player._id == req.params.playerId);
-//     res.status(200).json(player);
-//   } catch (error) {
-//     res.status(500).json('Failed to retrieve game player', error);
-//   }
-// };
-
 module.exports = {
   createRoom,
-  getRooms,
   getRoom,
+  getRooms,
+  getActiveRoom,
+  getRoomsOwner,
+  getRoomsGuest,
   updateRoom,
   deleteRoom,
-  getRoomActive,
-  // playersGet,
-  // gamesGet,
-  // gameGet,
-  // gamePlayersGet,
-  // gamePlayerGet
+  isRoomFull,
 };

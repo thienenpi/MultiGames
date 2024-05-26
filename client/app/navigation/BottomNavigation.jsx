@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Message, Profile, Shop, Dashboard } from "../screens";
+import { Message, Profile, Shop, Dashboard } from "../screens";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { COLORS } from "../constants";
 
@@ -26,17 +26,7 @@ const screenOptions = {
 
 const BottomNavigation = () => {
   return (
-    <Tab.Navigator screenOptions={screenOptions} initialRouteName="Home">
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: () => {
-            return <Ionicons name="home-outline" size={24} />;
-          },
-        }}
-      ></Tab.Screen>
-
+    <Tab.Navigator screenOptions={screenOptions} initialRouteName="Dashboard">
       <Tab.Screen
         name="Dashboard"
         component={Dashboard}

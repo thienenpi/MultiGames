@@ -6,11 +6,24 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard } from "../components";
-import { getRoomActive } from "../api/RoomApi";
+import { getActiveRoom } from "../api/RoomApi";
 
 const Dashboard = () => {
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
+
+  const accessRoom = async () => {
+    const res = await getActiveRoom();
+    const roomInfo = res.data;
+
+    // if roomInfo is empty, navigate to create room
+    if (!roomInfo) {
+      navigation.navigate("Room Create");
+      return;
+    }
+
+    navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+  };
 
   return (
     <SafeAreaView>
@@ -67,6 +80,7 @@ const Dashboard = () => {
           </Text>
           <TouchableOpacity
             style={[styles.button, { borderRadius: 6, paddingVertical: 2 }]}
+            onPress={accessRoom}
           >
             <Ionicons
               name="pencil-outline"
@@ -78,20 +92,7 @@ const Dashboard = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity
-        onPress={async () => {
-          const res = await getRoomActive();
-          const roomInfo = res.data;
-
-          // if roomInfo is empty, navigate to create room
-          if (!roomInfo) {
-            navigation.navigate("Room Create");
-            return;
-          }
-
-          navigation.navigate("Guessing Word", { roomInfo: roomInfo });
-        }}
-      >
+      <TouchableOpacity onPress={accessRoom}>
         <GameCard
           colorDark="rgba(0,0,180,0.8)"
           colorLight="rgba(0,0,180,0.5)"

@@ -1,12 +1,15 @@
 import React from "react";
 import styles from "./styles/spyMain.style";
-import { View, Text, ImageBackground, Image } from "react-native";
+import { View, Text, ImageBackground, Image, Pressable } from "react-native";
 import { COLORS } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";
 import GameHeader from "../components/spyGame/GameHeader";
 import GameType from "../components/spyGame/GameType";
+import { useNavigation } from "@react-navigation/native";
 
 const SpyMainScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={{ flexDirection: "column" }}>
       <ImageBackground
@@ -17,35 +20,51 @@ const SpyMainScreen = () => {
         <View style={styles.gameOptionContainer("#FCBE4F")}>
           <Text style={styles.gameText}> Ai Là Gián Điệp</Text>
           <View style={styles.gameTypeContainer}>
-            <GameType
-              backgroundColor={COLORS.lightOrange}
-              textColor={COLORS.orange}
-              imageUrl={require("../../assets/micro_images.png")}
-              gametypeName={"Chế độ giọng nói"}
-            ></GameType>
-            <GameType
-              backgroundColor={COLORS.lightOrange}
-              textColor={COLORS.orange}
-              imageUrl={require("../../assets/pencil_images.png")}
-              gametypeName={"Chế độ văn bản"}
-            ></GameType>
+            <Pressable
+              onPress={() => navigation.navigate("Spy Game")}
+            >
+              <GameType
+                backgroundColor={COLORS.lightOrange}
+                textColor={COLORS.orange}
+                imageUrl={require("../../assets/micro_images.png")}
+                gametypeName={"Chế độ giọng nói"}
+              ></GameType>
+            </Pressable>
+            <Pressable
+              onPress={() => navigation.navigate("Spy Game")}
+            >
+
+              <GameType
+                backgroundColor={COLORS.lightOrange}
+                textColor={COLORS.orange}
+                imageUrl={require("../../assets/pencil_images.png")}
+                gametypeName={"Chế độ văn bản"}
+              ></GameType>
+            </Pressable>
           </View>
         </View>
         <View style={styles.gameOptionContainer("#2CADFE")}>
           <Text style={styles.gameText}> Gián điệp không lời</Text>
           <View style={styles.gameTypeContainer}>
-            <GameType
-              backgroundColor={COLORS.brightBlue}
-              textColor={COLORS.darkBlue}
-              imageUrl={require("../../assets/micro_images.png")}
-              gametypeName={"Chế độ giọng nói"}
-            ></GameType>
-            <GameType
-              backgroundColor={COLORS.brightBlue}
-              textColor={COLORS.darkBlue}
-              imageUrl={require("../../assets/pencil_images.png")}
-              gametypeName={"Chế độ văn bản"}
-            ></GameType>
+            <Pressable
+              onPress={() => navigation.navigate("Spy Game")}>
+              <GameType
+                backgroundColor={COLORS.brightBlue}
+                textColor={COLORS.darkBlue}
+                imageUrl={require("../../assets/micro_images.png")}
+                gametypeName={"Chế độ giọng nói"}
+              ></GameType>
+            </Pressable>
+            <Pressable
+              onPress={() => navigation.navigate("Spy Game")}
+            >
+              <GameType
+                backgroundColor={COLORS.brightBlue}
+                textColor={COLORS.darkBlue}
+                imageUrl={require("../../assets/pencil_images.png")}
+                gametypeName={"Chế độ văn bản"}
+              ></GameType>
+            </Pressable>
           </View>
         </View>
         <View style={styles.buttonContainers}>

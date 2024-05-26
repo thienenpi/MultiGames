@@ -5,7 +5,6 @@ import styles from "./styles/whiteBoard.style";
 import { socket } from "../utils/config";
 
 const WhiteBoard = ({
-  roomId,
   color,
   size,
   isUndo,
@@ -32,16 +31,6 @@ const WhiteBoard = ({
       onPanResponderGrant: (event, gesture) => {
         path.current = `${gesture.x0},${gesture.y0 - 60} `;
         count.current = 0;
-
-        setPaths((previousPaths) => [
-          ...previousPaths,
-          {
-            path: path.current,
-            color: colorRef.current,
-            size: sizeRef.current,
-          },
-        ]);
-        // path.current = `${gesture.moveX},${gesture.moveY - 60} `;
       },
       onPanResponderEnd: () => {
         setPathToDisplay([]);
@@ -90,36 +79,52 @@ const WhiteBoard = ({
 
   useEffect(() => {
     // Join the room when component mounts
-    socket.emit("join", roomId);
 
     // Listen for draw event from server
     socket.on("draw", (newPath) => {
       if (newPath.length === 0) {
         setPaths([]);
+        setUndoStack([]);
         return;
+      } else if (newPath === "undo") {
+        setPaths((prevPaths) => {
+          if (prevPaths.length === 0) return prevPaths;
+          setUndoStack((prevUndoStack) => [
+            prevPaths[prevPaths.length - 1],
+            ...prevUndoStack,
+          ]);
+          return prevPaths.slice(0, -1);
+        });
+      } else if (newPath === "redo") {
+        setUndoStack((prevUndoStack) => {
+          if (prevUndoStack.length === 0) return prevUndoStack;
+          setPaths((prevPaths) => [...prevPaths, prevUndoStack[0]]);
+          return prevUndoStack.slice(1);
+        });
+      } else {
+        setPaths((prevPaths) => [...prevPaths, newPath]);
       }
-
-      setPaths((prevPaths) => [...prevPaths, newPath]);
     });
-
-    return () => {
-      socket.disconnect();
-    };
   }, []);
 
   useEffect(() => {
     if (isUndo) {
       undo();
       onUndo();
+
+      socket.emit("draw", "undo");
     }
 
     if (isRedo) {
       redo();
       onRedo();
+
+      socket.emit("draw", "redo");
     }
 
     if (isClear) {
       setPaths([]);
+      setUndoStack([]);
       onClearDrawing();
       socket.emit("draw", []);
     }

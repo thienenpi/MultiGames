@@ -1,4 +1,3 @@
-// const BASE_URL = "https://multigames.azurewebsites.net/api";
 import io from "socket.io-client";
 
 // const BASE_URL = "https://multigames.azurewebsites.net/api";
