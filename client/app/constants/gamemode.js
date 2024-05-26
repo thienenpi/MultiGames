@@ -1,6 +1,6 @@
-const Game_Mode = {
+const GAME_MODE = {
     SPY: 'spy',
     DRAWING: 'drawing',
 };
 
-export { Game_Mode };
+export { GAME_MODE };

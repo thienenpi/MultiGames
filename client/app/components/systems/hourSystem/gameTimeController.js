@@ -1,4 +1,11 @@
-import { Game_Mode, Spy_Game_Status, Drawing_Game_Status, SPY_GAME_TIME, DRAWING_GAME_TIME } from "../../../constants";
+import { 
+    GAME_MODE,
+    SPY_GAME_STATUS,
+    DRAWING_GAME_STATUS,
+    SPY_GAME_TIME,
+    DRAWING_GAME_TIME,
+    GENERAL_GAME_TIME,
+} from "../../../constants";
 
 
 class GameTimeController {
@@ -8,6 +15,7 @@ class GameTimeController {
         this.timePaused = false;
         this.mode = '';
         this.status = '';
+        this.checkUpdateTime = GENERAL_GAME_TIME.CHECK_UPDATE_TIME * 1000; // 5000 ms
     }
 
     getTime() {
@@ -41,24 +49,31 @@ class GameTimeController {
     }
 
     setModeDrawing() {
-        this.mode = Game_Mode.DRAWING;
+        this.mode = GAME_MODE.DRAWING;
+        this.status = DRAWING_GAME_STATUS.WORD_SELECTION;
+        this.time = DRAWING_GAME_TIME.WORD_SELECTION_TIME;
+        // console.log("setModeDrawing");
     }
 
     setModeSpy() {
-        this.mode = Game_Mode.SPY;
+        this.mode = GAME_MODE.SPY;
+        this.status = SPY_GAME_STATUS.WORD_VIEW;
+        this.time = SPY_GAME_TIME.WORD_VIEW_TIME;
+        // console.log("setModeSpy");
     }
 
     getStatus() { return this.status; }
 
     setStatus(status) {
         this.status = status;
+    }
 
-        if (this.mode === Game_Mode.DRAWING) {
-            this.setDrawingGameTime();
-        }
-        else if (this.mode === Game_Mode.SPY) {
-            this.setSpyGameTime();
-        }
+    getCheckUpdateTime() {
+        return this.checkUpdateTime;
+    }
+
+    setCheckUpdateTime(time) {
+        this.checkUpdateTime = time;
     }
 
     resetTime() {
@@ -77,58 +92,58 @@ class GameTimeController {
 
     // set time for each status in spy game
     setSpyGameTime() {
-        if (this.status === Spy_Game_Status.WORD_VIEW) {
+        if (this.status === SPY_GAME_STATUS.WORD_VIEW) {
             this.time = SPY_GAME_TIME.WORD_VIEW_TIME;
-        } else if (this.status === Spy_Game_Status.DESCRIPTION) {
+        } else if (this.status === SPY_GAME_STATUS.DESCRIPTION) {
             this.time = SPY_GAME_TIME.DESCRIPTION_TIME;
-        } else if (this.status === Spy_Game_Status.VOTE) {
+        } else if (this.status === SPY_GAME_STATUS.VOTE) {
             this.time = SPY_GAME_TIME.VOTE_TIME;
-        } else if (this.status === Spy_Game_Status.RESULT) {
+        } else if (this.status === SPY_GAME_STATUS.RESULT) {
             this.time = SPY_GAME_TIME.RESULT_TIME;
         }
     }
 
     // set next status in spy game
     setSpyGameNextStatus() {
-        if (this.status === Spy_Game_Status.WORD_VIEW) {
-            this.status = Spy_Game_Status.DESCRIPTION;
-        } else if (this.status === Spy_Game_Status.DESCRIPTION) {
-            this.status = Spy_Game_Status.VOTE;
-        } else if (this.status === Spy_Game_Status.VOTE) {
-            this.status = Spy_Game_Status.RESULT;
-        } else if (this.status === Spy_Game_Status.RESULT) {
-            this.status = Spy_Game_Status.WORD_VIEW;
+        if (this.status === SPY_GAME_STATUS.WORD_VIEW) {
+            this.status = SPY_GAME_STATUS.DESCRIPTION;
+        } else if (this.status === SPY_GAME_STATUS.DESCRIPTION) {
+            this.status = SPY_GAME_STATUS.VOTE;
+        } else if (this.status === SPY_GAME_STATUS.VOTE) {
+            this.status = SPY_GAME_STATUS.RESULT;
+        } else if (this.status === SPY_GAME_STATUS.RESULT) {
+            this.status = SPY_GAME_STATUS.WORD_VIEW;
         }
     }
 
     // set time for each status in drawing game
     setDrawingGameTime() {
-        if (this.status === Drawing_Game_Status.WORD_SELECTION) {
+        if (this.status === DRAWING_GAME_STATUS.WORD_SELECTION) {
             this.time = DRAWING_GAME_TIME.WORD_SELECTION_TIME;
-        } else if (this.status === Drawing_Game_Status.DRAWING) {
+        } else if (this.status === DRAWING_GAME_STATUS.DRAWING) {
             this.time = DRAWING_GAME_TIME.DRAWING_TIME;
-        } else if (this.status === Drawing_Game_Status.RESULT) {
+        } else if (this.status === DRAWING_GAME_STATUS.RESULT) {
             this.time = DRAWING_GAME_TIME.RESULT_TIME;
         }
     }
 
     // set next status in drawing game
     setDrawingGameNextStatus() {
-        if (this.status === Drawing_Game_Status.WORD_SELECTION) {
-            this.status = Drawing_Game_Status.DRAWING;
-        } else if (this.status === Drawing_Game_Status.DRAWING) {
-            this.status = Drawing_Game_Status.RESULT;
-        } else if (this.status === Drawing_Game_Status.RESULT) {
-            this.status = Drawing_Game_Status.WORD_SELECTION;
+        if (this.status === DRAWING_GAME_STATUS.WORD_SELECTION) {
+            this.status = DRAWING_GAME_STATUS.DRAWING;
+        } else if (this.status === DRAWING_GAME_STATUS.DRAWING) {
+            this.status = DRAWING_GAME_STATUS.RESULT;
+        } else if (this.status === DRAWING_GAME_STATUS.RESULT) {
+            this.status = DRAWING_GAME_STATUS.WORD_SELECTION;
         }
     }
 
     setNextStatusAndTime() {
-        if (this.mode === Game_Mode.DRAWING) {
+        if (this.mode === GAME_MODE.DRAWING) {
             this.setDrawingGameNextStatus();
             this.setDrawingGameTime();
         }
-        else if (this.mode === Game_Mode.SPY) {
+        else if (this.mode === GAME_MODE.SPY) {
             this.setSpyGameNextStatus();
             this.setSpyGameTime();
         }

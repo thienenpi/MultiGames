@@ -6,12 +6,16 @@ import {
   Button,
   Text,
   ImageBackground,
-  TouchableHighlight,
   Image,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
+
+
 const SpyScreen = () => {
+  const navigation = useNavigation();
   const players = [
     { id: 1, name: "+" },
     { id: 2, name: "+" },
@@ -29,12 +33,12 @@ const SpyScreen = () => {
         style={styles.background}
       >
         <View style={styles.headerCotainer}>
-          <TouchableHighlight>
+          <Pressable>
             <Image
               source={require("../../assets/menu.png")}
               style={{ width: 32, height: 32 }}
             />
-          </TouchableHighlight>
+          </Pressable>
           <View style={styles.roomBanner}>
             <Text style={{ fontSize: 22, fontWeight: "bold", color: "white" }}>
               Số phòng VF3346338
@@ -45,12 +49,12 @@ const SpyScreen = () => {
               </Text>
             </View>
           </View>
-          <TouchableHighlight>
+          <Pressable onPress={() => navigation.navigate("Room Config")}>
             <Image
               source={require("../../assets/friend_setting.png")}
               style={{ width: 40, height: 40 }}
             />
-          </TouchableHighlight>
+          </Pressable>
         </View>
         <View style={styles.playersContainer}>
           {/* Hai cột người chơi */}
@@ -110,8 +114,8 @@ const SpyScreen = () => {
             style={styles.input}
             placeholder="Type a message..."
             multiline
-            // onChangeText={...}
-            // value={...}
+          // onChangeText={...}
+          // value={...}
           />
           {/* Send button */}
           <Button title="Send" onPress={() => null} />
