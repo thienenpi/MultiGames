@@ -5,20 +5,19 @@ const messageSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  recepientId: {
+  recipientId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  messageType: {
-    type: String,
-    enum: ["text", "image"],
-  },
   message: String,
-  imageUrl: String,
   timeStamp: {
     type: Date,
     default: Date.now,
   },
+  isSeen: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 const Message = mongoose.model('Message',messageSchema);

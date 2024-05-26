@@ -13,7 +13,7 @@ import EditProfile from "./EditProfile";
 import RoomHistory from "./RoomHistory";
 import RoomConfig from "./RoomConfig";
 import RoomCreate from "./RoomCreate";
-
+import FriendChat from "./FriendChat";
 export {
   Home,
   Profile,
@@ -30,4 +30,5 @@ export {
   RoomHistory,
   RoomConfig,
   RoomCreate,
+  FriendChat,
 };

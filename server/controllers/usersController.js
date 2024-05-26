@@ -57,9 +57,67 @@ const updateUser = async (req, res) => {
   }
 };
 
+const sendFriendRequest = async (req, res) => {
+  const { senderId, recipientId } = req.body;
+  try {
+    const sender = await User.findById(senderId);
+    const recipient = await User.findById(recipientId);
+
+    if (!sender || !recipient) {
+      return res.status(404).send('User not found');
+    }
+
+    // Kiểm tra xem yêu cầu đã được gửi trước đó hay chưa
+    if (sender.sentFriendRequests.includes(recipientId)) {
+      return res.status(400).send('Friend request already sent');
+    }
+
+    // Thêm recipient vào danh sách sentFriendRequests của sender
+    sender.sentFriendRequests.push(recipientId);
+    await sender.save();
+
+    res.status(200).send('Friend request sent');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+const acceptFriendRequest = async (req, res) => {
+  const { userId, friendId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    if (!user || !friend) {
+      return res.status(404).send('User not found');
+    }
+
+    if (!friend.sentFriendRequests.includes(userId)) {
+      return res.status(400).send('Friend request not found');
+    }
+
+    user.friends.push(friendId);
+    friend.friends.push(userId);
+
+    friend.sentFriendRequests = friend.sentFriendRequests.filter(
+      (id) => id.toString() !== userId.toString()
+    );
+
+    await user.save();
+    await friend.save();
+
+    res.status(200).send('Friend request accepted');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 module.exports = {
   createUser,
   getAllUsers,
   getUserById,
   updateUser,
+  sendFriendRequest,
+  acceptFriendRequest,
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, FlatList, Text } from "react-native";
 import styles from "./styles/chatbox.style";
 
-const ChatHistory = ({ message }) => {
+const ChatRoomHistory = ({ message }) => {
   return (
     <View style={styles.chatBox}>
       <FlatList
@@ -18,4 +18,4 @@ const ChatHistory = ({ message }) => {
     </View>
   );
 };
-export default ChatHistory;
+export default ChatRoomHistory;

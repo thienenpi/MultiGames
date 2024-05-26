@@ -1,4 +1,5 @@
 const socketIo = require("socket.io");
+const Message = require('./models/Message');
 
 // Store clients per room
 const rooms = {};
@@ -11,6 +12,31 @@ const socketSetup = (server) => {
 
   io.on("connection", (socket) => {
     console.log("A user connected");
+
+    socket.on('getMessages', async ({ userId, friendId }) => {
+      try {
+        const messages = await Message.find({
+          $or: [
+            { senderId: userId, recipientId: friendId },
+            { senderId: friendId, recipientId: userId }
+          ]
+        }).sort({ timestamp: 1 });
+        socket.emit('messages', messages);
+      } catch (err) {
+        console.error(err);
+        socket.emit('messages', []);
+      }
+    });
+
+    socket.on('sendMessage', async (message) => {
+      const newMessage = new Message(message);
+      const savedMessage = await newMessage.save();
+      io.emit('receiveMessage', savedMessage);
+    });
+  
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    });
 
     socket.on("startChat", (room) => {
       socket.join(room);

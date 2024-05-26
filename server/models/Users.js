@@ -9,6 +9,18 @@ const UserSchema = new mongoose.Schema(
     role_id: { type: String, required: true },
     status: { type: String, required: true },
     avatarUrl: { type: String, required: false },
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    sentFriendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );
