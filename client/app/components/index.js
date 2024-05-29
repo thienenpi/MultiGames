@@ -16,7 +16,6 @@ import Recommendation from "./profile/Recommendation";
 import OptionRow from "./profile/OptionRow";
 import DrawingOptionsBar from "./drawing/DrawingOptionsBar";
 import ChatHistory from "./ChatHistory";
-import CustomTimer from "./systems/hourSystem/CustomTimer";
 import GameTimeController from "./systems/hourSystem/gameTimeController";
 import KeywordSelection from "./systems/hourSystem/drawingGame/KeywordSelection";
 
@@ -39,7 +38,6 @@ export {
   OptionRow,
   DrawingOptionsBar,
   ChatHistory,
-  CustomTimer,
   GameTimeController,
   KeywordSelection,
 };

@@ -1,12 +1,13 @@
 // General Game Time
 const GENERAL_GAME_TIME = {
-    WAITING_TIME: 3, // Thời gian chờ trong 3 giây
+    WAITING_TIME: 5, // Thời gian chờ trong 5 giây
     RESULT_TIME: 20, // Thời gian hiển thị kết quả trong 20 giây
+    CHECK_UPDATE_TIME: 5, // Thời gian kiểm tra cập nhật trong 5 giây
 };
 
 // Spy Game Time
 const SPY_GAME_TIME = {
-    WORD_VIEW_TIME: 4, // Thời gian xem từ trong 4 giây
+    WORD_VIEW_TIME: 5, // Thời gian xem từ trong 5 giây
     DESCRIPTION_TIME: 40, // Thời gian mô tả trong 40 giây
     VOTE_TIME: 15, // Thời gian vote trong 15 giây
     RESULT_TIME: GENERAL_GAME_TIME.RESULT_TIME, // Thời gian hiển thị kết quả trong 20 giây

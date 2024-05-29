@@ -207,5 +207,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 8,
   },
+
+  timer: {
+    color: "white",
+    fontSize: 16,
+    marginLeft: 10,
+    height: 35,
+    textAlignVertical: "center",
+  },
 });
 export default styles;

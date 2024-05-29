@@ -58,7 +58,7 @@ const getRoomsOwner = async (req, res) => {
 
 const getRoomsGuest = async (req, res) => {
   try {
-    const rooms = await Room.find({ list_guest: req.params.id });
+    const rooms = await Room.find({ history_guest: req.params.id });
     res.status(200).json(rooms);
   } catch (error) {
     res.status(500).json("Failed to retrieve rooms guest", error);
