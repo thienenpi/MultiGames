@@ -1,5 +1,14 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, Modal, Pressable, Animated, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Modal,
+  Pressable,
+  Animated,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -8,7 +17,14 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { socket } from "../utils/config";
 import styles from "./styles/guessingWord.style";
-import { WhiteBoard, DrawingOptionsBar, ChatHistory, CustomTimer, GameTimeController, KeywordSelection } from "../components";
+import {
+  WhiteBoard,
+  DrawingOptionsBar,
+  ChatHistory,
+  GameTimeController,
+  KeywordSelection,
+  EndGameResult,
+} from "../components";
 import { getUserById } from "../api/UserApi";
 import { isRoomFull } from "../api/RoomApi";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
@@ -37,7 +53,7 @@ const GuessingWord = () => {
   const [showKeywordDialog, setShowKeywordDialog] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showAddFriendDialog, setShowAddFriendDialog] = useState(false);
-  const [showResultDialog, setShowResultDialog] = useState(false);
+  const [showResultDialog, setShowResultDialog] = useState(true);
 
   // Set game time
   const gameTimeController = new GameTimeController();
@@ -62,9 +78,9 @@ const GuessingWord = () => {
     captureAndSaveImage().then(hanldeDialog());
   };
 
-  const handleSendImage = () => { };
+  const handleSendImage = () => {};
 
-  const handleChooseIcon = () => { };
+  const handleChooseIcon = () => {};
 
   const handleStart = () => {
     setIsStart(true); // Update state to show the whiteboard
@@ -128,7 +144,12 @@ const GuessingWord = () => {
 
   const handleGamingTimelines = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
-      if (checkRoomFull() && {/*checkYourTurn()*/ }) {
+      if (
+        checkRoomFull() &&
+        {
+          /*checkYourTurn()*/
+        }
+      ) {
         closeAllModal();
         setShowKeywordDialog(true);
       }
@@ -166,6 +187,7 @@ const GuessingWord = () => {
 
         if (res.status === 200) {
           const user = res.data;
+          user['score'] = 0;
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
@@ -181,13 +203,12 @@ const GuessingWord = () => {
       closeAllModal();
       setShowKeywordDialog(true);
     }
-
   }, []);
 
   // UseEffect to handle game time
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimer(prevTimer => {
+      setTimer((prevTimer) => {
         if (prevTimer <= 0) {
           // Set next status and time
           gameTimeController.setNextStatusAndTime();
@@ -209,24 +230,23 @@ const GuessingWord = () => {
   return (
     <View style={styles.container}>
       {/* Show invite dialog */}
-      {showInviteDialog && (
-        <View></View>
-      )}
+      {showInviteDialog && <View></View>}
 
       {/* Show keyword dialog */}
-      {showKeywordDialog && (
-        <KeywordSelection isShow={true} keyword={"Keyword"}></KeywordSelection>
-      )}
+      {/* <KeywordSelection
+        isShow={showKeywordDialog}
+        keyword={"Keyword"}
+      ></KeywordSelection> */}
 
       {/* Show result dialog */}
-      {showResultDialog && (
-        <View></View>
-      )}
+      <EndGameResult
+        items={usersInRoom}
+        isShow={true}
+        keyword={"Trò chơi kết thúc"}
+      ></EndGameResult>
 
       {/* Show add friend dialog */}
-      {showAddFriendDialog && (
-        <View></View>
-      )}
+      {showAddFriendDialog && <View></View>}
 
       {/* Show download image dialog */}
       {showDownloadImageDialog && (
@@ -259,7 +279,12 @@ const GuessingWord = () => {
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
         <Pressable onPress={() => navigation.navigate("Room Config")}>
-          <Ionicons name="settings" size={26} color="white" style={{ margin: 4 }} />
+          <Ionicons
+            name="settings"
+            size={26}
+            color="white"
+            style={{ margin: 4 }}
+          />
         </Pressable>
       </View>
 
@@ -397,7 +422,7 @@ const GuessingWord = () => {
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => { }}>
+            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
               <Ionicons name="download" size={24} />
             </TouchableOpacity>
             <TouchableOpacity

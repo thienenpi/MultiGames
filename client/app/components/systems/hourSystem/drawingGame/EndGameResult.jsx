@@ -5,10 +5,12 @@ import {
   Modal,
   Pressable,
   StyleSheet,
+  FlatList,
 } from "react-native";
 import { SIZES } from "../../../../constants";
+import RankColumns from "../../ranking/drawing/RankColumns";
 
-const KeywordSelection = ({ isShow, keyword }) => {
+const EndGameResult = ({ isShow, keyword, items }) => {
   const [show, setShow] = useState(isShow);
 
   useEffect(() => {
@@ -28,15 +30,18 @@ const KeywordSelection = ({ isShow, keyword }) => {
     >
       <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
       <View style={styles.modalView}>
-        <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 20 }}>
-          {keyword}
-        </Text>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{keyword}</Text>
+        </View>
+        <View style={styles.body}>
+          <RankColumns items={items}></RankColumns>
+        </View>
       </View>
     </Modal>
   );
 };
 
-export default KeywordSelection;
+export default EndGameResult;
 
 const styles = StyleSheet.create({
   overlay: {
@@ -49,13 +54,30 @@ const styles = StyleSheet.create({
   },
 
   modalView: {
-    top: SIZES.height / 4,
-    bottom: SIZES.height / 4,
-    left: SIZES.width / 9,
-    right: SIZES.width / 9,
+    top: SIZES.height / 5,
+    bottom: SIZES.height / 5,
+    left: SIZES.width / 11,
+    right: SIZES.width / 11,
     backgroundColor: "white",
     alignItems: "center",
     borderRadius: 10,
     position: "absolute",
+  },
+
+  header: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  headerText: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+
+  body: {
+    flex: 9,
+    width: "100%",
+    borderRadius: 10,
   },
 });
