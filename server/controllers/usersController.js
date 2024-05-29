@@ -68,13 +68,13 @@ const sendFriendRequest = async (req, res) => {
     }
 
     // Kiểm tra xem yêu cầu đã được gửi trước đó hay chưa
-    if (sender.sentFriendRequests.includes(recipientId)) {
+    if (recipient.sentFriendRequests.includes(sender)) {
       return res.status(400).send('Friend request already sent');
     }
 
     // Thêm recipient vào danh sách sentFriendRequests của sender
-    sender.sentFriendRequests.push(recipientId);
-    await sender.save();
+    recipient.sentFriendRequests.push(sender);
+    await recipient.save();
 
     res.status(200).send('Friend request sent');
   } catch (error) {
