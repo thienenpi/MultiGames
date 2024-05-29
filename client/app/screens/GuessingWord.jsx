@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { socket } from "../utils/config";
 import styles from "./styles/guessingWord.style";
-import { WhiteBoard, DrawingOptionsBar, ChatHistory, GameTimeController, KeywordSelection } from "../components";
+import { WhiteBoard, DrawingOptionsBar, ChatHistory, GameTimeController, KeywordSelection, EndTurnResult } from "../components";
 import { getUserById } from "../api/UserApi";
 import { isRoomFull } from "../api/RoomApi";
 import { getKeyWords } from "../api/KeywordApi";
@@ -33,17 +33,20 @@ const GuessingWord = () => {
   const [isUndo, setIsUndo] = useState(false);
   const [isClear, setIsClear] = useState(false);
   const [usersInRoom, setUsersInRoom] = useState([]);
+  const [userInfoList, setUserInfoList] = useState([]);
 
   const [showDownloadImageDialog, setShowDownloadImageDialog] = useState(false);
   const [showKeywordDialog, setShowKeywordDialog] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showAddFriendDialog, setShowAddFriendDialog] = useState(false);
-  const [showResultDialog, setShowResultDialog] = useState(false);
+  const [showEndTurnResultDialog, setShowEndTurnResultDialog] = useState(false);
+  const [showEndGameResultDialog, setShowEndGameResultDialog] = useState(false);
 
   const [selectedKeyword, setSelectedKeyword] = useState({});
   const [keywordList, setKeywordList] = useState([]);
 
   const [playerIndex, setPlayerIndex] = useState(0);
+  const [playerInfo, setPlayerInfo] = useState({});
 
   // Set game time
   const gameTimeController = new GameTimeController();
@@ -85,12 +88,14 @@ const GuessingWord = () => {
     setShowAddFriendDialog(false);
     setShowInviteDialog(false);
     setShowKeywordDialog(false);
-    setShowResultDialog(false);
+    setShowEndTurnResultDialog(false);
+    setShowEndGameResultDialog(false);
   };
 
   const handleKeywordSelect = (keyword) => {
     setSelectedKeyword(keyword);
     setShowKeywordDialog(false);
+    setTimer(0);
   };
 
   const toggleOptions = (optionNumber) => {
@@ -128,6 +133,19 @@ const GuessingWord = () => {
     }
   };
 
+  const getAllUsers = async () => {
+    setUsersInRoom([]);
+    for (let userId of roomInfo.list_guest) {
+      const res = await getUserById({ id: userId });
+
+      if (res.status === 200) {
+        const user = res.data;
+        console.log(user.name);
+        setUsersInRoom((prevUsers) => [...prevUsers, user]);
+      }
+    }
+  };
+
   const checkRoomFull = async () => {
     const idRoom = roomInfo._id;
     return await isRoomFull({ id: idRoom });
@@ -138,26 +156,42 @@ const GuessingWord = () => {
   };
 
   const updatePlayerIndex = () => {
-    if (playerIndex <= usersInRoom.length) {
-      setPlayerIndex(playerIndex + 1);
-    } else {
-      setPlayerIndex(0);
+    setPlayerIndex((prevIndex) =>
+      prevIndex < roomInfo.list_guest.length - 1 ? prevIndex + 1 : 0
+    );
+  };
+
+  // Set player info when playerIndex changes
+  useEffect(() => {
+    if (usersInRoom.length > 0) {
+      setPlayerInfo(usersInRoom[playerIndex]);
+      console.log("Player index: ", playerIndex, "Player info: ", usersInRoom[playerIndex]?.name);
     }
-  }
+  }, [playerIndex, usersInRoom]);
 
   const handleGamingTimelines = () => {
     closeAllModal();
-    console.log(selectedKeyword);
+    console.log(gameTimeController.getStatus());
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
       if (checkRoomFull() && { /*checkYourTurn()*/ }) {
         updatePlayerIndex();
         setSelectedKeyword({});
         setShowKeywordDialog(true);
       }
-    } else if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
-      setShowResultDialog(true);
+    }
+    if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
+    }
+    if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
+      setShowEndTurnResultDialog(true);
     }
   };
+
+  // Get first player info when starting the game
+  useEffect(() => {
+    if (usersInRoom.length === roomInfo.list_guest.length) {
+      setPlayerInfo(usersInRoom[0]);
+    }
+  }, [usersInRoom]);
 
   // UseEffect to join the room and get chat history
   useEffect(() => {
@@ -180,21 +214,10 @@ const GuessingWord = () => {
 
   // UseEffect to get all users in the room
   useEffect(() => {
-    const getAllUsers = async () => {
-      setUsersInRoom([]);
-      for (let userId of roomInfo.list_guest) {
-        const res = await getUserById({ id: userId });
-
-        if (res.status === 200) {
-          const user = res.data;
-          setUsersInRoom((prevUsers) => [...prevUsers, user]);
-        }
-      }
-    };
-
     setMessageHistory([]);
     socket.emit("getChatHistory", roomInfo._id);
 
+    // Get all users in the room
     getAllUsers();
 
     // When starting the game, show the keyword dialog if the room is full
@@ -215,7 +238,6 @@ const GuessingWord = () => {
     if (keywordList.length === 0) {
       fetchKeyword();
     }
-    console.log("Keyword list: ", keywordList.length);
   }, [keywordList]);
 
   // UseEffect to handle game time
@@ -223,7 +245,6 @@ const GuessingWord = () => {
     const interval = setInterval(() => {
       setTimer(prevTimer => {
         if (prevTimer <= 0) {
-          console.log("Random keyword: ", keywordList.length);
           // Check if a keyword has been selected
           if (Object.keys(selectedKeyword).length === 0) {
             const randomIndex = Math.floor(Math.random() * keywordList.length);
@@ -245,7 +266,7 @@ const GuessingWord = () => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [keywordList.length, Object.keys(selectedKeyword).length]);
+  }, [keywordList.length]);
 
   return (
     <View style={styles.container}>
@@ -261,10 +282,13 @@ const GuessingWord = () => {
         onKeywordSelect={handleKeywordSelect}
       />
 
-      {/* Show result dialog */}
-      {showResultDialog && (
-        <View></View>
-      )}
+      {/* Show end turn result dialog */}
+      <EndTurnResult
+        isShow={showEndTurnResultDialog}
+        player={playerInfo.name}
+        image={capturedImage}
+        keyword={selectedKeyword.keyword}
+      />
 
       {/* Show add friend dialog */}
       {showAddFriendDialog && (
@@ -272,7 +296,7 @@ const GuessingWord = () => {
       )}
 
       {/* Show download image dialog */}
-      {showDownloadImageDialog && (
+      {/* {showDownloadImageDialog && (
         <Modal
           animationType="fade"
           transparent={true}
@@ -291,7 +315,7 @@ const GuessingWord = () => {
             </View>
           </View>
         </Modal>
-      )}
+      )} */}
 
       {/* AppBar */}
       <View style={styles.appBar}>
@@ -467,13 +491,6 @@ const GuessingWord = () => {
         <View style={styles.userImagesContainer}>
 
           {/* Hiển thị hình ảnh của các user trong phòng */}
-          {/* usersInRoom.map((user) => (
-              <Image
-                key={user._id}
-                source={{ uri: user.avatarUrl }}
-                style={styles.userImage}
-              />
-            )) */}
           {usersInRoom.map((user, index) => (
             <Image
               key={user._id}
