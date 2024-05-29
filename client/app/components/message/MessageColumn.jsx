@@ -11,11 +11,11 @@ const MessageColumn = ({ items }) => {
   const navigation = useNavigation();
 
   const handlePress = (item) => {
-    navigation.navigate("Friend Chat", {item});
+    navigation.navigate("Friend Chat", { item });
   };
 
   const renderItem = ({ item }) => (
-   <MessageCardView item={item} onPress={() => handlePress(item)} />
+    <MessageCardView item={item} onPress={() => handlePress(item)} />
   );
   return (
     <View style={styles.container}>
@@ -23,7 +23,7 @@ const MessageColumn = ({ items }) => {
         <Text style={styles.notiText}>
           No messages to show. Let's start a conversation ^.^
         </Text>
-      ) :(
+      ) : (
         <FlatList
           data={items}
           renderItem={renderItem}

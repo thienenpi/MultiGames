@@ -24,6 +24,7 @@ import {
   GameTimeController,
   KeywordSelection,
   EndGameResult,
+  AddFriendDialog,
 } from "../components";
 import { getUserById } from "../api/UserApi";
 import { isRoomFull } from "../api/RoomApi";
@@ -48,6 +49,7 @@ const GuessingWord = () => {
   const [isUndo, setIsUndo] = useState(false);
   const [isClear, setIsClear] = useState(false);
   const [usersInRoom, setUsersInRoom] = useState([]);
+  const [userToAddFriend, setUserToAddFriend] = useState(null);
 
   const [showDownloadImageDialog, setShowDownloadImageDialog] = useState(false);
   const [showKeywordDialog, setShowKeywordDialog] = useState(false);
@@ -92,7 +94,7 @@ const GuessingWord = () => {
 
   const closeAllModal = () => {
     setShowDownloadImageDialog(false);
-    setShowAddFriendDialog(false);
+    // setShowAddFriendDialog(false);
     setShowInviteDialog(false);
     setShowKeywordDialog(false);
     setShowResultDialog(false);
@@ -187,7 +189,7 @@ const GuessingWord = () => {
 
         if (res.status === 200) {
           const user = res.data;
-          user['score'] = 0;
+          user["score"] = 0;
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
@@ -239,14 +241,21 @@ const GuessingWord = () => {
       ></KeywordSelection> */}
 
       {/* Show result dialog */}
-      <EndGameResult
+      {/* <EndGameResult
         items={usersInRoom}
         isShow={true}
         keyword={"Trò chơi kết thúc"}
-      ></EndGameResult>
+      ></EndGameResult> */}
 
       {/* Show add friend dialog */}
-      {showAddFriendDialog && <View></View>}
+      {showAddFriendDialog && (
+        <AddFriendDialog
+          isShow={showAddFriendDialog}
+          onChangeShow={setShowAddFriendDialog}
+          keyword={"Add friend"}
+          user={userToAddFriend}
+        ></AddFriendDialog>
+      )}
 
       {/* Show download image dialog */}
       {showDownloadImageDialog && (
@@ -449,11 +458,19 @@ const GuessingWord = () => {
           {
             // Hiển thị hình ảnh của các user trong phòng
             usersInRoom.map((user) => (
-              <Image
+              <TouchableOpacity
                 key={user._id}
-                source={{ uri: user.avatarUrl }}
-                style={styles.userImage}
-              />
+                onPress={() => {
+                  setShowAddFriendDialog(true);
+                  setUserToAddFriend(user);
+                }}
+              >
+                <Image
+                  key={user._id}
+                  source={{ uri: user.avatarUrl }}
+                  style={styles.userImage}
+                />
+              </TouchableOpacity>
             ))
           }
         </View>

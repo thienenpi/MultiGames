@@ -5,7 +5,6 @@ import {
   Modal,
   Pressable,
   StyleSheet,
-  FlatList,
 } from "react-native";
 import { SIZES } from "../../../../constants";
 import RankColumns from "../../ranking/drawing/RankColumns";

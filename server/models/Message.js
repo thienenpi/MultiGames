@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  message: String,
+  messages: String,
   timeStamp: {
     type: Date,
     default: Date.now,
@@ -17,9 +17,9 @@ const messageSchema = new mongoose.Schema({
   isSeen: {
     type: Boolean,
     default: false,
-  }
+  },
 });
 
-const Message = mongoose.model('Message',messageSchema);
+const Message = mongoose.model("Message", messageSchema);
 
 module.exports = Message;
