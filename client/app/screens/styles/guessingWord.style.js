@@ -76,6 +76,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#ccc",
   },
 
+  highlightedUserImage: {
+    borderColor: 'yellow',
+    borderWidth: 3,
+  },
+
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",

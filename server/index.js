@@ -10,6 +10,7 @@ const server = http.createServer(app);
 const rolesRouter = require("./routes/role");
 const userRouter = require("./routes/user");
 const roomRouter = require("./routes/room");
+const keywordRouter = require("./routes/keyword");
 
 dotenv.config();
 mongoose
@@ -27,6 +28,7 @@ app.get("/", (req, res) =>
 app.use("/api/roles", rolesRouter);
 app.use("/api/users", userRouter);
 app.use("/api/rooms", roomRouter);
+app.use("/api/keywords", keywordRouter);
 
 // Pass the server to the socket setup function
 socketSetup(server);
