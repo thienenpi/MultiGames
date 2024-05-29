@@ -1,9 +1,13 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { COLORS, SIZES } from "../../../../constants";
 import CustomButton from "../../../CustomButton";
+import { sendFriendRequest } from "../../../../api/UserApi";
+import { AuthContext } from "../../../../context/AuthContext";
 
 const RankUserView = ({ item }) => {
+  const { userInfo } = useContext(AuthContext);
+
   return (
     <View style={styles.container}>
       <View style={styles.rank}>
@@ -21,6 +25,12 @@ const RankUserView = ({ item }) => {
           styles={styles}
           label={"Kết bạn"}
           isValid={true}
+          onPress={async () => {
+            await sendFriendRequest({
+              senderId: userInfo._id,
+              recipientId: item._id,
+            });
+          }}
         ></CustomButton>
       </View>
     </View>
@@ -38,6 +48,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 70,
     backgroundColor: COLORS.white,
+    borderRadius: 10,
   },
 
   rank: {

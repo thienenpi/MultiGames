@@ -15,7 +15,7 @@ import Account from "./profile/Account";
 import Recommendation from "./profile/Recommendation";
 import OptionRow from "./profile/OptionRow";
 import DrawingOptionsBar from "./drawing/DrawingOptionsBar";
-import ChatHistory from "./ChatHistory";
+import ChatHistory from "./ChatRoomHistory";
 import GameTimeController from "./systems/hourSystem/gameTimeController";
 import KeywordSelection from "./systems/hourSystem/drawingGame/KeywordSelection";
 import EndGameResult from "./systems/hourSystem/drawingGame/EndGameResult";

@@ -13,6 +13,7 @@ import {
   RoomHistory,
   RoomConfig,
   RoomCreate,
+  FriendChat
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
@@ -88,6 +89,12 @@ const AppStack = () => {
       <Stack.Screen
         name="Room Config"
         component={RoomConfig}
+        options={{ headerShown: false }}
+      ></Stack.Screen>
+
+      <Stack.Screen
+        name="Friend Chat"
+        component={FriendChat}
         options={{ headerShown: false }}
       ></Stack.Screen>
     </Stack.Navigator>

@@ -8,9 +8,9 @@ import {
 import React from "react";
 import { COLORS, SIZES } from "../../constants";
 
-const MessageCardView = ({ item }) => {
+const MessageCardView = ({ item, onPress }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
         <ImageBackground
           source={{

@@ -65,4 +65,48 @@ const getUserById = async ({ id }) => {
   }
 };
 
-export { userLogin, userRegister, getUserById };
+const sendFriendRequest = async ({ senderId, recipientId }) => {
+  try {
+    const url = "/users/sendFriendRequest";
+    const config = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: { senderId, recipientId },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
+const acceptFriendRequest = async ({ userId, friendId }) => {
+  try {
+    const url = "/users/acceptFriendRequest";
+    const config = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: { userId, friendId },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
+export { userLogin, userRegister, getUserById, sendFriendRequest, acceptFriendRequest };
