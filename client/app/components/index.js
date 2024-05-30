@@ -18,7 +18,8 @@ import DrawingOptionsBar from "./drawing/DrawingOptionsBar";
 import ChatHistory from "./ChatHistory";
 import GameTimeController from "./systems/hourSystem/gameTimeController";
 import KeywordSelection from "./systems/hourSystem/drawingGame/KeywordSelection";
-import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
+import EndTurnResult from "./systems/hourSystem/drawingGame/endTurn/EndTurnResult";
+import HeaderEndTurnResult from "./systems/hourSystem/drawingGame/endTurn/HeaderEndTurnResult";
 
 export {
   CustomButton,
@@ -42,4 +43,5 @@ export {
   GameTimeController,
   KeywordSelection,
   EndTurnResult,
+  HeaderEndTurnResult,
 };

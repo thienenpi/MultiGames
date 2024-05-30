@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     width: SIZES.width,
     backgroundColor: "#79c060",
     padding: 10,
-    // backgroundColor: COLORS.button
   },
 
   userImagesContainer: {

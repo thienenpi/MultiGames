@@ -46,7 +46,7 @@ const KeywordSelection = ({ isShow, keywordList, onKeywordSelect }) => {
           style={
             styles.title
           }
-        >Mời bạn chọn từ khóa ^^</Text>
+        >Hãy chọn từ khóa để vẽ</Text>
         <FlatList
           data={randomKeyword}
           keyExtractor={(item, index) => index.toString()}
@@ -98,16 +98,18 @@ const styles = StyleSheet.create({
     width: "45%",
     marginVertical: 8,
     marginHorizontal: 8,
-    backgroundColor: "white",
-    borderColor: "#4FBFFF",
+    backgroundColor: "lightgreen",
+    borderColor: "green",
     borderWidth: 2,
     borderRadius: 10,
     padding: 8,
+    opacity: 0.6,
     justifyContent: "center",
     alignItems: "center",
   },
 
   keyword: {
     fontSize: 16,
+    color: "green",
   },
 });

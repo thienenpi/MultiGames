@@ -21,7 +21,7 @@ const GuessingWord = () => {
   const { roomInfo } = route.params;
   const viewShotRef = useRef(null);
 
-  const [isStart, setIsStart] = useState(false);
+  const [isStart, setIsStart] = useState(true);
   const [capturedImage, setCapturedImage] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [option, setOption] = useState(0);
@@ -110,6 +110,7 @@ const GuessingWord = () => {
 
   const captureAndSaveImage = async () => {
     try {
+      setShowOptions(false);
       const uri = await viewShotRef.current.capture();
       setCapturedImage(uri);
     } catch (error) {
@@ -182,7 +183,12 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
-      setShowEndTurnResultDialog(true);
+      captureAndSaveImage().then(() => {
+        console.log("Player info: ", playerInfo);
+        console.log("Image: ", capturedImage);
+        console.log("Keyword: ", selectedKeyword.keyword);
+        setShowEndTurnResultDialog(true);
+      });
     }
   };
 
@@ -246,7 +252,8 @@ const GuessingWord = () => {
       setTimer(prevTimer => {
         if (prevTimer <= 0) {
           // Check if a keyword has been selected
-          if (Object.keys(selectedKeyword).length === 0) {
+          console.log(Object.keys(selectedKeyword).length);
+          if (Object.keys(selectedKeyword).length === 0 && gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
             const randomIndex = Math.floor(Math.random() * keywordList.length);
             handleKeywordSelect(keywordList[randomIndex]);
           }
@@ -285,9 +292,10 @@ const GuessingWord = () => {
       {/* Show end turn result dialog */}
       <EndTurnResult
         isShow={showEndTurnResultDialog}
-        player={playerInfo.name}
+        player={playerInfo}
         image={capturedImage}
-        keyword={selectedKeyword.keyword}
+        // keyword={selectedKeyword.keyword}
+        numPlayersCorrect={2}
       />
 
       {/* Show add friend dialog */}
@@ -296,7 +304,7 @@ const GuessingWord = () => {
       )}
 
       {/* Show download image dialog */}
-      {/* {showDownloadImageDialog && (
+      {showDownloadImageDialog && (
         <Modal
           animationType="fade"
           transparent={true}
@@ -315,7 +323,7 @@ const GuessingWord = () => {
             </View>
           </View>
         </Modal>
-      )} */}
+      )}
 
       {/* AppBar */}
       <View style={styles.appBar}>
