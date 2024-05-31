@@ -127,7 +127,28 @@ const getRoomsGuest = async ({ id }) => {
   }
 };
 
-const updateRoom = async ({ id }) => {
+const getRoomGuests = async ({ id }) => {
+  try {
+    const url = `/rooms/id=${id}/guests`;
+    const config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
+const updateRoom = async ({ id, data }) => {
   try {
     const url = `/rooms/id=${id}`;
     const config = {
@@ -189,7 +210,7 @@ const isRoomFull = async ({ id }) => {
       throw error;
     }
   }
-}
+};
 
 export {
   createRoom,
@@ -201,4 +222,5 @@ export {
   updateRoom,
   deleteRoom,
   isRoomFull,
+  getRoomGuests
 };

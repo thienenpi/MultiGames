@@ -32,16 +32,16 @@ const getRooms = async (req, res) => {
 
 const getActiveRoom = async (req, res) => {
   try {
-    const rooms = await Room.findOne({ status: "active" });
+    const rooms = await Room.find();
+    var room = null;
 
-    // check if there is no active room
-    if (!rooms) {
-      // response with null
-      res.status(200).json(null);
-      return;
-    }
+    rooms.forEach((r) => {
+      if (r.status === "active" && r.list_guest.length < r.capacity) {
+        room = r;
+      }
+    });
 
-    res.status(200).json(rooms);
+    res.status(200).json(room);
   } catch (error) {
     res.status(500).json("Failed to retrieve room active games", error);
   }
@@ -62,6 +62,15 @@ const getRoomsGuest = async (req, res) => {
     res.status(200).json(rooms);
   } catch (error) {
     res.status(500).json("Failed to retrieve rooms guest", error);
+  }
+};
+
+const getRoomGuests = async (req, res) => {
+  try {
+    const room = await Room.findById(req.params.id);
+    res.status(200).json(room.list_guest);
+  } catch (error) {
+    res.status(500).json("Failed to retrieve room guests", error);
   }
 };
 
@@ -116,4 +125,5 @@ module.exports = {
   updateRoom,
   deleteRoom,
   isRoomFull,
+  getRoomGuests,
 };

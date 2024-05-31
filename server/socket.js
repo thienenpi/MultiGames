@@ -20,6 +20,8 @@ const socketSetup = (server) => {
       }
 
       rooms[room].push(socket);
+      // emit to others in the room
+      socket.to(room).emit("join", room);
 
       // Remove any existing listeners to avoid memory leaks
       socket.removeAllListeners("draw");
@@ -80,6 +82,8 @@ const socketSetup = (server) => {
 
     socket.on("leave", (room) => {
       console.log(`A user leaved from ${room}`);
+      socket.to(room).emit("leave", room);
+    //   socket.removeAllListeners("join");
 
       const index = rooms[room].indexOf(socket);
 

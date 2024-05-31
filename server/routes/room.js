@@ -10,5 +10,6 @@ router.get('/id=:id/isFull', roomController.isRoomFull);
 router.put('/id=:id', roomController.updateRoom);
 router.delete('/id=:id', roomController.deleteRoom);
 router.post('/create', roomController.createRoom);
+router.get('/id=:id/guests', roomController.getRoomGuests);
 
 module.exports = router

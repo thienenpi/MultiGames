@@ -6,7 +6,8 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard } from "../components";
-import { getActiveRoom } from "../api/RoomApi";
+import { getActiveRoom } from "../api";
+import { joinRoom } from "../services";
 
 const Dashboard = () => {
   const { userInfo } = useContext(AuthContext);
@@ -21,6 +22,8 @@ const Dashboard = () => {
       navigation.navigate("Room Create");
       return;
     }
+
+    await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
 
     navigation.navigate("Guessing Word", { roomInfo: roomInfo });
   };

@@ -26,9 +26,9 @@ import {
   EndGameResult,
   AddFriendDialog,
 } from "../components";
-import { getUserById } from "../api/UserApi";
-import { isRoomFull } from "../api/RoomApi";
+import { getRoomGuests, isRoomFull, getUserById } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
+import { leaveRoom } from "../services/Rooms";
 
 const GuessingWord = () => {
   const route = useRoute();
@@ -176,6 +176,7 @@ const GuessingWord = () => {
     });
 
     return () => {
+      leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
       socket.emit("leave", roomInfo._id);
     };
   }, []);
@@ -184,7 +185,10 @@ const GuessingWord = () => {
   useEffect(() => {
     const getAllUsers = async () => {
       setUsersInRoom([]);
-      for (let userId of roomInfo.list_guest) {
+      const res = await getRoomGuests({ id: roomInfo._id });
+      const users = res.data;
+
+      for (let userId of users) {
         const res = await getUserById({ id: userId });
 
         if (res.status === 200) {
@@ -199,6 +203,14 @@ const GuessingWord = () => {
     socket.emit("getChatHistory", roomInfo._id);
 
     getAllUsers();
+
+    socket.on("join", (room) => {
+      setTimeout(async () => getAllUsers(), 500);
+    });
+
+    socket.on("leave", (room) => {
+      setTimeout(async () => getAllUsers(), 500);
+    });
 
     // When starting the game, show the keyword dialog if the room is full
     if (checkRoomFull()) {
