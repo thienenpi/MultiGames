@@ -22,6 +22,27 @@ const userLogin = async ({ data }) => {
   }
 };
 
+const userLogout = async ({ id }) => {
+  try {
+    const url = `/users/logout/id=${id}`;
+    const config = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
 const userRegister = async ({ data }) => {
   try {
     const url = "/users/register/";
@@ -109,4 +130,11 @@ const acceptFriendRequest = async ({ userId, friendId }) => {
   }
 };
 
-export { userLogin, userRegister, getUserById, sendFriendRequest, acceptFriendRequest };
+export {
+  userLogin,
+  userLogout,
+  userRegister,
+  getUserById,
+  sendFriendRequest,
+  acceptFriendRequest,
+};

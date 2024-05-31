@@ -1,7 +1,7 @@
-const User = require('../models/Users');
-const CryptoJS = require('crypto-js');
-const dotenv = require('dotenv');
-const jwt = require('jsonwebtoken');
+const User = require("../models/Users");
+const CryptoJS = require("crypto-js");
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
 
 dotenv.config();
 
@@ -10,7 +10,7 @@ const login = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-      return res.status(401).json('Email not found');
+      return res.status(401).json("Email not found");
     }
 
     const decryptedPassword = CryptoJS.AES.decrypt(
@@ -20,12 +20,19 @@ const login = async (req, res) => {
     const pass = decryptedPassword.toString(CryptoJS.enc.Utf8);
 
     if (pass !== req.body.password) {
-      return res.status(401).json('Wrong password');
+      return res.status(401).json("Wrong password");
+    }
+
+    if (user.status === "logged in") {
+      return res.status(403).json("User already logged in");
     }
 
     const userToken = jwt.sign({ id: user.id }, process.env.JWT_SEC, {
-      expiresIn: '7d',
+      expiresIn: "7d",
     });
+
+    user.status = "logged in";
+    await user.save();
 
     const { __v, createdAt, updatedAt, ...userData } = user._doc;
 
@@ -48,14 +55,25 @@ const register = async (req, res) => {
     await newUser.save();
 
     const userToken = jwt.sign({ id: newUser.id }, process.env.JWT_SEC, {
-      expiresIn: '7d',
+      expiresIn: "7d",
     });
 
     const { __v, createdAt, updatedAt, ...userData } = newUser._doc;
 
     res.status(200).json({ ...userData, token: userToken });
   } catch (error) {
-    console.error('Failed to register: ', error);
+    console.error("Failed to register: ", error);
+    res.status(500).json(error);
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    user.status = "logged out";
+    await user.save();
+    res.status(200).json("Logout successfully");
+  } catch (error) {
     res.status(500).json(error);
   }
 };
@@ -63,4 +81,5 @@ const register = async (req, res) => {
 module.exports = {
   login,
   register,
+  logout,
 };

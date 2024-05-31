@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
-import { userLogin, userRegister } from "../api/UserApi";
+import { userLogin, userLogout, userRegister } from "../api/UserApi";
 import { Alert } from "react-native";
 // import auth from "@react-native-firebase/auth";
 
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
       console.log("token ", userToken);
     } else {
-      Alert.alert(res.data, "Please try again with another password", [
+      Alert.alert("Login failed", res.data, [
         {
           text: "Try again",
           style: "cancel",
@@ -86,12 +86,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    setIsLoading(true);
-    setUserToken(null);
-    AsyncStorage.removeItem("userToken");
-    AsyncStorage.removeItem("userInfo");
-    setIsLoading(false);
+  const logout = async ({ id }) => {
+    const res = await userLogout({ id: id });
+
+    if (res.status === 200) {
+      Alert.alert("Goodbye!", res.data, [
+        {
+          text: "OK",
+          style: "cancel",
+        },
+      ]);
+
+      setIsLoading(true);
+      setUserToken(null);
+      AsyncStorage.removeItem("userToken");
+      AsyncStorage.removeItem("userInfo");
+      setIsLoading(false);
+    } else {
+      Alert.alert("Logout failed", res.data, [
+        {
+          text: "Try again",
+          style: "cancel",
+        },
+      ]);
+    }
   };
 
   useEffect(() => {

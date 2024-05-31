@@ -7,7 +7,7 @@ import styles from "./styles/setting.style";
 
 const Setting = () => {
   const navigation = useNavigation();
-  const { logout } = useContext(AuthContext);
+  const { logout, userInfo } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
@@ -69,8 +69,8 @@ const Setting = () => {
       <HorizontalItem
         title="Log Out"
         isCenter={true}
-        onPress={() => {
-          logout();
+        onPress={async () => {
+          await logout({ id: userInfo._id });
         }}
       />
       <View style={styles.separator} />
