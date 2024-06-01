@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const rolesRouter = require("./routes/role");
 const userRouter = require("./routes/user");
 const roomRouter = require("./routes/room");
-const messageRouter = require('./routes/message');
+const messageRouter = require("./routes/message");
 
 dotenv.config();
 mongoose
@@ -28,7 +28,10 @@ app.get("/", (req, res) =>
 app.use("/api/roles", rolesRouter);
 app.use("/api/users", userRouter);
 app.use("/api/rooms", roomRouter);
-app.use("/api/message", messageRouter);
+app.use("/api/messages", messageRouter);
+app.get("/privacy-policy", (req, res) => {
+  res.sendFile(__dirname + "/privacy-policy.html");
+});
 // Pass the server to the socket setup function
 socketSetup(server);
 

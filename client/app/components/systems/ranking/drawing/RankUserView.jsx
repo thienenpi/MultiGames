@@ -4,9 +4,12 @@ import { COLORS, SIZES } from "../../../../constants";
 import CustomButton from "../../../CustomButton";
 import { sendFriendRequest } from "../../../../api/UserApi";
 import { AuthContext } from "../../../../context/AuthContext";
+import { checkIfFriend } from "../../../../services";
 
 const RankUserView = ({ item }) => {
   const { userInfo } = useContext(AuthContext);
+  const isFriend = checkIfFriend({ id: userInfo._id, friendId: item._id });
+  const isMe = userInfo._id === item._id;
 
   return (
     <View style={styles.container}>
@@ -20,18 +23,25 @@ const RankUserView = ({ item }) => {
         <Text style={styles.userName}>{item.name}</Text>
         <Text style={styles.expGain}>{item.name}</Text>
       </View>
+
       <View style={styles.addFriend}>
-        <CustomButton
-          styles={styles}
-          label={"Kết bạn"}
-          isValid={true}
-          onPress={async () => {
-            await sendFriendRequest({
-              senderId: userInfo._id,
-              recipientId: item._id,
-            });
-          }}
-        ></CustomButton>
+        {isFriend ? (
+          <View style={[styles.frStatusContainer, { display: isMe }]}>
+            <Text style={styles.frStatusText}>Bạn bè</Text>
+          </View>
+        ) : (
+          <CustomButton
+            styles={styles}
+            label={"Kết bạn"}
+            isValid={true}
+            onPress={async () => {
+              await sendFriendRequest({
+                senderId: userInfo._id,
+                recipientId: user._id,
+              });
+            }}
+          ></CustomButton>
+        )}
       </View>
     </View>
   );
@@ -94,7 +104,7 @@ const styles = StyleSheet.create({
   },
 
   btnContainer: () => ({
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.button,
     borderRadius: 99,
     height: "60%",
     alignItems: "center",
@@ -102,6 +112,20 @@ const styles = StyleSheet.create({
   }),
 
   btnLabel: {
+    fontFamily: "sfProBold",
+    fontSize: SIZES.medium,
+    color: "white",
+  },
+
+  frStatusContainer: {
+    backgroundColor: COLORS.green,
+    borderRadius: 99,
+    height: "60%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  frStatusText: {
     fontFamily: "sfProBold",
     fontSize: SIZES.medium,
     color: "white",

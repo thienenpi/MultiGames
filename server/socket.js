@@ -43,6 +43,22 @@ const socketSetup = (server) => {
       });
     };
 
+    const leaveHandler = (room) => {
+      console.log(`A user leaved from ${room}`);
+      socket.to(room).emit("leave", room);
+
+      const index = rooms[room].indexOf(socket);
+
+      if (index !== -1) {
+        rooms[room].splice(index, 1);
+      }
+
+      if (rooms[room].length === 0) {
+        delete rooms[room];
+        delete chatHistory[room];
+      }
+    };
+
     console.log("A user connected");
 
     socket.on("getMessages", async ({ userId, friendId }) => {
@@ -67,7 +83,20 @@ const socketSetup = (server) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("user disconnected");
+      console.log(`user disconnected`);
+      // find the room that the user is in
+      let room = null;
+
+      for (const key in rooms) {
+        if (rooms[key].includes(socket)) {
+          room = key;
+          break;
+        }
+      }
+
+      if (room) {
+        leaveHandler(room);
+      }
     });
 
     socket.on("join", joinHandler);
@@ -80,22 +109,7 @@ const socketSetup = (server) => {
       }
     });
 
-    socket.on("leave", (room) => {
-      console.log(`A user leaved from ${room}`);
-      socket.to(room).emit("leave", room);
-    //   socket.removeAllListeners("join");
-
-      const index = rooms[room].indexOf(socket);
-
-      if (index !== -1) {
-        rooms[room].splice(index, 1);
-      }
-
-      if (rooms[room].length === 0) {
-        delete rooms[room];
-        delete chatHistory[room];
-      }
-    });
+    socket.on("leave", leaveHandler);
   });
 };
 
