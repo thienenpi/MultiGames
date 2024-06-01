@@ -5,31 +5,34 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Text,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SIZES } from "../../../../../constants";
-import { HeaderEndTurnResult } from "./HeaderEndTurnResult"
+import { HeaderEndTurnResult } from "./HeaderEndTurnResult";
 
-const EndTurnResult = ({ isShow, player, keyword, image, numPlayersCorrect }) => {
+const EndTurnResult = ({
+  isShow,
+  player,
+  keyword,
+  image,
+  numPlayersCorrect,
+}) => {
   const [show, setShow] = useState(isShow);
 
   useEffect(() => {
     setShow(isShow);
   }, [isShow]);
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={show}
-    >
+    <Modal animationType="fade" transparent={true} visible={show}>
       <View style={styles.overlay} />
       <View style={styles.modalView}>
         <View style={styles.header}>
+          <Text>{player.name}</Text>
+          <Text>{keyword}</Text>
           {/* <HeaderEndTurnResult
             player={player}
             keyword={"keyword"}

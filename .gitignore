@@ -33,10 +33,7 @@ yarn-error.*
 # local env files
 .env*.local
 .env
-.dockerignore
-compose.yaml
-Dockerfile
-README.Docker.md
+googleServiceAccountKey.json
 
 # typescript
 *.tsbuildinfo

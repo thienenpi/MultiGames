@@ -1,5 +1,15 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, Modal, Pressable, Animated, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Modal,
+  Pressable,
+  Animated,
+  Alert,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -8,7 +18,14 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { socket } from "../utils/config";
 import styles from "./styles/guessingWord.style";
-import { WhiteBoard, DrawingOptionsBar, ChatHistory, GameTimeController, KeywordSelection, EndTurnResult } from "../components";
+import {
+  WhiteBoard,
+  DrawingOptionsBar,
+  ChatHistory,
+  GameTimeController,
+  KeywordSelection,
+  EndTurnResult,
+} from "../components";
 import { getUserById } from "../api/UserApi";
 import { isRoomFull } from "../api/RoomApi";
 import { getKeyWords } from "../api/KeywordApi";
@@ -20,9 +37,10 @@ const GuessingWord = () => {
   const navigation = useNavigation();
   const { roomInfo } = route.params;
   const viewShotRef = useRef(null);
+  const capturedImage = useRef(null);
 
   const [isStart, setIsStart] = useState(true);
-  const [capturedImage, setCapturedImage] = useState(null);
+  //   const [capturedImage, setCapturedImage] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [option, setOption] = useState(0);
   const [message, setMessage] = useState("");
@@ -42,7 +60,8 @@ const GuessingWord = () => {
   const [showEndTurnResultDialog, setShowEndTurnResultDialog] = useState(false);
   const [showEndGameResultDialog, setShowEndGameResultDialog] = useState(false);
 
-  const [selectedKeyword, setSelectedKeyword] = useState({});
+  //   const [selectedKeyword, setSelectedKeyword] = useState({});
+  const selectedKeyword = useRef({});
   const [keywordList, setKeywordList] = useState([]);
 
   const [playerIndex, setPlayerIndex] = useState(0);
@@ -71,9 +90,9 @@ const GuessingWord = () => {
     captureAndSaveImage().then(hanldeDialog());
   };
 
-  const handleSendImage = () => { };
+  const handleSendImage = () => {};
 
-  const handleChooseIcon = () => { };
+  const handleChooseIcon = () => {};
 
   const handleStart = () => {
     setIsStart(true);
@@ -93,7 +112,7 @@ const GuessingWord = () => {
   };
 
   const handleKeywordSelect = (keyword) => {
-    setSelectedKeyword(keyword);
+    selectedKeyword.current = keyword;
     setShowKeywordDialog(false);
     setTimer(0);
   };
@@ -111,8 +130,7 @@ const GuessingWord = () => {
   const captureAndSaveImage = async () => {
     try {
       setShowOptions(false);
-      const uri = await viewShotRef.current.capture();
-      setCapturedImage(uri);
+      capturedImage.current = await viewShotRef.current.capture();
     } catch (error) {
       console.error("Error capturing image:", error);
     }
@@ -141,7 +159,7 @@ const GuessingWord = () => {
 
       if (res.status === 200) {
         const user = res.data;
-        console.log(user.name);
+        // console.log(user.name);
         setUsersInRoom((prevUsers) => [...prevUsers, user]);
       }
     }
@@ -166,17 +184,27 @@ const GuessingWord = () => {
   useEffect(() => {
     if (usersInRoom.length > 0) {
       setPlayerInfo(usersInRoom[playerIndex]);
-      console.log("Player index: ", playerIndex, "Player info: ", usersInRoom[playerIndex]?.name);
+      //   console.log(
+      //     "Player index: ",
+      //     playerIndex,
+      //     "Player info: ",
+      //     usersInRoom[playerIndex]?.name
+      //   );
     }
   }, [playerIndex, usersInRoom]);
 
   const handleGamingTimelines = () => {
     closeAllModal();
-    console.log(gameTimeController.getStatus());
+    // console.log(gameTimeController.getStatus());
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
-      if (checkRoomFull() && { /*checkYourTurn()*/ }) {
+      if (
+        checkRoomFull() &&
+        {
+          /*checkYourTurn()*/
+        }
+      ) {
         updatePlayerIndex();
-        setSelectedKeyword({});
+        selectedKeyword.current = {};
         setShowKeywordDialog(true);
       }
     }
@@ -184,9 +212,9 @@ const GuessingWord = () => {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
       captureAndSaveImage().then(() => {
-        console.log("Player info: ", playerInfo);
-        console.log("Image: ", capturedImage);
-        console.log("Keyword: ", selectedKeyword.keyword);
+        // console.log("users", usersInRoom);
+        // console.log("Player info: ", playerInfo);
+        console.log("Image: ", capturedImage.current);
         setShowEndTurnResultDialog(true);
       });
     }
@@ -249,11 +277,14 @@ const GuessingWord = () => {
   // UseEffect to handle game time
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimer(prevTimer => {
+      setTimer((prevTimer) => {
         if (prevTimer <= 0) {
           // Check if a keyword has been selected
-          console.log(Object.keys(selectedKeyword).length);
-          if (Object.keys(selectedKeyword).length === 0 && gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
+          if (
+            Object.keys(selectedKeyword.current).length === 0 &&
+            gameTimeController.getStatus() ===
+              DRAWING_GAME_STATUS.WORD_SELECTION
+          ) {
             const randomIndex = Math.floor(Math.random() * keywordList.length);
             handleKeywordSelect(keywordList[randomIndex]);
           }
@@ -272,15 +303,14 @@ const GuessingWord = () => {
         return prevTimer - 1;
       });
     }, 1000);
+
     return () => clearInterval(interval);
   }, [keywordList.length]);
 
   return (
     <View style={styles.container}>
       {/* Show invite dialog */}
-      {showInviteDialog && (
-        <View></View>
-      )}
+      {showInviteDialog && <View></View>}
 
       {/* Show keyword dialog */}
       <KeywordSelection
@@ -293,15 +323,13 @@ const GuessingWord = () => {
       <EndTurnResult
         isShow={showEndTurnResultDialog}
         player={playerInfo}
-        image={capturedImage}
-        // keyword={selectedKeyword.keyword}
+        image={capturedImage.current}
+        keyword={selectedKeyword.current.keyword}
         numPlayersCorrect={2}
       />
 
       {/* Show add friend dialog */}
-      {showAddFriendDialog && (
-        <View></View>
-      )}
+      {showAddFriendDialog && <View></View>}
 
       {/* Show download image dialog */}
       {showDownloadImageDialog && (
@@ -331,11 +359,16 @@ const GuessingWord = () => {
         <Text style={styles.timer}>{timer}</Text>
         <View style={styles.roomInfoContainer}>
           <Text style={styles.roomName}>{roomInfo.name}</Text>
-          <Text style={styles.roomName}>{selectedKeyword.keyword}</Text>
+          <Text style={styles.roomName}>{selectedKeyword.current.keyword}</Text>
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
         <Pressable onPress={() => navigation.navigate("Room Config")}>
-          <Ionicons name="settings" size={26} color="white" style={{ margin: 4 }} />
+          <Ionicons
+            name="settings"
+            size={26}
+            color="white"
+            style={{ margin: 4 }}
+          />
         </Pressable>
       </View>
 
@@ -473,7 +506,7 @@ const GuessingWord = () => {
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => { }}>
+            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
               <Ionicons name="download" size={24} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -497,7 +530,6 @@ const GuessingWord = () => {
       <View style={styles.chatBox}>
         {/* Các ô chứa hình ảnh user */}
         <View style={styles.userImagesContainer}>
-
           {/* Hiển thị hình ảnh của các user trong phòng */}
           {usersInRoom.map((user, index) => (
             <Image
@@ -505,11 +537,10 @@ const GuessingWord = () => {
               source={{ uri: user.avatarUrl }}
               style={[
                 styles.userImage,
-                index === playerIndex && styles.highlightedUserImage
+                index === playerIndex && styles.highlightedUserImage,
               ]}
             />
           ))}
-
         </View>
         {/* Khung chứa các câu trả lời */}
         <ChatHistory message={messageHistory} />
