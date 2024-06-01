@@ -4,33 +4,55 @@ import {
   Text,
   Modal,
   Pressable,
+  TouchableOpacity,
+  FlatList,
   StyleSheet,
 } from "react-native";
 import { SIZES } from "../../../../constants";
 
-const KeywordSelection = ({ isShow, keyword }) => {
+const KeywordSelection = ({ isShow, keywordList, onKeywordSelect }) => {
   const [show, setShow] = useState(isShow);
+  const [randomKeyword, setRandomKeyword] = useState([]);
 
   useEffect(() => {
     setShow(isShow);
   }, [isShow]);
 
-  const closeModal = () => {
-    setShow(false);
+  useEffect(() => {
+    if (keywordList.length > 0 && randomKeyword.length === 0) {
+      const keywordSet = new Set();
+
+      while (keywordSet.size < 4 && keywordSet.size < keywordList.length) {
+        const randomWord =
+          keywordList[Math.floor(Math.random() * keywordList.length)];
+        keywordSet.add(randomWord);
+      }
+      setRandomKeyword(Array.from(keywordSet));
+    }
+  }, [keywordList]);
+
+  const handleKeywordPress = (keyword) => {
+    onKeywordSelect(keyword);
   };
 
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={show}
-      onRequestClose={closeModal}
-    >
-      <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
+    <Modal animationType="fade" transparent={true} visible={show}>
+      <Pressable style={styles.overlay} />
       <View style={styles.modalView}>
-        <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 20 }}>
-          {keyword}
-        </Text>
+        <Text style={styles.title}>Hãy chọn từ khóa để vẽ</Text>
+        <FlatList
+          data={randomKeyword}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={2}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleKeywordPress(item)}
+            >
+              <Text style={styles.keyword}>{item.keyword}</Text>
+            </TouchableOpacity>
+          )}
+        />
       </View>
     </Modal>
   );
@@ -49,13 +71,41 @@ const styles = StyleSheet.create({
   },
 
   modalView: {
-    top: SIZES.height / 4,
-    bottom: SIZES.height / 4,
-    left: SIZES.width / 9,
-    right: SIZES.width / 9,
+    top: SIZES.height / 3,
+    bottom: SIZES.height / 2.6,
+    left: SIZES.width / 20,
+    right: SIZES.width / 20,
     backgroundColor: "white",
     alignItems: "center",
     borderRadius: 10,
     position: "absolute",
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+  },
+
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+
+  button: {
+    height: 55,
+    width: "45%",
+    marginVertical: 8,
+    marginHorizontal: 8,
+    backgroundColor: "lightgreen",
+    borderColor: "green",
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 8,
+    opacity: 0.6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  keyword: {
+    fontSize: 16,
+    color: "green",
   },
 });

@@ -11,6 +11,7 @@ const rolesRouter = require("./routes/role");
 const userRouter = require("./routes/user");
 const roomRouter = require("./routes/room");
 const messageRouter = require("./routes/message");
+const keywordRouter = require("./routes/keyword");
 
 dotenv.config();
 mongoose
@@ -29,9 +30,11 @@ app.use("/api/roles", rolesRouter);
 app.use("/api/users", userRouter);
 app.use("/api/rooms", roomRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/keywords", keywordRouter);
 app.get("/privacy-policy", (req, res) => {
   res.sendFile(__dirname + "/privacy-policy.html");
 });
+
 // Pass the server to the socket setup function
 socketSetup(server);
 

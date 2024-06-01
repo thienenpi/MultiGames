@@ -52,14 +52,12 @@ class GameTimeController {
         this.mode = GAME_MODE.DRAWING;
         this.status = DRAWING_GAME_STATUS.WORD_SELECTION;
         this.time = DRAWING_GAME_TIME.WORD_SELECTION_TIME;
-        // console.log("setModeDrawing");
     }
 
     setModeSpy() {
         this.mode = GAME_MODE.SPY;
         this.status = SPY_GAME_STATUS.WORD_VIEW;
         this.time = SPY_GAME_TIME.WORD_VIEW_TIME;
-        // console.log("setModeSpy");
     }
 
     getStatus() { return this.status; }
