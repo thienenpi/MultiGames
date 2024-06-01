@@ -25,6 +25,7 @@ import {
   KeywordSelection,
   EndGameResult,
   AddFriendDialog,
+  UserCardView,
 } from "../components";
 import { getRoomGuests, isRoomFull, getUserById } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
@@ -473,19 +474,17 @@ const GuessingWord = () => {
               <TouchableOpacity
                 key={user._id}
                 onPress={() => {
+                  if (user._id === userInfo._id) return;
                   setShowAddFriendDialog(true);
                   setUserToAddFriend(user);
                 }}
               >
-                <Image
-                  key={user._id}
-                  source={{ uri: user.avatarUrl }}
-                  style={styles.userImage}
-                />
+                <UserCardView user={user}></UserCardView>
               </TouchableOpacity>
             ))
           }
         </View>
+
         {/* Khung chứa các câu trả lời */}
         <ChatHistory message={messageHistory} />
         <View style={styles.inputContainer}>
