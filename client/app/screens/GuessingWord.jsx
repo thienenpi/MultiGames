@@ -8,6 +8,7 @@ import {
   Modal,
   Pressable,
   Animated,
+  AppState,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
@@ -29,9 +30,10 @@ import {
 } from "../components";
 import { getRoomGuests, isRoomFull, getUserById } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
-import { leaveRoom } from "../services/Rooms";
+import { leaveRoom } from "../services";
 
 const GuessingWord = () => {
+  const appState = useRef(AppState.currentState);
   const route = useRoute();
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();

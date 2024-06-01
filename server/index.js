@@ -28,7 +28,7 @@ app.get("/", (req, res) =>
 app.use("/api/roles", rolesRouter);
 app.use("/api/users", userRouter);
 app.use("/api/rooms", roomRouter);
-app.use("/api/message", messageRouter);
+app.use("/api/messages", messageRouter);
 app.get("/privacy-policy", (req, res) => {
   res.sendFile(__dirname + "/privacy-policy.html");
 });
