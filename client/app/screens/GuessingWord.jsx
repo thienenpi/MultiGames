@@ -8,7 +8,6 @@ import {
   Modal,
   Pressable,
   Animated,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
@@ -42,7 +41,6 @@ const GuessingWord = () => {
   const capturedImage = useRef(null);
 
   const [isStart, setIsStart] = useState(true);
-  //   const [capturedImage, setCapturedImage] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [option, setOption] = useState(0);
   const [message, setMessage] = useState("");
@@ -62,7 +60,6 @@ const GuessingWord = () => {
   const [showEndTurnResultDialog, setShowEndTurnResultDialog] = useState(false);
   const [showEndGameResultDialog, setShowEndGameResultDialog] = useState(false);
 
-  //   const [selectedKeyword, setSelectedKeyword] = useState({});
   const selectedKeyword = useRef({});
   const [keywordList, setKeywordList] = useState([]);
 
@@ -106,7 +103,7 @@ const GuessingWord = () => {
 
   const closeAllModal = () => {
     setShowDownloadImageDialog(false);
-    // setShowAddFriendDialog(false);
+    setShowAddFriendDialog(false);
     setShowInviteDialog(false);
     setShowKeywordDialog(false);
     setShowEndTurnResultDialog(false);
@@ -173,18 +170,11 @@ const GuessingWord = () => {
   useEffect(() => {
     if (usersInRoom.length > 0) {
       setPlayerInfo(usersInRoom[playerIndex]);
-      //   console.log(
-      //     "Player index: ",
-      //     playerIndex,
-      //     "Player info: ",
-      //     usersInRoom[playerIndex]?.name
-      //   );
     }
   }, [playerIndex, usersInRoom]);
 
   const handleGamingTimelines = () => {
     closeAllModal();
-    // console.log(gameTimeController.getStatus());
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
       if (
         checkRoomFull() &&
@@ -201,9 +191,6 @@ const GuessingWord = () => {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
       captureAndSaveImage().then(() => {
-        // console.log("users", usersInRoom);
-        // console.log("Player info: ", playerInfo);
-        console.log("Image: ", capturedImage.current);
         setShowEndTurnResultDialog(true);
       });
     }
@@ -327,10 +314,22 @@ const GuessingWord = () => {
       {showInviteDialog && <View></View>}
 
       {/* Show keyword dialog */}
-      {/* <KeywordSelection
+      <KeywordSelection
         isShow={showKeywordDialog}
-        keyword={"Keyword"}
-      ></KeywordSelection> */}
+        keywordList={keywordList}
+        onKeywordSelect={handleKeywordSelect}
+      />
+
+      {/* Show end turn result dialog */}
+      {showEndTurnResultDialog && (
+        <EndTurnResult
+          isShow={showEndTurnResultDialog}
+          player={playerInfo}
+          image={capturedImage.current}
+          keyword={selectedKeyword.current.keyword}
+          numPlayersCorrect={2}
+        />
+      )}
 
       {/* Show result dialog */}
       {/* <EndGameResult
@@ -347,22 +346,6 @@ const GuessingWord = () => {
           keyword={"Add friend"}
           user={userToAddFriend}
         ></AddFriendDialog>
-      )}
-      <KeywordSelection
-        isShow={showKeywordDialog}
-        keywordList={keywordList}
-        onKeywordSelect={handleKeywordSelect}
-      />
-
-      {/* Show end turn result dialog */}
-      {showEndTurnResultDialog && (
-        <EndTurnResult
-          isShow={showEndTurnResultDialog}
-          player={playerInfo}
-          image={capturedImage.current}
-          keyword={selectedKeyword.current.keyword}
-          numPlayersCorrect={2}
-        />
       )}
 
       {/* Show add friend dialog */}

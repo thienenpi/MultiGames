@@ -17,8 +17,9 @@ const screenOptions = {
   },
   tabBarStyle: [
     {
-      //   height: 55,
+      height: 60,
       display: "flex",
+      paddingTop: 8,
     },
     null,
   ],
@@ -42,7 +43,7 @@ const BottomNavigation = () => {
         component={Shop}
         options={{
           tabBarIcon: () => {
-            return <Feather name="shopping-bag" size={24} color="black" />;
+            return <Feather name="shopping-bag" size={22} color="black" />;
           },
         }}
       ></Tab.Screen>
