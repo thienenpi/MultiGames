@@ -40,7 +40,8 @@ const GuessingWord = () => {
   const viewShotRef = useRef(null);
   const capturedImage = useRef(null);
 
-  const [isStart, setIsStart] = useState(true);
+  const [isStart, setIsStart] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [option, setOption] = useState(0);
   const [message, setMessage] = useState("");
@@ -93,8 +94,9 @@ const GuessingWord = () => {
 
   const handleChooseIcon = () => {};
 
-  const handleStart = () => {
-    setIsStart(true);
+  const handleReady = () => {
+    setIsReady(true);
+    socket.emit("ready", roomInfo._id);
   };
 
   const hanldeDialog = async () => {
@@ -179,7 +181,7 @@ const GuessingWord = () => {
       if (
         checkRoomFull() &&
         {
-          /*checkYourTurn()*/
+        //   checkYourTurn()
         }
       ) {
         updatePlayerIndex();
@@ -190,9 +192,9 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
-      captureAndSaveImage().then(() => {
-        setShowEndTurnResultDialog(true);
-      });
+      //   captureAndSaveImage().then(() => {
+      //     setShowEndTurnResultDialog(true);
+      //   });
     }
   };
 
@@ -215,6 +217,11 @@ const GuessingWord = () => {
           data,
         ]);
       }
+    });
+
+    // Listen when to start the game
+    socket.on("startGame", () => {
+      setIsStart(true);
     });
 
     return () => {
@@ -275,8 +282,9 @@ const GuessingWord = () => {
     }
   }, [keywordList]);
 
-  // UseEffect to handle game time
+  //   UseEffect to handle game time
   useEffect(() => {
+    if (!isStart) return;
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         if (prevTimer <= 0) {
@@ -306,7 +314,7 @@ const GuessingWord = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [keywordList.length]);
+  }, [keywordList.length, isStart]);
 
   return (
     <View style={styles.container}>
@@ -314,11 +322,11 @@ const GuessingWord = () => {
       {showInviteDialog && <View></View>}
 
       {/* Show keyword dialog */}
-      <KeywordSelection
+      {/* <KeywordSelection
         isShow={showKeywordDialog}
         keywordList={keywordList}
         onKeywordSelect={handleKeywordSelect}
-      />
+      /> */}
 
       {/* Show end turn result dialog */}
       {showEndTurnResultDialog && (
@@ -347,9 +355,6 @@ const GuessingWord = () => {
           user={userToAddFriend}
         ></AddFriendDialog>
       )}
-
-      {/* Show add friend dialog */}
-      {showAddFriendDialog && <View></View>}
 
       {/* Show download image dialog */}
       {showDownloadImageDialog && (
@@ -461,7 +466,7 @@ const GuessingWord = () => {
             </View>
             <TouchableOpacity
               style={styles.containerStart}
-              onPress={handleStart}
+              onPress={handleReady}
             >
               <LinearGradient
                 colors={["#AB012B", "#FF003F"]}
@@ -470,17 +475,27 @@ const GuessingWord = () => {
                 style={styles.gradientButton}
               >
                 <Image
-                  source={require("../../assets/create_icon.png")}
+                  //   source={{
+                  //     uri: isReady
+                  //       ? "https://multigames.blob.core.windows.net/assests/image_login.png"
+                  //       : "https://multigames.blob.core.windows.net/assests/create_icon.png",
+                  //   }}
+                  source={
+                    isReady
+                      ? require("../../assets/image_login.png")
+                      : require("../../assets/create_icon.png")
+                  }
                   style={{ flex: 1, resizeMode: "center" }}
                 />
                 <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  Bắt đầu
+                  {isReady ? "Chờ người chơi khác..." : "Bắt đầu"}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
           </View>
         </View>
       )}
+
       {/* Drawing options */}
       {isStart ? (
         <View

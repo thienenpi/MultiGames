@@ -3,7 +3,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Message, Profile, Shop, Dashboard } from "../screens";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { COLORS } from "../constants";
+import { Platform } from "react-native";
 
+const IS_IOS = Platform.OS === "ios";
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
@@ -17,9 +19,8 @@ const screenOptions = {
   },
   tabBarStyle: [
     {
-      height: 60,
       display: "flex",
-      paddingTop: 8,
+      height: IS_IOS ? 80 : 60,
     },
     null,
   ],

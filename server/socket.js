@@ -59,6 +59,20 @@ const socketSetup = (server) => {
       }
     };
 
+    const readyHandler = (room) => {
+      if (!rooms[room]["noReady"]) {
+        rooms[room]["noReady"] = 0;
+      }
+
+      rooms[room]["noReady"]++;
+      console.log(rooms[room]["noReady"] + " out of " + rooms[room].length + " are ready")
+
+      if (rooms[room]["noReady"] === rooms[room].length) {
+        socket.emit("startGame");
+        socket.to(room).emit("startGame");
+      }
+    };
+
     console.log("A user connected");
 
     socket.on("getMessages", async ({ userId, friendId }) => {
@@ -110,6 +124,8 @@ const socketSetup = (server) => {
     });
 
     socket.on("leave", leaveHandler);
+
+    socket.on("ready", readyHandler);
   });
 };
 
