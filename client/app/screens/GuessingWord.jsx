@@ -64,8 +64,8 @@ const GuessingWord = () => {
   const selectedKeyword = useRef({});
   const [keywordList, setKeywordList] = useState([]);
 
-  const [playerIndex, setPlayerIndex] = useState(0);
-  const [playerInfo, setPlayerInfo] = useState({});
+  var playerIndex = 0;
+  const playerInfo = useRef({});
 
   // Set game time
   const gameTimeController = new GameTimeController();
@@ -160,20 +160,17 @@ const GuessingWord = () => {
 
   const checkYourTurn = () => {
     // Implement logic to check if it's your turn
+    if (playerInfo.current._id === undefined) {
+        console.log(playerIndex)
+        playerInfo.current = usersInRoom[playerIndex]
+    }
+    return playerInfo.current._id === userInfo._id;
   };
 
   const updatePlayerIndex = () => {
-    setPlayerIndex((prevIndex) =>
-      prevIndex < roomInfo.list_guest.length - 1 ? prevIndex + 1 : 0
-    );
+    playerIndex =
+      playerIndex < usersInRoom.length - 1 ? playerIndex + 1 : 0;
   };
-
-  // Set player info when playerIndex changes
-  useEffect(() => {
-    if (usersInRoom.length > 0) {
-      setPlayerInfo(usersInRoom[playerIndex]);
-    }
-  }, [playerIndex, usersInRoom]);
 
   const handleGamingTimelines = () => {
     closeAllModal();
@@ -181,12 +178,13 @@ const GuessingWord = () => {
       if (
         checkRoomFull() &&
         {
-        //   checkYourTurn()
+          //   checkYourTurn()
         }
       ) {
         updatePlayerIndex();
+        playerInfo.current = usersInRoom[playerIndex]
         selectedKeyword.current = {};
-        setShowKeywordDialog(true);
+        checkYourTurn() && setShowKeywordDialog(true);
       }
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
@@ -197,13 +195,6 @@ const GuessingWord = () => {
       //   });
     }
   };
-
-  // Get first player info when starting the game
-  useEffect(() => {
-    if (usersInRoom.length === roomInfo.list_guest.length) {
-      setPlayerInfo(usersInRoom[0]);
-    }
-  }, [usersInRoom]);
 
   // UseEffect to join the room and get chat history
   useEffect(() => {
@@ -261,12 +252,6 @@ const GuessingWord = () => {
     socket.on("leave", (room) => {
       setTimeout(async () => getAllUsers(), 500);
     });
-
-    // When starting the game, show the keyword dialog if the room is full
-    if (checkRoomFull()) {
-      closeAllModal();
-      setShowKeywordDialog(true);
-    }
   }, []);
 
   // UseEffect to handle get keyword
@@ -285,6 +270,9 @@ const GuessingWord = () => {
   //   UseEffect to handle game time
   useEffect(() => {
     if (!isStart) return;
+    closeAllModal();
+    checkYourTurn() && setShowKeywordDialog(true);
+
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         if (prevTimer <= 0) {
@@ -322,11 +310,11 @@ const GuessingWord = () => {
       {showInviteDialog && <View></View>}
 
       {/* Show keyword dialog */}
-      {/* <KeywordSelection
+      <KeywordSelection
         isShow={showKeywordDialog}
         keywordList={keywordList}
         onKeywordSelect={handleKeywordSelect}
-      /> */}
+      />
 
       {/* Show end turn result dialog */}
       {showEndTurnResultDialog && (
