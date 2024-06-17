@@ -24,7 +24,7 @@ const EndTurnResult = ({
   }, [isShow]);
 
   useEffect(() => { }, []);
-
+  console.log(player.avatarUrl);
   return (
     <Modal animationType="fade" transparent={true} visible={show}>
       <View style={styles.overlay} />

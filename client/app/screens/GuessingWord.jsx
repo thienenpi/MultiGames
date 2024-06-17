@@ -27,6 +27,7 @@ import {
   EndTurnResult,
   AddFriendDialog,
   UserCardView,
+  GameScoreController,
 } from "../components";
 import { getRoomGuests, isRoomFull, getUserById, getKeyWords } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
@@ -74,6 +75,9 @@ const GuessingWord = () => {
   // Set timer using state hook
   const [timer, setTimer] = useState(gameTimeController.getTime());
 
+  // Set game score
+  const gameScoreController = useRef(new GameScoreController()).current;
+
   const updateColor = (color) => {
     setColor(color);
   };
@@ -90,9 +94,9 @@ const GuessingWord = () => {
     captureAndSaveImage().then(hanldeDialog());
   };
 
-  const handleSendImage = () => {};
+  const handleSendImage = () => { };
 
-  const handleChooseIcon = () => {};
+  const handleChooseIcon = () => { };
 
   const handleReady = () => {
     setIsReady(true);
@@ -139,11 +143,30 @@ const GuessingWord = () => {
 
   const sendMessage = () => {
     if (message.trim() !== "") {
-      const newMessage = {
-        sender: userInfo.name,
-        content: message,
-      };
+      // Check if the message is the keyword
+      let msg = message.trim().toLowerCase();
+      let keywordCurrent = selectedKeyword.current.keyword.toLowerCase();
+      let newMessage;
+      if (msg === keywordCurrent) {
+        newMessage = {
+          sender: userInfo.name,
+          content: '*'.repeat(msg.length),
+        };
+      } else {
+        newMessage = {
+          sender: userInfo.name,
+          content: message,
+        };
+      }
 
+      // Calculate score
+      gameScoreController.checkGuessCorrectness(userInfo._id, msg, keywordCurrent);
+      // gameScoreController.checkGuessCorrectness(userInfo._id, "N", "N");
+      // Get score of userInfo
+      let i = gameScoreController.getScoreForDrawGuessGame(userInfo._id);
+      console.log(userInfo.name + " - Score: " + i);
+
+      // Send message to server
       socket.emit("message", newMessage);
       setMessage("");
       setMessageHistory((prevMessageHistory) => [
@@ -161,9 +184,13 @@ const GuessingWord = () => {
   const checkYourTurn = () => {
     // Implement logic to check if it's your turn
     if (playerInfo.current._id === undefined) {
-        console.log(playerIndex)
-        playerInfo.current = usersInRoom[playerIndex]
+      console.log(playerIndex)
+      playerInfo.current = usersInRoom[playerIndex]
     }
+
+    gameScoreController.removeDrawPlayer();
+    gameScoreController.setDrawPlayer(playerInfo.current._id);
+
     return playerInfo.current._id === userInfo._id;
   };
 
@@ -175,12 +202,7 @@ const GuessingWord = () => {
   const handleGamingTimelines = () => {
     closeAllModal();
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
-      if (
-        checkRoomFull() &&
-        {
-          //   checkYourTurn()
-        }
-      ) {
+      if (checkRoomFull()) {
         updatePlayerIndex();
         playerInfo.current = usersInRoom[playerIndex]
         selectedKeyword.current = {};
@@ -190,9 +212,10 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
-      //   captureAndSaveImage().then(() => {
-      //     setShowEndTurnResultDialog(true);
-      //   });
+      captureAndSaveImage().then(() => {
+        setShowEndTurnResultDialog(true);
+        gameScoreController.resetTurn();
+      });
     }
   };
 
@@ -234,6 +257,10 @@ const GuessingWord = () => {
         if (res.status === 200) {
           const user = res.data;
           user["score"] = 0;
+
+          // Add player to game score controller
+          gameScoreController.addPlayer(user);
+
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
@@ -280,7 +307,7 @@ const GuessingWord = () => {
           if (
             Object.keys(selectedKeyword.current).length === 0 &&
             gameTimeController.getStatus() ===
-              DRAWING_GAME_STATUS.WORD_SELECTION
+            DRAWING_GAME_STATUS.WORD_SELECTION
           ) {
             const randomIndex = Math.floor(Math.random() * keywordList.length);
             handleKeywordSelect(keywordList[randomIndex]);
@@ -320,7 +347,7 @@ const GuessingWord = () => {
       {showEndTurnResultDialog && (
         <EndTurnResult
           isShow={showEndTurnResultDialog}
-          player={playerInfo}
+          player={playerInfo.current}
           image={capturedImage.current}
           keyword={selectedKeyword.current.keyword}
           numPlayersCorrect={2}
@@ -431,8 +458,9 @@ const GuessingWord = () => {
             style={{
               resizeMode: "contain",
               marginTop: 110,
-              height: "60%",
+              height: "55%",
               width: "100%",
+              marginBottom: 10,
             }}
           />
           <View style={styles.buttonContainers}>
@@ -463,20 +491,13 @@ const GuessingWord = () => {
                 style={styles.gradientButton}
               >
                 <Image
-                  //   source={{
-                  //     uri: isReady
-                  //       ? "https://multigames.blob.core.windows.net/assests/image_login.png"
-                  //       : "https://multigames.blob.core.windows.net/assests/create_icon.png",
-                  //   }}
                   source={
-                    isReady
-                      ? require("../../assets/image_login.png")
-                      : require("../../assets/create_icon.png")
+                    require("../../assets/create_icon.png")
                   }
                   style={{ flex: 1, resizeMode: "center" }}
                 />
                 <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  {isReady ? "Chờ người chơi khác..." : "Bắt đầu"}
+                  Bắt đầu
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -529,7 +550,7 @@ const GuessingWord = () => {
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
+            <TouchableOpacity style={styles.optionButton} onPress={() => { }}>
               <Ionicons name="download" size={24} />
             </TouchableOpacity>
             <TouchableOpacity
