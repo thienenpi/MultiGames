@@ -46,11 +46,13 @@ const GuessingWord = () => {
   const [option, setOption] = useState(0);
   const [message, setMessage] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
+
   const [color, setColor] = useState("#000000");
   const [size, setSize] = useState(2);
   const [isRedo, setIsRedo] = useState(false);
   const [isUndo, setIsUndo] = useState(false);
   const [isClear, setIsClear] = useState(false);
+
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [userToAddFriend, setUserToAddFriend] = useState(null);
 
@@ -112,10 +114,11 @@ const GuessingWord = () => {
     setShowEndGameResultDialog(false);
   };
 
-  const handleKeywordSelect = (keyword) => {
+  const handleSelectKeyword = (keyword) => {
     selectedKeyword.current = keyword;
+    socket.emit("selectKeyword", keyword);
     setShowKeywordDialog(false);
-    setTimer(0);
+    // setTimer(0);
   };
 
   const toggleOptions = (optionNumber) => {
@@ -160,16 +163,17 @@ const GuessingWord = () => {
 
   const checkYourTurn = () => {
     // Implement logic to check if it's your turn
+    if (!isStart) return false;
+
     if (playerInfo.current._id === undefined) {
-        console.log(playerIndex)
-        playerInfo.current = usersInRoom[playerIndex]
+      console.log(playerIndex);
+      playerInfo.current = usersInRoom[playerIndex];
     }
     return playerInfo.current._id === userInfo._id;
   };
 
   const updatePlayerIndex = () => {
-    playerIndex =
-      playerIndex < usersInRoom.length - 1 ? playerIndex + 1 : 0;
+    playerIndex = playerIndex < usersInRoom.length - 1 ? playerIndex + 1 : 0;
   };
 
   const handleGamingTimelines = () => {
@@ -182,17 +186,27 @@ const GuessingWord = () => {
         }
       ) {
         updatePlayerIndex();
-        playerInfo.current = usersInRoom[playerIndex]
+        playerInfo.current = usersInRoom[playerIndex];
         selectedKeyword.current = {};
         checkYourTurn() && setShowKeywordDialog(true);
+        setIsClear(true);
       }
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
       //   captureAndSaveImage().then(() => {
-      //     setShowEndTurnResultDialog(true);
+      setShowEndTurnResultDialog(true);
       //   });
+
+      if (playerIndex === usersInRoom.length - 1) {
+        setIsStart(false);
+        setTimeout(() => {
+          setShowEndTurnResultDialog(false);
+          setShowEndGameResultDialog(true);
+        }, 3000); // 3 second delay
+        socket.off();
+      }
     }
   };
 
@@ -213,6 +227,10 @@ const GuessingWord = () => {
     // Listen when to start the game
     socket.on("startGame", () => {
       setIsStart(true);
+    });
+
+    socket.on("selectKeyword", (keyword) => {
+      selectedKeyword.current = keyword;
     });
 
     return () => {
@@ -267,7 +285,7 @@ const GuessingWord = () => {
     }
   }, [keywordList]);
 
-  //   UseEffect to handle game time
+  // UseEffect to handle game time
   useEffect(() => {
     if (!isStart) return;
     closeAllModal();
@@ -280,10 +298,11 @@ const GuessingWord = () => {
           if (
             Object.keys(selectedKeyword.current).length === 0 &&
             gameTimeController.getStatus() ===
-              DRAWING_GAME_STATUS.WORD_SELECTION
+              DRAWING_GAME_STATUS.WORD_SELECTION &&
+            checkYourTurn()
           ) {
             const randomIndex = Math.floor(Math.random() * keywordList.length);
-            handleKeywordSelect(keywordList[randomIndex]);
+            handleSelectKeyword(keywordList[randomIndex]);
           }
 
           // Set next status and time
@@ -310,17 +329,19 @@ const GuessingWord = () => {
       {showInviteDialog && <View></View>}
 
       {/* Show keyword dialog */}
-      <KeywordSelection
-        isShow={showKeywordDialog}
-        keywordList={keywordList}
-        onKeywordSelect={handleKeywordSelect}
-      />
+      {showKeywordDialog && (
+        <KeywordSelection
+          isShow={showKeywordDialog}
+          keywordList={keywordList}
+          onKeywordSelect={handleSelectKeyword}
+        />
+      )}
 
       {/* Show end turn result dialog */}
       {showEndTurnResultDialog && (
         <EndTurnResult
           isShow={showEndTurnResultDialog}
-          player={playerInfo}
+          player={playerInfo.current}
           image={capturedImage.current}
           keyword={selectedKeyword.current.keyword}
           numPlayersCorrect={2}
@@ -328,11 +349,13 @@ const GuessingWord = () => {
       )}
 
       {/* Show result dialog */}
-      {/* <EndGameResult
-        items={usersInRoom}
-        isShow={true}
-        keyword={"Trò chơi kết thúc"}
-      ></EndGameResult> */}
+      {showEndGameResultDialog && (
+        <EndGameResult
+          items={usersInRoom}
+          isShow={showEndGameResultDialog}
+          keyword={"Trò chơi kết thúc"}
+        ></EndGameResult>
+      )}
 
       {/* Show add friend dialog */}
       {showAddFriendDialog && (
@@ -371,8 +394,16 @@ const GuessingWord = () => {
         <Ionicons name="menu" size={30} color="white" />
         <Text style={styles.timer}>{timer}</Text>
         <View style={styles.roomInfoContainer}>
-          <Text style={styles.roomName}>{roomInfo.name}</Text>
-          <Text style={styles.roomName}>{selectedKeyword.current.keyword}</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.roomName}>{roomInfo.name}</Text>
+            {checkYourTurn() && (
+              <Text style={styles.roomName}>
+                {" - "}
+                {selectedKeyword.current.keyword}
+              </Text>
+            )}
+          </View>
+
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
         <Pressable onPress={() => navigation.navigate("Room Config")}>
@@ -399,6 +430,7 @@ const GuessingWord = () => {
             }}
           >
             <WhiteBoard
+              enableDrawing={checkYourTurn()}
               roomId={roomInfo._id}
               color={color}
               size={size}
@@ -485,7 +517,7 @@ const GuessingWord = () => {
       )}
 
       {/* Drawing options */}
-      {isStart ? (
+      {isStart && checkYourTurn() ? (
         <View
           style={[
             styles.bottomBar,

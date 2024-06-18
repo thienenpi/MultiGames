@@ -1,10 +1,9 @@
-import React from 'react';
-import { View, Text, Image, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import styles from './styles/profileRow.style';
+import React from "react";
+import { View, Text, Image, Pressable } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import styles from "./styles/profileRow.style";
 
 const ProfileRow = ({ avatarSource, money, name, eventIcon, eventText }) => {
-  
   const handleAvatarPress = () => {
     // Xử lý khi nhấn vào avatar
     console.log("Avatar pressed");
@@ -19,7 +18,7 @@ const ProfileRow = ({ avatarSource, money, name, eventIcon, eventText }) => {
     <View style={styles.container}>
       <View style={styles.leftContainer}>
         <Pressable style={styles.avatarContainer} onPress={handleAvatarPress}>
-          <Image source={avatarSource} style={styles.avatar} />
+          <Image source={{ uri: avatarSource }} style={styles.avatar} />
         </Pressable>
         <View style={styles.textContainer}>
           <Text style={styles.nameText}>Welcome {name}</Text>

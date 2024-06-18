@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
@@ -29,9 +29,9 @@ const Dashboard = () => {
   };
 
   return (
-    <SafeAreaView>
+    <View>
       <ProfileRow
-        avatarSource={require("../../assets/bg01.png")}
+        avatarSource={userInfo.avatarUrl}
         name={userInfo.name}
         money="100"
         eventIcon="star-outline"
@@ -111,7 +111,7 @@ const Dashboard = () => {
           text="Who's the Spy?"
         />
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 

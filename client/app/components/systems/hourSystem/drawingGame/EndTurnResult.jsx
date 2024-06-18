@@ -23,7 +23,7 @@ const EndTurnResult = ({
     setShow(isShow);
   }, [isShow]);
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   return (
     <Modal animationType="fade" transparent={true} visible={show}>
@@ -45,16 +45,20 @@ const EndTurnResult = ({
           </View>
         </View>
         <View style={styles.body}>
-          <Image
-            source={{ uri: image }}
-            style={{ flex: 1, resizeMode: "center" }}
-          />
+          {image && (
+            <Image
+              source={{ uri: image }}
+              style={{ flex: 1, resizeMode: "center" }}
+            />
+          )}
         </View>
         <View style={styles.footer}>
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="heart" size={25} color="red" />
           </TouchableOpacity>
-          <Text style={{ fontSize: 16, marginHorizontal: 10 }}>0 yêu thích</Text>
+          <Text style={{ fontSize: 16, marginHorizontal: 10 }}>
+            0 yêu thích
+          </Text>
         </View>
       </View>
     </Modal>

@@ -11,16 +11,23 @@ const RankColumns = ({ items }) => {
     .map((item, index) => ({ ...item, rank: index + 1 }));
 
   return (
-    <FlatList
-      data={rankedItems}
-      renderItem={renderItem}
-      keyExtractor={(item) => JSON.stringify(item._id)}
-      contentContainerStyle={{ rowGap: SIZES.medium }}
-      scrollEnabled={false}
-    ></FlatList>
+    <View style={styles.container}>
+      <FlatList
+        data={rankedItems}
+        renderItem={renderItem}
+        keyExtractor={(item) => JSON.stringify(item._id)}
+        contentContainerStyle={{ rowGap: SIZES.medium }}
+        scrollEnabled={false}
+      ></FlatList>
+    </View>
   );
 };
 
 export default RankColumns;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+    width: "100%",
+  },
+});

@@ -9,7 +9,7 @@ import { checkIfFriend } from "../../../../services";
 const RankUserView = ({ item }) => {
   const { userInfo } = useContext(AuthContext);
   const isFriend = checkIfFriend({ id: userInfo._id, friendId: item._id });
-  const isMe = userInfo._id === item._id;
+  const isMe = userInfo._id === item._id ? "none" : "flex";
 
   return (
     <View style={styles.container}>
@@ -19,6 +19,7 @@ const RankUserView = ({ item }) => {
       <View style={styles.avatar}>
         <Image style={styles.avatar} source={{ uri: item.avatarUrl }}></Image>
       </View>
+
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
         <Text style={styles.expGain}>{item.name}</Text>
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
   },
 
   expGain: {
-    fontFamily: "sfProRegular",
+    fontFamily: "sfPro",
     fontSize: SIZES.small,
     color: COLORS.text,
   },

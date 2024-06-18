@@ -24,8 +24,13 @@ const socketSetup = (server) => {
       socket.to(room).emit("join", room);
 
       // Remove any existing listeners to avoid memory leaks
+      socket.removeAllListeners("selectKeyword");
       socket.removeAllListeners("draw");
       socket.removeAllListeners("message");
+
+      socket.on("selectKeyword", (keyword) => {
+        socket.to(room).emit("selectKeyword", keyword);
+      });
 
       socket.on("draw", (data) => {
         socket.to(room).emit("draw", data);
@@ -65,7 +70,9 @@ const socketSetup = (server) => {
       }
 
       rooms[room]["noReady"]++;
-      console.log(rooms[room]["noReady"] + " out of " + rooms[room].length + " are ready")
+      console.log(
+        rooms[room]["noReady"] + " out of " + rooms[room].length + " are ready"
+      );
 
       if (rooms[room]["noReady"] === rooms[room].length) {
         socket.emit("startGame");
@@ -74,6 +81,17 @@ const socketSetup = (server) => {
     };
 
     console.log("A user connected");
+    socket.on("join", joinHandler);
+
+    socket.on("ready", readyHandler);
+
+    socket.on("getChatHistory", (room) => {
+      if (chatHistory[room]) {
+        chatHistory[room].forEach((message) => {
+          socket.emit("message", message);
+        });
+      }
+    });
 
     socket.on("getMessages", async ({ userId, friendId }) => {
       try {
@@ -113,19 +131,7 @@ const socketSetup = (server) => {
       }
     });
 
-    socket.on("join", joinHandler);
-
-    socket.on("getChatHistory", (room) => {
-      if (chatHistory[room]) {
-        chatHistory[room].forEach((message) => {
-          socket.emit("message", message);
-        });
-      }
-    });
-
     socket.on("leave", leaveHandler);
-
-    socket.on("ready", readyHandler);
   });
 };
 

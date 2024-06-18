@@ -14,7 +14,8 @@ const Account = () => {
     <View style={styles.container}>
       <ImageBackground
         source={{
-          uri: userInfo.avatarUrl,
+          //   uri: userInfo.avatarUrl,
+          uri: "https://multigames.blob.core.windows.net/images/user.png",
         }}
         style={styles.avatar}
         imageStyle={styles.avatar}

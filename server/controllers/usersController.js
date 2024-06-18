@@ -1,4 +1,8 @@
 const User = require("../models/Users");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+const { uploadBlob } = require("../services/azureStorageBlob");
 
 const createUser = async (req, res) => {
   try {
@@ -57,6 +61,19 @@ const updateUser = async (req, res) => {
   }
 };
 
+const updateAvatar = async (req, res) => {
+  const fileBuffer = req.file.buffer;
+  const fileName = req.body.userId;
+
+  try {
+    const avatarUrl = await uploadBlob("avatars", fileName, fileBuffer);
+
+    res.status(200).json(avatarUrl);
+  } catch (error) {
+    res.status(500).json("Failed to upload avatar", error);
+  }
+};
+
 const sendFriendRequest = async (req, res) => {
   const { senderId, recipientId } = req.body;
   try {
@@ -64,19 +81,19 @@ const sendFriendRequest = async (req, res) => {
     const recipient = await User.findById(recipientId);
 
     if (!sender || !recipient) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
 
     // Kiểm tra xem yêu cầu đã được gửi trước đó hay chưa
     if (recipient.sentFriendRequests.includes(sender)) {
-      return res.status(400).send('Friend request already sent');
+      return res.status(400).send("Friend request already sent");
     }
 
     // Thêm recipient vào danh sách sentFriendRequests của sender
     recipient.sentFriendRequests.push(sender);
     await recipient.save();
 
-    res.status(200).send('Friend request sent');
+    res.status(200).send("Friend request sent");
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -90,11 +107,11 @@ const acceptFriendRequest = async (req, res) => {
     const friend = await User.findById(friendId);
 
     if (!user || !friend) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
 
     if (!friend.sentFriendRequests.includes(userId)) {
-      return res.status(400).send('Friend request not found');
+      return res.status(400).send("Friend request not found");
     }
 
     user.friends.push(friendId);
@@ -107,17 +124,19 @@ const acceptFriendRequest = async (req, res) => {
     await user.save();
     await friend.save();
 
-    res.status(200).send('Friend request accepted');
+    res.status(200).send("Friend request accepted");
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
 
 module.exports = {
+  upload,
   createUser,
   getAllUsers,
   getUserById,
   updateUser,
+  updateAvatar,
   sendFriendRequest,
   acceptFriendRequest,
 };
