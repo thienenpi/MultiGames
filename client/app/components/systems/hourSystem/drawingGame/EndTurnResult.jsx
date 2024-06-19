@@ -23,8 +23,6 @@ const EndTurnResult = ({
     setShow(isShow);
   }, [isShow]);
 
-  useEffect(() => {}, []);
-
   return (
     <Modal animationType="fade" transparent={true} visible={show}>
       <View style={styles.overlay} />

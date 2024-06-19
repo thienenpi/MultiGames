@@ -27,6 +27,7 @@ import {
   EndTurnResult,
   AddFriendDialog,
   UserCardView,
+  GameScoreController,
 } from "../components";
 import { getRoomGuests, isRoomFull, getUserById, getKeyWords } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
@@ -75,6 +76,9 @@ const GuessingWord = () => {
 
   // Set timer using state hook
   const [timer, setTimer] = useState(gameTimeController.getTime());
+
+  // Set game score
+  const gameScoreController = useRef(new GameScoreController()).current;
 
   const updateColor = (color) => {
     setColor(color);
@@ -142,11 +146,34 @@ const GuessingWord = () => {
 
   const sendMessage = () => {
     if (message.trim() !== "") {
-      const newMessage = {
-        sender: userInfo.name,
-        content: message,
-      };
+      // Check if the message is the keyword
+      let msg = message.trim().toLowerCase();
+      let keywordCurrent = selectedKeyword.current.keyword.toLowerCase();
+      let newMessage;
+      if (msg === keywordCurrent) {
+        newMessage = {
+          sender: userInfo.name,
+          content: "*".repeat(msg.length),
+        };
+      } else {
+        newMessage = {
+          sender: userInfo.name,
+          content: message,
+        };
+      }
 
+      // Calculate score
+      gameScoreController.checkGuessCorrectness(
+        userInfo._id,
+        msg,
+        keywordCurrent
+      );
+      // gameScoreController.checkGuessCorrectness(userInfo._id, "N", "N");
+      // Get score of userInfo
+      let i = gameScoreController.getScoreForDrawGuessGame(userInfo._id);
+      console.log(userInfo.name + " - Score: " + i);
+
+      // Send message to server
       socket.emit("message", newMessage);
       setMessage("");
       setMessageHistory((prevMessageHistory) => [
@@ -169,6 +196,10 @@ const GuessingWord = () => {
       console.log(playerIndex);
       playerInfo.current = usersInRoom[playerIndex];
     }
+
+    gameScoreController.removeDrawPlayer();
+    gameScoreController.setDrawPlayer(playerInfo.current._id);
+
     return playerInfo.current._id === userInfo._id;
   };
 
@@ -179,12 +210,7 @@ const GuessingWord = () => {
   const handleGamingTimelines = () => {
     closeAllModal();
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
-      if (
-        checkRoomFull() &&
-        {
-          //   checkYourTurn()
-        }
-      ) {
+      if (checkRoomFull()) {
         updatePlayerIndex();
         playerInfo.current = usersInRoom[playerIndex];
         selectedKeyword.current = {};
@@ -195,18 +221,19 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
-      //   captureAndSaveImage().then(() => {
-      setShowEndTurnResultDialog(true);
-      //   });
+      captureAndSaveImage().then(() => {
+        setShowEndTurnResultDialog(true);
+        gameScoreController.resetTurn();
 
-      if (playerIndex === usersInRoom.length - 1) {
-        setIsStart(false);
-        setTimeout(() => {
-          setShowEndTurnResultDialog(false);
-          setShowEndGameResultDialog(true);
-        }, 3000); // 3 second delay
-        socket.off();
-      }
+        if (playerIndex === usersInRoom.length - 1) {
+          setIsStart(false);
+          setTimeout(() => {
+            setShowEndTurnResultDialog(false);
+            setShowEndGameResultDialog(true);
+          }, 2000); // 3 second delay
+          socket.off();
+        }
+      });
     }
   };
 
@@ -251,7 +278,10 @@ const GuessingWord = () => {
 
         if (res.status === 200) {
           const user = res.data;
-          user["score"] = 0;
+
+          // Add player to game score controller
+        //   gameScoreController.addPlayer(user);
+
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
@@ -290,6 +320,10 @@ const GuessingWord = () => {
     if (!isStart) return;
     closeAllModal();
     checkYourTurn() && setShowKeywordDialog(true);
+
+    usersInRoom.forEach((user) => {
+        gameScoreController.addPlayer(user);
+    });
 
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
@@ -351,7 +385,7 @@ const GuessingWord = () => {
       {/* Show result dialog */}
       {showEndGameResultDialog && (
         <EndGameResult
-          items={usersInRoom}
+          items={gameScoreController.players}
           isShow={showEndGameResultDialog}
           keyword={"Trò chơi kết thúc"}
         ></EndGameResult>
@@ -463,8 +497,9 @@ const GuessingWord = () => {
             style={{
               resizeMode: "contain",
               marginTop: 110,
-              height: "60%",
+              height: "55%",
               width: "100%",
+              marginBottom: 10,
             }}
           />
           <View style={styles.buttonContainers}>
@@ -486,7 +521,7 @@ const GuessingWord = () => {
             </View>
             <TouchableOpacity
               style={styles.containerStart}
-              onPress={handleReady}
+              onPress={isReady ? () => {} : handleReady}
             >
               <LinearGradient
                 colors={["#AB012B", "#FF003F"]}
@@ -495,11 +530,6 @@ const GuessingWord = () => {
                 style={styles.gradientButton}
               >
                 <Image
-                  //   source={{
-                  //     uri: isReady
-                  //       ? "https://multigames.blob.core.windows.net/assests/image_login.png"
-                  //       : "https://multigames.blob.core.windows.net/assests/create_icon.png",
-                  //   }}
                   source={
                     isReady
                       ? require("../../assets/image_login.png")
