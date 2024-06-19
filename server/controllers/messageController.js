@@ -25,7 +25,22 @@ const sendMessage = async (req, res) => {
     res.status(500).send(err);
   }
 };
+const getUnreadMessagesCount = async (req, res) => {
+  try {
+    const { userId, friendId } = req.params;
+    const unreadCount = await Message.countDocuments({
+      senderId: friendId,
+      recipientId: userId,
+      isSeen: false
+    });
+
+    res.json({ unreadCount });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
 module.exports = {
   getMessages,
   sendMessage,
+  getUnreadMessagesCount,
 };

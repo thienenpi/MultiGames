@@ -5,10 +5,33 @@ import {
   Text,
   ImageBackground,
 } from "react-native";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
-
+import { AuthContext } from "../../context/AuthContext";
+import { getUnreadMessagesCount } from "../../api/MessageApi";
+import { socket } from "../../utils/config";
 const MessageCardView = ({ item, onPress }) => {
+  const [unReadNumber, setUnreadNumver] = useState(0);
+  const [newestMessage, setNewestMessage] = useState("");
+  const { userInfo } = useContext(AuthContext);
+  const getUnreadNumBer = async () => {
+    const res = await getUnreadMessagesCount({
+      userId: userInfo._id,
+      friendId: item._id,
+    });
+    setUnreadNumver(res.data.unreadCount);
+  };
+  const handleNewestMessage = () => {
+    socket.on("notification", (newMessage) => {
+      if (newMessage.senderId === item._id) {
+        setNewestMessage(newMessage.message);
+      }
+    });
+  };
+  useEffect(() => {
+    handleNewestMessage();
+    getUnreadNumBer();
+  }, [newestMessage]);
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
@@ -21,7 +44,7 @@ const MessageCardView = ({ item, onPress }) => {
         >
           <View style={styles.unreadNumber}>
             <Text style={{ color: COLORS.background, fontSize: 12 }}>
-              {item.unreadNumber}
+              {unReadNumber}
             </Text>
           </View>
         </ImageBackground>
@@ -30,7 +53,7 @@ const MessageCardView = ({ item, onPress }) => {
 
         <View style={styles.message}>
           <View style={styles.messageHeader}>
-            <Text style={styles.userName}>{item.userName}</Text>
+            <Text style={styles.userName}>{item.name}</Text>
 
             <Text style={styles.date}>{item.date}</Text>
           </View>
@@ -40,7 +63,7 @@ const MessageCardView = ({ item, onPress }) => {
             ellipsizeMode="tail"
             style={styles.messageText}
           >
-            {item.message}
+            {newestMessage}
           </Text>
         </View>
       </View>

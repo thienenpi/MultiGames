@@ -5,9 +5,9 @@ const Message = require("./models/Message");
 const rooms = {};
 const chatHistory = {};
 
-const socketSetup = (server) => {
+const spyGameSocketSetup = (server) => {
   const io = socketIo(server, {
-    path: "/api/whiteBoard/",
+    path: "/api/spyGame/",
   });
 
   io.on("connection", (socket) => {
@@ -22,14 +22,6 @@ const socketSetup = (server) => {
       rooms[room].push(socket);
       // emit to others in the room
       socket.to(room).emit("join", room);
-
-      // Remove any existing listeners to avoid memory leaks
-      socket.removeAllListeners("draw");
-      socket.removeAllListeners("message");
-
-      socket.on("draw", (data) => {
-        socket.to(room).emit("draw", data);
-      });
 
       socket.on("message", (message) => {
         console.log(message);
@@ -84,14 +76,12 @@ const socketSetup = (server) => {
     socket.on("leave", (room) => {
       console.log(`A user leaved from ${room}`);
       socket.to(room).emit("leave", room);
-    //   socket.removeAllListeners("join");
 
       const index = rooms[room].indexOf(socket);
 
       if (index !== -1) {
         rooms[room].splice(index, 1);
       }
-
       if (rooms[room].length === 0) {
         delete rooms[room];
         delete chatHistory[room];
@@ -100,4 +90,4 @@ const socketSetup = (server) => {
   });
 };
 
-module.exports = socketSetup;
+module.exports = spyGameSocketSetup;
