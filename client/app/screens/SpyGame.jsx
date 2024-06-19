@@ -1,5 +1,4 @@
-import React from "react";
-import styles from "./styles/spyGame.style";
+import React, { useEffect } from "react";
 import {
   View,
   TextInput,
@@ -11,117 +10,121 @@ import {
   Pressable,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-
+import styles from "./styles/spyGame.style";
 
 const SpyScreen = () => {
   const navigation = useNavigation();
-  const players = [
-    { id: 1, name: "+" },
-    { id: 2, name: "+" },
-    { id: 3, name: "+" },
-    { id: 4, name: "+" },
-    { id: 5, name: "+" },
-    { id: 6, name: "+" },
-    { id: 7, name: "+" },
-    { id: 8, name: "+" },
-  ];
+  const dispatch = useDispatch();
+
+  const players = useSelector((state) => state.players.players);
+  const roomNumber = useSelector((state) => state.room.roomNumber);
+  const roomName = useSelector((state) => state.room.roomName);
+
+  useEffect(() => {
+    dispatch(fetchPlayers());
+    dispatch(fetchRoomInfo());
+  }, []);
+
+  const handleReady = () => {
+    // Xử lý khi người dùng nhấn nút Sẵn sàng
+    console.log("Sẵn sàng pressed");
+    // Thêm logic xử lý khác nếu cần
+  };
+
+  const handleStart = () => {
+    // Xử lý khi người dùng nhấn nút Bắt đầu
+    console.log("Bắt đầu pressed");
+    // Thêm logic xử lý khác nếu cần
+  };
+
   return (
-    <View style={{ flexDirection: "column" }}>
+    <View style={{ flex: 1 }}>
       <ImageBackground
         source={require("../../assets/background_spygame_image.png")}
         style={styles.background}
       >
-        <View style={styles.headerCotainer}>
+        <View style={styles.headerContainer}>
           <Pressable>
             <Image
               source={require("../../assets/menu.png")}
-              style={{ width: 32, height: 32 }}
+              style={styles.menuIcon}
             />
           </Pressable>
           <View style={styles.roomBanner}>
-            <Text style={{ fontSize: 22, fontWeight: "bold", color: "white" }}>
-              Số phòng VF3346338
-            </Text>
-            <View style={styles.roomName}>
-              <Text style={{ fontSize: 14, color: "white" }}>
-                Phòng VFX1231239897819
-              </Text>
-            </View>
+            <Text style={styles.roomNumber}>Số phòng {roomNumber}</Text>
+            <Text style={styles.roomName}>Phòng {roomName}</Text>
           </View>
           <Pressable onPress={() => navigation.navigate("Room Config")}>
             <Image
               source={require("../../assets/friend_setting.png")}
-              style={{ width: 40, height: 40 }}
+              style={styles.settingIcon}
             />
           </Pressable>
         </View>
+
         <View style={styles.playersContainer}>
-          {/* Hai cột người chơi */}
+          {/* Column 1 */}
           <View style={styles.column}>
             {players.slice(0, 4).map((player) => (
               <View key={player.id} style={styles.player}>
-                <Text style={{ color: "white" }}>{player.name}</Text>
+                <Text style={styles.playerText}>{player.name}</Text>
               </View>
             ))}
           </View>
-          <View
-            style={{
-              flex: 4,
-              justifyContent: "flex-end",
-              alignItems: "center",
-              borderRadius: 50,
-              margin: 10,
-            }}
-          >
-            <TouchableOpacity style={styles.containerReady}>
+
+          {/* Center column */}
+          <View style={styles.centerColumn}>
+            <TouchableOpacity style={styles.readyButton} onPress={handleReady}>
               <LinearGradient
                 colors={["#6B91FF", "#62C7FF"]}
-                start={[0, 0]}
-                end={[1, 0]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
                 style={styles.gradientButton}
               >
-                <Text style={{ color: "white", fontSize: 18 }}>Sẵng sàng</Text>
+                <Text style={styles.buttonText}>Sẵn sàng</Text>
               </LinearGradient>
             </TouchableOpacity>
-            <View style={{ height: 20 }}></View>
-            <TouchableOpacity style={styles.containerStart}>
+            <TouchableOpacity style={styles.startButton} onPress={handleStart}>
               <LinearGradient
                 colors={["#F3D14F", "#FA972B"]}
-                start={[0, 0]}
-                end={[1, 0]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
                 style={styles.gradientButton}
               >
-                <Text style={{ color: "white", fontSize: 18 }}>Bắt đầu</Text>
+                <Text style={styles.buttonText}>Bắt đầu</Text>
               </LinearGradient>
             </TouchableOpacity>
           </View>
+
+          {/* Column 2 */}
           <View style={styles.column}>
             {players.slice(4, 8).map((player) => (
               <View key={player.id} style={styles.player}>
-                <Text style={{ color: "white" }}>{player.name}</Text>
+                <Text style={styles.playerText}>{player.name}</Text>
               </View>
             ))}
           </View>
         </View>
+
         {/* Chat history */}
         <View style={styles.chatHistory}>
           {/* Placeholder for chat messages */}
         </View>
+
         {/* Input box */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Type a message..."
+            placeholder="Nhập tin nhắn..."
             multiline
-          // onChangeText={...}
-          // value={...}
           />
-          {/* Send button */}
-          <Button title="Send" onPress={() => null} />
+          <Button title="Gửi" onPress={() => null} />
         </View>
       </ImageBackground>
     </View>
   );
 };
+
 export default SpyScreen;
