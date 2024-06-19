@@ -3,7 +3,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Message, Profile, Shop, Dashboard } from "../screens";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { COLORS } from "../constants";
+import { Platform } from "react-native";
 
+const IS_IOS = Platform.OS === "ios";
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
@@ -17,8 +19,8 @@ const screenOptions = {
   },
   tabBarStyle: [
     {
-      //   height: 55,
       display: "flex",
+      height: IS_IOS ? 80 : 60,
     },
     null,
   ],
@@ -42,7 +44,7 @@ const BottomNavigation = () => {
         component={Shop}
         options={{
           tabBarIcon: () => {
-            return <Feather name="shopping-bag" size={24} color="black" />;
+            return <Feather name="shopping-bag" size={22} color="black" />;
           },
         }}
       ></Tab.Screen>

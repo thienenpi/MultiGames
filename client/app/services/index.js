@@ -1,3 +1,4 @@
-import { joinRoom } from "./Rooms";
+import { joinRoom, leaveRoom } from "./Rooms";
+import { getFriends, checkIfFriend } from "./Users";
 
-export { joinRoom };
+export { joinRoom, leaveRoom, getFriends, checkIfFriend };

@@ -22,6 +22,9 @@ import EndGameResult from "./systems/hourSystem/drawingGame/EndGameResult";
 import RankUserView from "./systems/ranking/drawing/RankUserView";
 import RankColumns from "./systems/ranking/drawing/RankColumns";
 import AddFriendDialog from "./drawing/AddFriendDialog";
+import UserCardView from "./drawing/UserCardView";
+import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
+import GameScoreController from "./systems/scoringSystem/gameScoreController";
 
 export {
   CustomButton,
@@ -48,4 +51,7 @@ export {
   RankUserView,
   RankColumns,
   AddFriendDialog,
+  UserCardView,
+  EndTurnResult,
+  GameScoreController,
 };

@@ -13,6 +13,7 @@ const WhiteBoard = ({
   onRedo,
   isClear,
   onClearDrawing,
+  enableDrawing,
 }) => {
   const [paths, setPaths] = useState([]);
   const [pathToDisplay, setPathToDisplay] = useState([]);
@@ -168,7 +169,9 @@ const WhiteBoard = ({
             />
           ))}
       </Svg>
-      <View style={styles.touchArea} {...panResponder.panHandlers} />
+      {enableDrawing && (
+        <View style={styles.touchArea} {...panResponder.panHandlers} />
+      )}
     </View>
   );
 };

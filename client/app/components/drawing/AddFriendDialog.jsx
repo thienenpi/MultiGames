@@ -1,12 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, Modal, Pressable, StyleSheet, Image } from "react-native";
 import { COLORS, SIZES } from "../../constants";
 import CustomButton from "../CustomButton";
 import { AuthContext } from "../../context/AuthContext";
 import { sendFriendRequest } from "../../api/UserApi";
+import { checkIfFriend } from "../../services";
 
 const AddFriendDialog = ({ isShow, onChangeShow, keyword, user }) => {
   const { userInfo } = useContext(AuthContext);
+  const [isFriend, setIsFriend] = useState(
+    checkIfFriend({ id: userInfo._id, friendId: user._id }).then((res) => {
+      setIsFriend(res);
+    })
+  );
+
 
   const closeModal = () => {
     onChangeShow(false);
@@ -30,17 +37,23 @@ const AddFriendDialog = ({ isShow, onChangeShow, keyword, user }) => {
             <Text style={styles.userName}>{user.name}</Text>
           </View>
 
-          <CustomButton
-            styles={styles}
-            label={"Kết bạn"}
-            isValid={true}
-            onPress={async () => {
-              await sendFriendRequest({
-                senderId: userInfo._id,
-                recipientId: user._id,
-              });
-            }}
-          ></CustomButton>
+          {isFriend ? (
+            <View style={styles.frStatusContainer}>
+              <Text style={styles.frStatusText}>Bạn bè</Text>
+            </View>
+          ) : (
+            <CustomButton
+              styles={styles}
+              label={"Kết bạn"}
+              isValid={true}
+              onPress={async () => {
+                await sendFriendRequest({
+                  senderId: userInfo._id,
+                  recipientId: user._id,
+                });
+              }}
+            ></CustomButton>
+          )}
         </View>
       </View>
     </Modal>
@@ -110,7 +123,7 @@ const styles = StyleSheet.create({
 
   btnContainer: () => ({
     flex: 1,
-    backgroundColor: COLORS.green,
+    backgroundColor: COLORS.button,
     borderRadius: 99,
     height: "40%",
     alignItems: "center",
@@ -118,6 +131,21 @@ const styles = StyleSheet.create({
   }),
 
   btnLabel: {
+    fontFamily: "sfProBold",
+    fontSize: SIZES.medium,
+    color: "white",
+  },
+
+  frStatusContainer: {
+    flex: 1,
+    backgroundColor: COLORS.green,
+    borderRadius: 99,
+    height: "40%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  frStatusText: {
     fontFamily: "sfProBold",
     fontSize: SIZES.medium,
     color: "white",

@@ -22,6 +22,8 @@ import {
 
 import { getMessages, sendMessage, markMessagesAsSeen } from "./MessageApi";
 
+import { getKeyWords } from "./KeywordApi";
+
 export {
   // UserApi
   userLogin,
@@ -47,4 +49,7 @@ export {
   getMessages,
   sendMessage,
   markMessagesAsSeen,
+
+  // KeywordApi
+  getKeyWords
 };

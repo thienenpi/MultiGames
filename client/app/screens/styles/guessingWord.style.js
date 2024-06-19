@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
     width: SIZES.width,
     backgroundColor: "#79c060",
     padding: 10,
-    // backgroundColor: COLORS.button
   },
 
   userImagesContainer: {
@@ -74,6 +73,11 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: "#ccc",
+  },
+
+  highlightedUserImage: {
+    borderColor: 'yellow',
+    borderWidth: 3,
   },
 
   inputContainer: {
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     width: SIZES.width,
     flexDirection: "row",
     justifyContent: "space-around",
-    alignItems: "flex-end",
+    // alignItems: "flex-end",
     paddingHorizontal: 20,
   },
 

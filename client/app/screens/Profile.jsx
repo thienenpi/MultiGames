@@ -10,7 +10,10 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
-      <AppBar onPressLeftIcon={() => navigation.goBack()}></AppBar>
+      <AppBar
+        showLeftIcon={false}
+        onPressLeftIcon={() => navigation.goBack()}
+      ></AppBar>
 
       <View style={styles.header}>
         <Account></Account>

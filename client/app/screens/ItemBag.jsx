@@ -6,7 +6,6 @@ import {
   Text,
   Image,
   FlatList,
-  SafeAreaView,
   Modal,
   Pressable,
   TouchableOpacity,

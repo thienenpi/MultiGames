@@ -10,6 +10,11 @@ router.post("/", userController.createUser);
 router.get("/", userController.getAllUsers);
 router.get("/id=:id", userController.getUserById);
 router.put("/id=:id", userController.updateUser);
+router.post(
+  "/updateAvatar",
+  userController.upload.single("avatar"),
+  userController.updateAvatar
+);
 router.post("/sendFriendRequest", userController.sendFriendRequest);
 router.post("/acceptFriendRequest", userController.acceptFriendRequest);
 

@@ -1,39 +1,34 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  Modal,
-  Pressable,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Modal, StyleSheet } from "react-native";
 import { SIZES } from "../../../../constants";
 import RankColumns from "../../ranking/drawing/RankColumns";
+import CustomButton from "../../../CustomButton";
+import { useNavigation } from "@react-navigation/native";
 
 const EndGameResult = ({ isShow, keyword, items }) => {
+  const navigation = useNavigation();
   const [show, setShow] = useState(isShow);
 
   useEffect(() => {
     setShow(isShow);
   }, [isShow]);
 
-  const closeModal = () => {
-    setShow(false);
-  };
-
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={show}
-      onRequestClose={closeModal}
-    >
-      <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
+    <Modal animationType="fade" transparent={true} visible={show}>
+      <View style={styles.overlay} />
       <View style={styles.modalView}>
         <View style={styles.header}>
           <Text style={styles.headerText}>{keyword}</Text>
         </View>
         <View style={styles.body}>
           <RankColumns items={items}></RankColumns>
+
+          <CustomButton
+            isValid={true}
+            label={"Thoát"}
+            styles={styles}
+            onPress={() => navigation.navigate("Dashboard")}
+          ></CustomButton>
         </View>
       </View>
     </Modal>
@@ -78,5 +73,22 @@ const styles = StyleSheet.create({
     flex: 9,
     width: "100%",
     borderRadius: 10,
+    alignItems: "center",
+  },
+
+  btnContainer: (backgroundColor) => ({
+    width: "40%",
+    backgroundColor: backgroundColor,
+    padding: 10,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 20,
+  }),
+
+  btnLabel: {
+    color: "white",
+    fontWeight: "bold",
   },
 });

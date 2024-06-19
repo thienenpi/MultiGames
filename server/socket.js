@@ -24,8 +24,13 @@ const socketSetup = (server) => {
       socket.to(room).emit("join", room);
 
       // Remove any existing listeners to avoid memory leaks
+      socket.removeAllListeners("selectKeyword");
       socket.removeAllListeners("draw");
       socket.removeAllListeners("message");
+
+      socket.on("selectKeyword", (keyword) => {
+        socket.to(room).emit("selectKeyword", keyword);
+      });
 
       socket.on("draw", (data) => {
         socket.to(room).emit("draw", data);
@@ -41,6 +46,38 @@ const socketSetup = (server) => {
         chatHistory[room].push(message);
         socket.to(room).emit("message", message);
       });
+    };
+
+    const leaveHandler = (room) => {
+      console.log(`A user leaved from ${room}`);
+      socket.to(room).emit("leave", room);
+
+      const index = rooms[room].indexOf(socket);
+
+      if (index !== -1) {
+        rooms[room].splice(index, 1);
+      }
+
+      if (rooms[room].length === 0) {
+        delete rooms[room];
+        delete chatHistory[room];
+      }
+    };
+
+    const readyHandler = (room) => {
+      if (!rooms[room]["noReady"]) {
+        rooms[room]["noReady"] = 0;
+      }
+
+      rooms[room]["noReady"]++;
+      console.log(
+        rooms[room]["noReady"] + " out of " + rooms[room].length + " are ready"
+      );
+
+      if (rooms[room]["noReady"] === rooms[room].length) {
+        socket.emit("startGame");
+        socket.to(room).emit("startGame");
+      }
     };
 
     console.log("A user connected");
@@ -68,35 +105,23 @@ const socketSetup = (server) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("user disconnected");
-    });
+      console.log(`user disconnected`);
+      // find the room that the user is in
+      let room = null;
 
-    socket.on("join", joinHandler);
+      for (const key in rooms) {
+        if (rooms[key].includes(socket)) {
+          room = key;
+          break;
+        }
+      }
 
-    socket.on("getChatHistory", (room) => {
-      if (chatHistory[room]) {
-        chatHistory[room].forEach((message) => {
-          socket.emit("message", message);
-        });
+      if (room) {
+        leaveHandler(room);
       }
     });
 
-    socket.on("leave", (room) => {
-      console.log(`A user leaved from ${room}`);
-      socket.to(room).emit("leave", room);
-    //   socket.removeAllListeners("join");
-
-      const index = rooms[room].indexOf(socket);
-
-      if (index !== -1) {
-        rooms[room].splice(index, 1);
-      }
-
-      if (rooms[room].length === 0) {
-        delete rooms[room];
-        delete chatHistory[room];
-      }
-    });
+    socket.on("leave", leaveHandler);
   });
 };
 

@@ -4,6 +4,10 @@ const joinRoom = async ({ roomId, userId }) => {
   try {
     const users = await getRoomGuests({ id: roomId });
 
+    if (users.data.includes(userId)) {
+      return;
+    }
+
     const data = {
       list_guest: [...users.data, userId],
       history_guest: [...users.data, userId],
