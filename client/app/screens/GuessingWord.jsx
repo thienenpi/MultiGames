@@ -152,26 +152,19 @@ const GuessingWord = () => {
       let newMessage;
       if (msg === keywordCurrent) {
         newMessage = {
+          senderId: userInfo._id,
           sender: userInfo.name,
-          content: "*".repeat(msg.length),
+          content: '*'.repeat(msg.length),
+          hiddenContent: message.trim(),
+          isCheckGuessCorrectness: true,
         };
       } else {
         newMessage = {
+          senderId: userInfo._id,
           sender: userInfo.name,
           content: message,
         };
       }
-
-      // Calculate score
-      gameScoreController.checkGuessCorrectness(
-        userInfo._id,
-        msg,
-        keywordCurrent
-      );
-      // gameScoreController.checkGuessCorrectness(userInfo._id, "N", "N");
-      // Get score of userInfo
-      let i = gameScoreController.getScoreForDrawGuessGame(userInfo._id);
-      console.log(userInfo.name + " - Score: " + i);
 
       // Send message to server
       socket.emit("message", newMessage);
@@ -244,6 +237,12 @@ const GuessingWord = () => {
     // Join the room when component mounts
     socket.on("message", (data) => {
       if (data !== null) {
+        // Calculate score
+        if (data.isCheckGuessCorrectness) {
+          gameScoreController.calculateScoreForDrawGuessGame(data.senderId);
+          // Get score of sender
+          console.log(userInfo.name + " - Score: " + gameScoreController.getScoreForDrawGuessGame(data.senderId));
+        }
         setMessageHistory((prevMessageHistory) => [
           ...prevMessageHistory,
           data,
