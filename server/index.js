@@ -4,6 +4,7 @@ const http = require("http");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const socketSetup = require("./socket"); // Import socket setup
+const spyGameSocketSetup = require("./spygame.socket");
 const app = express();
 const port = 3000;
 const server = http.createServer(app);
@@ -39,6 +40,7 @@ app.get("/privacy-policy", (req, res) => {
 
 // Pass the server to the socket setup function
 socketSetup(server);
+spyGameSocketSetup(server)
 
 server.listen(port || process.env.PORT, () =>
   console.log(`Multigames listening on port ${port}!`)

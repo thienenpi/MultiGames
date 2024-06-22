@@ -1,4 +1,4 @@
-import { getRoomGuests, updateRoom } from "../api";
+import { getRoomGuests, updateRoom, getActiveRoom } from "../api";
 
 const joinRoom = async ({ roomId, userId }) => {
   try {
@@ -35,5 +35,11 @@ const leaveRoom = async ({ roomId, userId }) => {
     throw error;
   }
 };
+const accessRoom = async ({data: data}) => {
+  const res = await getActiveRoom({data: data});
+  const roomInfo = res.data;
 
-export { joinRoom, leaveRoom };
+  // if roomInfo is empty, navigate to create room
+  return roomInfo;
+};
+export { joinRoom, leaveRoom, accessRoom };

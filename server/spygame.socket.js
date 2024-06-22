@@ -23,6 +23,8 @@ const spyGameSocketSetup = (server) => {
       // emit to others in the room
       socket.to(room).emit("join", room);
 
+      socket.removeAllListeners("message");
+      
       socket.on("message", (message) => {
         console.log(message);
 
@@ -31,6 +33,7 @@ const spyGameSocketSetup = (server) => {
         }
 
         chatHistory[room].push(message);
+        
         socket.to(room).emit("message", message);
       });
     };

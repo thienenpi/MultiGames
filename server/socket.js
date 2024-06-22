@@ -47,7 +47,6 @@ const socketSetup = (server) => {
         socket.to(room).emit("message", message);
       });
     };
-
     const leaveHandler = (room) => {
       console.log(`A user leaved from ${room}`);
       socket.to(room).emit("leave", room);
@@ -122,6 +121,7 @@ const socketSetup = (server) => {
     });
 
     socket.on("leave", leaveHandler);
+    socket.on("join", joinHandler);
   });
 };
 
