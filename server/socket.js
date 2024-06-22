@@ -44,7 +44,7 @@ const socketSetup = (server) => {
         }
 
         chatHistory[room].push(message);
-        socket.to(room).emit("message", message);
+        io.to(room).emit("message", message);
       });
     };
     const leaveHandler = (room) => {
@@ -78,7 +78,7 @@ const socketSetup = (server) => {
         socket.to(room).emit("startGame");
       }
     };
-
+    socket.on('ready', readyHandler);
     console.log("A user connected");
     const getMessages = async ({ userId, friendId }) => {
       try {

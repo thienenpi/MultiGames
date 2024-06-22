@@ -163,16 +163,17 @@ const GuessingWord = () => {
           senderId: userInfo._id,
           sender: userInfo.name,
           content: message,
+          isCheckGuessCorrectness: false,
         };
       }
 
       // Send message to server
       socket.emit("message", newMessage);
       setMessage("");
-      setMessageHistory((prevMessageHistory) => [
-        ...prevMessageHistory,
-        newMessage,
-      ]);
+      // setMessageHistory((prevMessageHistory) => [
+      //   ...prevMessageHistory,
+      //   newMessage,
+      // ]);
     }
   };
 
@@ -186,12 +187,10 @@ const GuessingWord = () => {
     if (!isStart) return false;
 
     if (playerInfo.current._id === undefined) {
-      console.log(playerIndex);
       playerInfo.current = usersInRoom[playerIndex];
+      gameScoreController.setDrawPlayer(playerInfo.current._id);
+      console.log(playerIndex +  " - " + playerInfo.current._id);
     }
-
-    gameScoreController.removeDrawPlayer();
-    gameScoreController.setDrawPlayer(playerInfo.current._id);
 
     return playerInfo.current._id === userInfo._id;
   };
@@ -207,7 +206,12 @@ const GuessingWord = () => {
         updatePlayerIndex();
         playerInfo.current = usersInRoom[playerIndex];
         selectedKeyword.current = {};
-        checkYourTurn() && setShowKeywordDialog(true);
+        if (checkYourTurn()) {
+          setShowKeywordDialog(true);
+          gameScoreController.setDrawPlayer(playerInfo.current._id);
+          console.log("DrawId: " + playerIndex + " " + playerInfo.current._id);
+        }
+        // checkYourTurn() && setShowKeywordDialog(true);
         setIsClear(true);
       }
     }
@@ -223,6 +227,7 @@ const GuessingWord = () => {
           setTimeout(() => {
             setShowEndTurnResultDialog(false);
             setShowEndGameResultDialog(true);
+            gameScoreController.displayScores();
           }, 2000); // 3 second delay
           socket.off();
         }
@@ -236,12 +241,13 @@ const GuessingWord = () => {
 
     // Join the room when component mounts
     socket.on("message", (data) => {
+      console.log(data)
       if (data !== null) {
         // Calculate score
         if (data.isCheckGuessCorrectness) {
           gameScoreController.calculateScoreForDrawGuessGame(data.senderId);
           // Get score of sender
-          console.log(userInfo.name + " - Score: " + gameScoreController.getScoreForDrawGuessGame(data.senderId));
+          console.log(data.sender + " - Score: " + gameScoreController.getScoreForDrawGuessGame(data.senderId));
         }
         setMessageHistory((prevMessageHistory) => [
           ...prevMessageHistory,
@@ -278,8 +284,8 @@ const GuessingWord = () => {
         if (res.status === 200) {
           const user = res.data;
 
-          // Add player to game score controller
-        //   gameScoreController.addPlayer(user);
+        // Add player to game score controller
+        // gameScoreController.addPlayer(user);
 
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }

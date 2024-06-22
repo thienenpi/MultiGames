@@ -42,6 +42,7 @@ const SpyScreen = () => {
 
     // Join the room when component mounts
     spySocket.on("message", (data) => {
+      
       if (data !== null) {
         setMessageHistory((prevMessageHistory) => [
           ...prevMessageHistory,
