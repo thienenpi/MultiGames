@@ -6,28 +6,42 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard } from "../components";
-import { getActiveRoom } from "../api";
-import { joinRoom } from "../services";
+//import { getActiveRoom } from "../api";
+import { joinRoom, accessRoom } from "../services";
 
 const Dashboard = () => {
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
 
-  const accessRoom = async () => {
-    const res = await getActiveRoom();
-    const roomInfo = res.data;
+  // const accessRoom = async () => {
+  //   var data = {
+  //     gameMode: "1"
+  //   }
+  //   const res = await getActiveRoom({data: data});
+  //   const roomInfo = res.data;
 
-    // if roomInfo is empty, navigate to create room
+  //   // if roomInfo is empty, navigate to create room
+  //   if (!roomInfo) {
+  //     navigation.navigate("Room Create");
+  //     return;
+  //   }
+
+  //   await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+  //   navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+  // };
+  const handleAccessRoom = async () => {
+    const data = {
+      gameMode: "Bạn Vẽ Tôi Đoán"
+    }
+    var roomInfo = await accessRoom({data: data});
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
-
     await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
-
     navigation.navigate("Guessing Word", { roomInfo: roomInfo });
-  };
-
+  }
   return (
     <View>
       <ProfileRow
@@ -83,7 +97,7 @@ const Dashboard = () => {
           </Text>
           <TouchableOpacity
             style={[styles.button, { borderRadius: 6, paddingVertical: 2 }]}
-            onPress={accessRoom}
+            onPress={handleAccessRoom}
           >
             <Ionicons
               name="pencil-outline"
@@ -95,18 +109,18 @@ const Dashboard = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity onPress={accessRoom}>
+      <TouchableOpacity onPress={handleAccessRoom}>
         <GameCard
-          colorDark="rgba(0,0,180,0.8)"
-          colorLight="rgba(0,0,180,0.5)"
+          colorDark="rgba(0,180,0,0.8)"
+          colorLight="rgba(0,180,0,0.5)"
           imagePath={require("../../assets/draw_logo.png")}
           text="Guess My Drawing"
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Spy Main")}>
         <GameCard
-          colorDark="rgba(0,180,0,0.8)"
-          colorLight="rgba(0,180,0,0.5)"
+          colorDark="rgba(0,0,180,0.8)"
+          colorLight="rgba(0,0,180,0.5)"
           imagePath={require("../../assets/spy_logo.png")}
           text="Who's the Spy?"
         />

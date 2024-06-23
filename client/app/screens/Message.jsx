@@ -1,9 +1,10 @@
 import { Text, TouchableOpacity, View, Modal, TextInput } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./styles/message.style";
 import { MessageColumn } from "../components";
 import { Ionicons } from "@expo/vector-icons";
 import { sendFriendRequest } from "../api/UserApi";
+import { getUserById } from "../api/UserApi";
 import { AuthContext } from "../context/AuthContext";
 
 const items = [
@@ -29,6 +30,21 @@ const Message = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [friendId, setFriendId] = useState("");
   const { userInfo } = useContext(AuthContext);
+  const [frienndList, setFriendList] = useState([]);
+
+  useEffect(() => {
+    if (frienndList) {
+      handleLoadFriend();
+    }
+  }, []);
+  const handleLoadFriend = () => {
+    console.log(userInfo.friends);
+    setFriendList([]);
+    userInfo.friends.forEach(async (id) => {
+      const res = await getUserById({ id: id });
+      setFriendList((pevFriendlist) => [...pevFriendlist, res.data]);
+    });
+  };
 
   const handleSendFriendRequest = async () => {
     try {
@@ -60,7 +76,7 @@ const Message = () => {
       </View>
 
       <View style={styles.body}>
-        <MessageColumn items={items}></MessageColumn>
+        <MessageColumn items={frienndList}></MessageColumn>
       </View>
 
       <Modal

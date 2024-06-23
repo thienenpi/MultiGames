@@ -149,8 +149,10 @@ const GuessingWord = () => {
       // Check if the message is the keyword
       let msg = message.trim().toLowerCase();
       let newMessage = {
+        senderId: userInfo._id,
         sender: userInfo.name,
         content: message,
+        isCheckGuessCorrectness: false,
       };
 
       if (isStart && selectedKeyword.current) {
@@ -158,30 +160,22 @@ const GuessingWord = () => {
 
         if (msg === keywordCurrent) {
           newMessage = {
+            senderId: userInfo._id,
             sender: userInfo.name,
             content: "*".repeat(msg.length),
+            hiddenContent: message.trim(),
+            isCheckGuessCorrectness: true,
           };
         }
-
-        // Calculate score
-        gameScoreController.checkGuessCorrectness(
-          userInfo._id,
-          msg,
-          keywordCurrent
-        );
-        // gameScoreController.checkGuessCorrectness(userInfo._id, "N", "N");
-        // Get score of userInfo
-        let i = gameScoreController.getScoreForDrawGuessGame(userInfo._id);
-        console.log(userInfo.name + " - Score: " + i);
       }
 
       // Send message to server
       socket.emit("message", newMessage);
       setMessage("");
-      setMessageHistory((prevMessageHistory) => [
-        ...prevMessageHistory,
-        newMessage,
-      ]);
+      // setMessageHistory((prevMessageHistory) => [
+      //   ...prevMessageHistory,
+      //   newMessage,
+      // ]);
     }
   };
 
@@ -195,12 +189,10 @@ const GuessingWord = () => {
     if (!isStart) return false;
 
     if (playerInfo.current._id === undefined) {
-      console.log(playerIndex);
       playerInfo.current = usersInRoom[playerIndex];
+      gameScoreController.setDrawPlayer(playerInfo.current._id);
+      console.log(playerIndex + " - " + playerInfo.current._id);
     }
-
-    gameScoreController.removeDrawPlayer();
-    gameScoreController.setDrawPlayer(playerInfo.current._id);
 
     return playerInfo.current._id === userInfo._id;
   };
@@ -215,8 +207,14 @@ const GuessingWord = () => {
       if (checkRoomFull()) {
         updatePlayerIndex();
         playerInfo.current = usersInRoom[playerIndex];
+        gameScoreController.setDrawPlayer(playerInfo.current._id);
+        console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
+
         selectedKeyword.current = {};
-        checkYourTurn() && setShowKeywordDialog(true);
+        if (checkYourTurn()) {
+          setShowKeywordDialog(true);
+        }
+        // checkYourTurn() && setShowKeywordDialog(true);
         setIsClear(true);
       }
     }
@@ -232,6 +230,7 @@ const GuessingWord = () => {
           setTimeout(() => {
             setShowEndTurnResultDialog(false);
             setShowEndGameResultDialog(true);
+            gameScoreController.displayScores();
           }, 2000); // 3 second delay
           socket.off();
         }
@@ -245,7 +244,31 @@ const GuessingWord = () => {
 
     // Join the room when component mounts
     socket.on("message", (data) => {
+      console.log(data);
       if (data !== null) {
+        // Calculate score
+        if (data.isCheckGuessCorrectness === true) {
+          gameScoreController.calculateScoreForDrawGuessGame(data.senderId);
+          // Get score of sender
+          console.log(
+            data.sender +
+              " - Score: " +
+              gameScoreController.getScoreForDrawGuessGame(data.senderId)
+          );
+
+          const noti = {
+            sender: "Thong bao",
+            content:
+              data.sender +
+              " - Score: " +
+              gameScoreController.getScoreForDrawGuessGame(data.senderId),
+          };
+          setMessageHistory((prevMessageHistory) => [
+            ...prevMessageHistory,
+            noti,
+          ]);
+        }
+
         setMessageHistory((prevMessageHistory) => [
           ...prevMessageHistory,
           data,
@@ -283,6 +306,7 @@ const GuessingWord = () => {
 
           // Add player to game score controller
           //   gameScoreController.addPlayer(user);
+          // gameScoreController.addPlayer(user);
 
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }

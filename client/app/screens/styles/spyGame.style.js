@@ -2,14 +2,14 @@ import { StyleSheet } from "react-native";
 import { COLORS, SIZES } from "../../constants";
 import { Dimensions } from "react-native";
 
-const windowHeight = Dimensions.get("window").height;
+const windowHeight = Dimensions.get("screen").height;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    // flex: 1,
+    // backgroundColor: "red",
+    height: SIZES.height,
+    width: SIZES.width
   },
 
   column: {
@@ -102,7 +102,8 @@ const styles = StyleSheet.create({
   },
 
   background: {
-    height: windowHeight,
+    marginTop: 10,
+    height: SIZES.height,
     resizeMode: "contain", // or 'stretch' or 'contain'
     justifyContent: "center",
   },

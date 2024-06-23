@@ -25,7 +25,7 @@ const FriendChat = () => {
   useEffect(() => {
     if (userInfo && item) {
       socket.emit("getMessages", { userId: userInfo._id, friendId: item._id });
-
+      
       socket.on("messages", (messages) => {
         setMessages(messages);
       });
@@ -103,6 +103,7 @@ const FriendChat = () => {
           value={newMessage}
           onChangeText={setNewMessage}
           placeholder="Nhắn tin"
+          onSubmitEditing={handleSendMessage}
         />
         <Button title="Send" onPress={handleSendMessage} />
       </View>

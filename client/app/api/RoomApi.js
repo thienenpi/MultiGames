@@ -64,14 +64,15 @@ const getRooms = async () => {
   }
 };
 
-const getActiveRoom = async () => {
+const getActiveRoom = async ({data}) => {
   try {
     const url = "/rooms/active/";
     const config = {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      data: data,
     };
 
     const res = await ApiManager(url, config);

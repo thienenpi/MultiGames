@@ -44,10 +44,9 @@ const socketSetup = (server) => {
         }
 
         chatHistory[room].push(message);
-        socket.to(room).emit("message", message);
+        io.to(room).emit("message", message);
       });
     };
-
     const leaveHandler = (room) => {
       console.log(`A user leaved from ${room}`);
       socket.to(room).emit("leave", room);
@@ -79,21 +78,9 @@ const socketSetup = (server) => {
         socket.to(room).emit("startGame");
       }
     };
-
+    socket.on('ready', readyHandler);
     console.log("A user connected");
-    socket.on("join", joinHandler);
-
-    socket.on("ready", readyHandler);
-
-    socket.on("getChatHistory", (room) => {
-      if (chatHistory[room]) {
-        chatHistory[room].forEach((message) => {
-          socket.emit("message", message);
-        });
-      }
-    });
-
-    socket.on("getMessages", async ({ userId, friendId }) => {
+    const getMessages = async ({ userId, friendId }) => {
       try {
         const messages = await Message.find({
           $or: [
@@ -106,11 +93,13 @@ const socketSetup = (server) => {
         console.error(err);
         socket.emit("messages", []);
       }
-    });
+    }
+    socket.on("getMessages", getMessages);
 
     socket.on("sendMessage", async (message) => {
       const newMessage = new Message(message);
       const savedMessage = await newMessage.save();
+      io.emit("notification", savedMessage);
       io.emit("receiveMessage", savedMessage);
     });
 
@@ -132,6 +121,7 @@ const socketSetup = (server) => {
     });
 
     socket.on("leave", leaveHandler);
+    socket.on("join", joinHandler);
   });
 };
 

@@ -32,11 +32,12 @@ const getRooms = async (req, res) => {
 
 const getActiveRoom = async (req, res) => {
   try {
-    const rooms = await Room.find();
+    const gameMode = req.body.gameMode;
+    const rooms = await Room.find({mode: gameMode, status: "active"});
     var room = null;
 
     rooms.forEach((r) => {
-      if (r.status === "active" && r.list_guest.length < r.capacity) {
+      if (r.list_guest.length < r.capacity) {
         room = r;
       }
     });
