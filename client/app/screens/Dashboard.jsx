@@ -97,16 +97,16 @@ const Dashboard = () => {
       </View>
       <TouchableOpacity onPress={accessRoom}>
         <GameCard
-          colorDark="rgba(0,0,180,0.8)"
-          colorLight="rgba(0,0,180,0.5)"
+          colorDark="rgba(0,180,0,0.8)"
+          colorLight="rgba(0,180,0,0.5)"
           imagePath={require("../../assets/draw_logo.png")}
           text="Guess My Drawing"
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Spy Main")}>
         <GameCard
-          colorDark="rgba(0,180,0,0.8)"
-          colorLight="rgba(0,180,0,0.5)"
+          colorDark="rgba(0,0,180,0.8)"
+          colorLight="rgba(0,0,180,0.5)"
           imagePath={require("../../assets/spy_logo.png")}
           text="Who's the Spy?"
         />

@@ -36,6 +36,8 @@ class GameScoreController {
 
   resetTurn() {
     this.count = 0;
+    this.guessCorrectedPlayerIds = {};
+    this.drawPlayerId = '';
   }
 
   getScoreForDrawGuessGame(userId) {
@@ -48,7 +50,7 @@ class GameScoreController {
   }
 
   // Method to check guess correctness for "Vẽ hình đoán chữ"
-  checkGuessCorrectness(userId, guessedWord, correctWord) {
+  calculateScoreForDrawGuessGame(userId, guessedWord, correctWord) {
     // If the role is drawPlayer, then do not calculate the score
     if (this.drawPlayerId === userId) {
       return;
@@ -61,37 +63,35 @@ class GameScoreController {
       }
     });
 
-    if (guessedWord.trim().toLowerCase() === correctWord.trim().toLowerCase()) {
-      this.count++;
-      this.players.forEach((player) => {
-        if (player['_id'] === userId) {
-          switch (this.count) {
-            case 1:
-              player['score'] += DRAWING_GAME_SCORE.WIN_TOP1;
-              break;
-            case 2:
-              player['score'] += DRAWING_GAME_SCORE.WIN_TOP2;
-              break;
-            case 3:
-              player['score'] += DRAWING_GAME_SCORE.WIN_TOP3;
-              break;
-            case 4:
-              player['score'] += DRAWING_GAME_SCORE.WIN_TOP4;
-              break;
-            case 5:
-              player['score'] += DRAWING_GAME_SCORE.WIN_TOP5;
-              break;
-            case 6:
-              player['score'] += DRAWING_GAME_SCORE.WIN_TOP6;
-              break;
-            default:
-              player['score'] += 0;
-              break;
-          }
-          this.guessCorrectedPlayerIds.push(userId);
+    this.count++;
+    this.players.forEach((player) => {
+      if (player['_id'] === userId) {
+        switch (this.count) {
+          case 1:
+            player['score'] += DRAWING_GAME_SCORE.WIN_TOP1;
+            break;
+          case 2:
+            player['score'] += DRAWING_GAME_SCORE.WIN_TOP2;
+            break;
+          case 3:
+            player['score'] += DRAWING_GAME_SCORE.WIN_TOP3;
+            break;
+          case 4:
+            player['score'] += DRAWING_GAME_SCORE.WIN_TOP4;
+            break;
+          case 5:
+            player['score'] += DRAWING_GAME_SCORE.WIN_TOP5;
+            break;
+          case 6:
+            player['score'] += DRAWING_GAME_SCORE.WIN_TOP6;
+            break;
+          default:
+            player['score'] += 0;
+            break;
         }
-      });
-    }
+        this.guessCorrectedPlayerIds.push(userId);
+      }
+    });
   }
 
   // Method to display scores
