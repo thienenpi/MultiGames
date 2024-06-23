@@ -1,8 +1,17 @@
-import { FlatList, Image, Text, View } from "react-native";
-import React from "react";
+import {
+  FlatList,
+  Image,
+  Text,
+  View,
+  ToastAndroid, // For Android-specific toast message 
+  AlertIOS,     // For iOS-specific alert message 
+  Platform      // To handle cross-platform differences 
+} from "react-native";
+import React from 'react';
 import styles from "./styles/roomConfig.style";
 import { AppBar, CustomButton, HorizontalItem } from "../components/";
 import { useNavigation } from "@react-navigation/native";
+// import Clipboard from "@react-native-clipboard/clipboard";
 
 const players = [
   {
@@ -21,6 +30,17 @@ const players = [
     avatarUrl: "https://picsum.photos/200/300",
   },
 ];
+
+const handleCopyText = (text) => {
+  // Clipboard.setString(text);
+  console.log(`Đã copy ${text}`);
+  if (Platform.OS === 'android') {
+    ToastAndroid.show(`Đã copy ${text}`,
+      ToastAndroid.SHORT);
+  } else if (Platform.OS === 'ios') {
+    AlertIOS.alert(`Đã copy ${text}`);
+  }
+}
 
 const renderPlayer = ({ item }) => {
   return (
@@ -58,6 +78,13 @@ const RoomConfig = () => {
 
         <View style={styles.settingsColumn}>
           <HorizontalItem
+            title={"ID phòng"}
+            desc={"ID123456"}
+            onPress={() => handleCopyText("ID123456")}
+            iconRight={"copy-outline"}
+          ></HorizontalItem>
+
+          <HorizontalItem
             title={"Tên phòng"}
             desc={"Phòng này hề"}
             iconRight={"chevron-forward-outline"}
@@ -85,7 +112,7 @@ const RoomConfig = () => {
         <View style={styles.footer}>
           <CustomButton
             title={"Tạo phòng"}
-            onPress={() => {}}
+            onPress={() => { }}
             styles={styles}
             isValid={true}
             label={"Thoát phòng"}
