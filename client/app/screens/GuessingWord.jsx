@@ -148,30 +148,32 @@ const GuessingWord = () => {
     if (message.trim() !== "") {
       // Check if the message is the keyword
       let msg = message.trim().toLowerCase();
-      let keywordCurrent = selectedKeyword.current.keyword.toLowerCase();
-      let newMessage;
-      if (msg === keywordCurrent) {
-        newMessage = {
-          sender: userInfo.name,
-          content: "*".repeat(msg.length),
-        };
-      } else {
-        newMessage = {
-          sender: userInfo.name,
-          content: message,
-        };
-      }
+      let newMessage = {
+        sender: userInfo.name,
+        content: message,
+      };
 
-      // Calculate score
-      gameScoreController.checkGuessCorrectness(
-        userInfo._id,
-        msg,
-        keywordCurrent
-      );
-      // gameScoreController.checkGuessCorrectness(userInfo._id, "N", "N");
-      // Get score of userInfo
-      let i = gameScoreController.getScoreForDrawGuessGame(userInfo._id);
-      console.log(userInfo.name + " - Score: " + i);
+      if (isStart && selectedKeyword.current) {
+        let keywordCurrent = selectedKeyword.current.keyword.toLowerCase();
+
+        if (msg === keywordCurrent) {
+          newMessage = {
+            sender: userInfo.name,
+            content: "*".repeat(msg.length),
+          };
+        }
+
+        // Calculate score
+        gameScoreController.checkGuessCorrectness(
+          userInfo._id,
+          msg,
+          keywordCurrent
+        );
+        // gameScoreController.checkGuessCorrectness(userInfo._id, "N", "N");
+        // Get score of userInfo
+        let i = gameScoreController.getScoreForDrawGuessGame(userInfo._id);
+        console.log(userInfo.name + " - Score: " + i);
+      }
 
       // Send message to server
       socket.emit("message", newMessage);
@@ -280,7 +282,7 @@ const GuessingWord = () => {
           const user = res.data;
 
           // Add player to game score controller
-        //   gameScoreController.addPlayer(user);
+          //   gameScoreController.addPlayer(user);
 
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
@@ -322,7 +324,7 @@ const GuessingWord = () => {
     checkYourTurn() && setShowKeywordDialog(true);
 
     usersInRoom.forEach((user) => {
-        gameScoreController.addPlayer(user);
+      gameScoreController.addPlayer(user);
     });
 
     const interval = setInterval(() => {
