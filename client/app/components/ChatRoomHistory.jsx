@@ -11,6 +11,7 @@ const ChatRoomHistory = ({ message }) => {
           <View style={{ flexDirection: "row", width: "100%" }}>
             <Text style={styles.senderName}>{item.sender}: </Text>
             <Text style={styles.context}>{item.content}</Text>
+            <Text style={styles.context}>{item.content}</Text>
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}

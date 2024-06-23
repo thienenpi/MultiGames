@@ -154,7 +154,7 @@ const GuessingWord = () => {
         newMessage = {
           senderId: userInfo._id,
           sender: userInfo.name,
-          content: '*'.repeat(msg.length),
+          content: "*".repeat(msg.length),
           hiddenContent: message.trim(),
           isCheckGuessCorrectness: true,
         };
@@ -189,7 +189,7 @@ const GuessingWord = () => {
     if (playerInfo.current._id === undefined) {
       playerInfo.current = usersInRoom[playerIndex];
       gameScoreController.setDrawPlayer(playerInfo.current._id);
-      console.log(playerIndex +  " - " + playerInfo.current._id);
+      console.log(playerIndex + " - " + playerInfo.current._id);
     }
 
     return playerInfo.current._id === userInfo._id;
@@ -205,11 +205,12 @@ const GuessingWord = () => {
       if (checkRoomFull()) {
         updatePlayerIndex();
         playerInfo.current = usersInRoom[playerIndex];
+        gameScoreController.setDrawPlayer(playerInfo.current._id);
+        console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
+
         selectedKeyword.current = {};
         if (checkYourTurn()) {
           setShowKeywordDialog(true);
-          gameScoreController.setDrawPlayer(playerInfo.current._id);
-          console.log("DrawId: " + playerIndex + " " + playerInfo.current._id);
         }
         // checkYourTurn() && setShowKeywordDialog(true);
         setIsClear(true);
@@ -241,14 +242,31 @@ const GuessingWord = () => {
 
     // Join the room when component mounts
     socket.on("message", (data) => {
-      console.log(data)
+      console.log(data);
       if (data !== null) {
         // Calculate score
-        if (data.isCheckGuessCorrectness) {
+        if (data.isCheckGuessCorrectness === true) {
           gameScoreController.calculateScoreForDrawGuessGame(data.senderId);
           // Get score of sender
-          console.log(data.sender + " - Score: " + gameScoreController.getScoreForDrawGuessGame(data.senderId));
+          console.log(
+            data.sender +
+              " - Score: " +
+              gameScoreController.getScoreForDrawGuessGame(data.senderId)
+          );
+
+          const noti = {
+            sender: "Thong bao",
+            content:
+              data.sender +
+              " - Score: " +
+              gameScoreController.getScoreForDrawGuessGame(data.senderId),
+          };
+          setMessageHistory((prevMessageHistory) => [
+            ...prevMessageHistory,
+            noti,
+          ]);
         }
+
         setMessageHistory((prevMessageHistory) => [
           ...prevMessageHistory,
           data,
@@ -284,8 +302,8 @@ const GuessingWord = () => {
         if (res.status === 200) {
           const user = res.data;
 
-        // Add player to game score controller
-        // gameScoreController.addPlayer(user);
+          // Add player to game score controller
+          // gameScoreController.addPlayer(user);
 
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
@@ -327,7 +345,7 @@ const GuessingWord = () => {
     checkYourTurn() && setShowKeywordDialog(true);
 
     usersInRoom.forEach((user) => {
-        gameScoreController.addPlayer(user);
+      gameScoreController.addPlayer(user);
     });
 
     const interval = setInterval(() => {
