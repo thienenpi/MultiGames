@@ -163,6 +163,7 @@ const GuessingWord = () => {
           senderId: userInfo._id,
           sender: userInfo.name,
           content: message,
+          isCheckGuessCorrectness: false,
         };
       }
 

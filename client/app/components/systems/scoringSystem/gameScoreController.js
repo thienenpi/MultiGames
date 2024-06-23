@@ -8,7 +8,7 @@ class GameScoreController {
   constructor() {
     this.players = [];
     this.drawPlayerId = '';
-    this.guessCorrectedPlayerIds = {};
+    this.guessCorrectedPlayerIds = [];
     this.count = 0;
   }
 
@@ -36,7 +36,7 @@ class GameScoreController {
 
   resetTurn() {
     this.count = 0;
-    this.guessCorrectedPlayerIds = {};
+    this.guessCorrectedPlayerIds = [];
     this.drawPlayerId = '';
   }
 
@@ -50,18 +50,20 @@ class GameScoreController {
   }
 
   // Method to check guess correctness for "Vẽ hình đoán chữ"
-  calculateScoreForDrawGuessGame(userId, guessedWord, correctWord) {
+  calculateScoreForDrawGuessGame(userId) {
     // If the role is drawPlayer, then do not calculate the score
     if (this.drawPlayerId === userId) {
       return;
     }
 
     // If the role is guessPlayer, then check for correct guesses
-    this.guessCorrectedPlayerIds.forEach((guessCorrectedPlayerId) => {
-      if (guessCorrectedPlayerId === userId) {
-        return;
-      }
-    });
+    if (guessCorrectedPlayerIds.length > 0) {
+      this.guessCorrectedPlayerIds.forEach((guessCorrectedPlayerId) => {
+        if (guessCorrectedPlayerId === userId) {
+          return;
+        }
+      });
+    }
 
     this.count++;
     this.players.forEach((player) => {

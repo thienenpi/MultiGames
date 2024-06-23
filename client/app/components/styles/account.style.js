@@ -31,13 +31,11 @@ const styles = StyleSheet.create({
 
   userId: {
     flexDirection: "row",
+    width: "100%",
     fontSize: SIZES.medium,
     alignItems: "center",
     color: COLORS.text,
-  },
-
-  iconId: {
-    borderRadius: SIZES.medium
+    alignItems: "flex-end"
   },
 
   forward: {
