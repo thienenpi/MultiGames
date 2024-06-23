@@ -5,5 +5,3 @@ const BASE_URL = "http://172.16.1.160:3000/api";
 const socket = io(BASE_URL.slice(0, -4), {
   path: "/api/whiteBoard/",
 });
-
-export { BASE_URL, socket };

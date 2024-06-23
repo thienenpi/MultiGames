@@ -154,7 +154,7 @@ const GuessingWord = () => {
         newMessage = {
           senderId: userInfo._id,
           sender: userInfo.name,
-          content: '*'.repeat(msg.length),
+          content: "*".repeat(msg.length),
           hiddenContent: message.trim(),
           isCheckGuessCorrectness: true,
         };
@@ -188,29 +188,24 @@ const GuessingWord = () => {
     if (playerInfo.current._id === undefined) {
       console.log(playerIndex);
       playerInfo.current = usersInRoom[playerIndex];
+      gameScoreController.setDrawPlayer(playerInfo.current._id);
+      console.log(playerIndex + " - " + playerInfo.current._id);
     }
-
-    gameScoreController.removeDrawPlayer();
-    gameScoreController.setDrawPlayer(playerInfo.current._id);
 
     return playerInfo.current._id === userInfo._id;
   };
 
-  const updatePlayerIndex = () => {
-    playerIndex = playerIndex < usersInRoom.length - 1 ? playerIndex + 1 : 0;
-  };
-
-  const handleGamingTimelines = () => {
-    closeAllModal();
-    if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
-      if (checkRoomFull()) {
-        updatePlayerIndex();
+const updatePlayerIndex = () => {
         playerInfo.current = usersInRoom[playerIndex];
         selectedKeyword.current = {};
-        checkYourTurn() && setShowKeywordDialog(true);
+        if (checkYourTurn()) {
+          setShowKeywordDialog(true);
+          gameScoreController.setDrawPlayer(playerInfo.current._id);
+          console.log("DrawId: " + playerIndex + " " + playerInfo.current._id);
+        }
         setIsClear(true);
-      }
-    }
+      }},
+    
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
@@ -227,8 +222,7 @@ const GuessingWord = () => {
           socket.off();
         }
       });
-    }
-  };
+    };
 
   // UseEffect to join the room and get chat history
   useEffect(() => {
@@ -241,7 +235,11 @@ const GuessingWord = () => {
         if (data.isCheckGuessCorrectness) {
           gameScoreController.calculateScoreForDrawGuessGame(data.senderId);
           // Get score of sender
-          console.log(userInfo.name + " - Score: " + gameScoreController.getScoreForDrawGuessGame(data.senderId));
+          console.log(
+            userInfo.name +
+              " - Score: " +
+              gameScoreController.getScoreForDrawGuessGame(data.senderId)
+          );
         }
         setMessageHistory((prevMessageHistory) => [
           ...prevMessageHistory,
@@ -279,7 +277,7 @@ const GuessingWord = () => {
           const user = res.data;
 
           // Add player to game score controller
-        //   gameScoreController.addPlayer(user);
+          //   gameScoreController.addPlayer(user);
 
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
@@ -321,7 +319,7 @@ const GuessingWord = () => {
     checkYourTurn() && setShowKeywordDialog(true);
 
     usersInRoom.forEach((user) => {
-        gameScoreController.addPlayer(user);
+      gameScoreController.addPlayer(user);
     });
 
     const interval = setInterval(() => {
