@@ -8,7 +8,7 @@ class GameScoreController {
   constructor() {
     this.players = [];
     this.drawPlayerId = "";
-    this.guessCorrectedPlayerIds = {};
+    this.guessCorrectedPlayerIds = [];
     this.count = 0;
   }
 
@@ -36,18 +36,16 @@ class GameScoreController {
 
   resetTurn() {
     this.count = 0;
-    this.guessCorrectedPlayerIds = {};
+    this.guessCorrectedPlayerIds = [];
     this.drawPlayerId = "";
   }
 
   getScoreForDrawGuessGame(userId) {
-    if (this.drawPlayerId === userId) {
-      const drawPlayer = this.players.find(
-        (player) => player["_id"] === userId
-      );
-      drawPlayer["score"] += DRAWING_GAME_SCORE.GUESS_RIGHT * this.count;
-      return drawPlayer["score"];
-    }
+    // if (this.drawPlayerId === userId) {
+    //   const drawPlayer = this.players.find((player) => player['_id'] === userId);
+    //   drawPlayer['score'] += DRAWING_GAME_SCORE.GUESS_RIGHT * this.count;
+    //   return drawPlayer['score'];
+    // }
     return this.players.find((player) => player["_id"] === userId)["score"];
   }
 
@@ -93,16 +91,20 @@ class GameScoreController {
             player["score"] += 0;
             break;
         }
+        this.players.forEach((player) => {
+          if (player["_id"] === this.drawPlayerId) {
+            player["score"] += DRAWING_GAME_SCORE.GUESS_RIGHT;
+          }
+        });
         this.guessCorrectedPlayerIds.push(userId);
       }
     });
   }
 
   displayScores() {
-    // console.log("Scores:");
-    // for (const player in this.players) {
-    //   console.log(`${player}: ${this.players[player]}`);
-    // }
+    this.players.forEach((player) => {
+      console.log(player["name"] + " - Score: " + player["score"]);
+    });
   }
 }
 
