@@ -13,14 +13,14 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-// import Clipboard from "@react-native-clipboard/clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 const Account = () => {
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const handleCopyText = (text) => {
-    // Clipboard.setString(text);
+    Clipboard.setString(text);
     console.log(`Đã copy ${text}`);
     if (Platform.OS === 'android') {
       ToastAndroid.show(`Đã copy ${text}`,

@@ -13,23 +13,6 @@ const Dashboard = () => {
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
 
-  // const accessRoom = async () => {
-  //   var data = {
-  //     gameMode: "1"
-  //   }
-  //   const res = await getActiveRoom({data: data});
-  //   const roomInfo = res.data;
-
-  //   // if roomInfo is empty, navigate to create room
-  //   if (!roomInfo) {
-  //     navigation.navigate("Room Create");
-  //     return;
-  //   }
-
-  //   await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
-
-  //   navigation.navigate("Guessing Word", { roomInfo: roomInfo });
-  // };
   const handleAccessRoom = async () => {
     const data = {
       gameMode: "Bạn Vẽ Tôi Đoán"
@@ -42,12 +25,13 @@ const Dashboard = () => {
     await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
     navigation.navigate("Guessing Word", { roomInfo: roomInfo });
   }
+
   return (
     <View>
       <ProfileRow
         avatarSource={userInfo.avatarUrl}
         name={userInfo.name}
-        money="100"
+        money={userInfo.money}
         eventIcon="star-outline"
         eventText="Events"
       />

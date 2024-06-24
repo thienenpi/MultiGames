@@ -231,6 +231,7 @@ const GuessingWord = () => {
             setShowEndTurnResultDialog(false);
             setShowEndGameResultDialog(true);
             gameScoreController.displayScores();
+            gameScoreController.updateMoneyForPlayers();
           }, 2000); // 3 second delay
           socket.off();
         }

@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema(
     role_id: { type: String, required: true },
     status: { type: String, required: true },
     avatarUrl: { type: String, required: false, default: "https://multigames.blob.core.windows.net/images/user.png" },
+    money: { type: Number, required: false, default: 0 },
     friends: [
       {
         type: mongoose.Schema.Types.ObjectId,
