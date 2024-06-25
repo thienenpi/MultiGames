@@ -22,6 +22,12 @@ const UserSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    items: [
+      {
+        type: String,
+        ref: "Shop",
+      },
+    ],
   },
   { timestamps: true }
 );

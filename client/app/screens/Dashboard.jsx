@@ -14,7 +14,6 @@ const Dashboard = () => {
   useFocusEffect(
     useCallback(() => {
         fetchUserInfo(userInfo._id);
-        console.log("Dashboard focused");
     }, [])
   );
 

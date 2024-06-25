@@ -14,6 +14,7 @@ const userRouter = require("./routes/user");
 const roomRouter = require("./routes/room");
 const messageRouter = require("./routes/message");
 const keywordRouter = require("./routes/keyword");
+const shopRouter = require("./routes/shop");
 
 dotenv.config();
 mongoose
@@ -34,6 +35,7 @@ app.use("/api/users", userRouter);
 app.use("/api/rooms", roomRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/keywords", keywordRouter);
+app.use("/api/shop", shopRouter);
 app.get("/privacy-policy", (req, res) => {
   res.sendFile(__dirname + "/privacy-policy.html");
 });
