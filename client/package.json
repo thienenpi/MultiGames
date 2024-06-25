@@ -28,7 +28,7 @@
     "expo-system-ui": "~3.0.4",
     "formik": "^2.4.5",
     "react": "18.2.0",
-    "react-native": "^0.73.0",
+    "react-native": "0.74.2",
     "react-native-actions-sheet": "^0.9.3",
     "react-native-agora": "^4.3.2",
     "react-native-dialog": "^9.3.0",

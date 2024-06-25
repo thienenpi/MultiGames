@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useContext } from "react";
-import styles from "./styles/spyGame.style";
 import {
   View,
-  TextInput,
-  Button,
   Text,
   ImageBackground,
-  Image,
   TouchableOpacity,
-  Pressable,
+  Image,
+  TextInput,
+  Button,
+  Modal,
+  StyleSheet,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import { ChatHistory } from "../components";
 import { spySocket } from "../utils/config";
 import { getRoomGuests, getUserById } from "../api";
 import { leaveRoom } from "../services";
 import { AuthContext } from "../context/AuthContext";
+import Player from "./Player";
 
 const SpyScreen = () => {
   const navigation = useNavigation();
@@ -26,23 +27,11 @@ const SpyScreen = () => {
   const [messageHistory, setMessageHistory] = useState([]);
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [message, setMessage] = useState("");
-  const players = [
-    { id: 1, name: "+" },
-    { id: 2, name: "+" },
-    { id: 3, name: "+" },
-    { id: 4, name: "+" },
-    { id: 5, name: "+" },
-    { id: 6, name: "+" },
-    { id: 7, name: "+" },
-    { id: 8, name: "+" },
-  ];
 
   useEffect(() => {
     spySocket.emit("join", roomInfo._id);
 
-    // Join the room when component mounts
     spySocket.on("message", (data) => {
-      
       if (data !== null) {
         setMessageHistory((prevMessageHistory) => [
           ...prevMessageHistory,
@@ -50,15 +39,6 @@ const SpyScreen = () => {
         ]);
       }
     });
-
-    // Listen when to start the game
-    // spySocket.on("startGame", () => {
-    //   setIsStart(true);
-    // });
-
-    // spySocket.on("selectKeyword", (keyword) => {
-    //   selectedKeyword.current = keyword;
-    // });
 
     return () => {
       leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
@@ -76,9 +56,6 @@ const SpyScreen = () => {
 
         if (res.status === 200) {
           const user = res.data;
-
-          // Add player to game score controller
-        //   gameScoreController.addPlayer(user);
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
@@ -87,7 +64,6 @@ const SpyScreen = () => {
     setMessageHistory([]);
     spySocket.emit("getChatHistory", roomInfo._id);
 
-    // Get all users in the room
     getAllUsers();
 
     spySocket.on("join", (room) => {
@@ -101,12 +77,10 @@ const SpyScreen = () => {
 
   const sendMessage = () => {
     if (message.trim() !== "") {
-      // Check if the message is the keyword
       let newMessage = {
         sender: userInfo.name,
         content: message,
       };
-      // Send message to server
       spySocket.emit("message", newMessage);
       setMessage("");
       setMessageHistory((prevMessageHistory) => [
@@ -115,105 +89,135 @@ const SpyScreen = () => {
       ]);
     }
   };
-  
+
+  const handleVote = (userId) => {
+    // Logic to handle vote for the user with userId
+    console.log(`Voted for user with id: ${userId}`);
+    // You can implement further logic here based on your requirements
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
         source={require("../../assets/background_spygame_image.png")}
         style={styles.background}
       >
-        <View style={styles.headerCotainer}>
-          <Pressable>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Image
               source={require("../../assets/menu.png")}
               style={{ width: 32, height: 32 }}
             />
-          </Pressable>
+          </TouchableOpacity>
           <View style={styles.roomBanner}>
-            <Text style={{ fontSize: 22, fontWeight: "bold", color: "white" }}>
-              Số phòng {roomInfo.name}
-            </Text>
-            <View style={styles.roomName}>
-              <Text style={{ fontSize: 14, color: "white" }}>
-                Phòng {roomInfo._id}
-              </Text>
-            </View>
+            <Text style={styles.roomNameText}>Số phòng {roomInfo.name}</Text>
+            <Text style={styles.roomIdText}>Phòng {roomInfo._id}</Text>
           </View>
-          <Pressable onPress={() => navigation.navigate("Room Config")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Room Config")}>
             <Image
               source={require("../../assets/friend_setting.png")}
               style={{ width: 40, height: 40 }}
             />
-          </Pressable>
+          </TouchableOpacity>
         </View>
+
+        {/* Players section */}
         <View style={styles.playersContainer}>
-          {/* Hai cột người chơi */}
           <View style={styles.column}>
             {usersInRoom.slice(0, 4).map((player) => (
-              <View key={player._id} style={styles.player}>
-                <Text style={{ color: "white" }}>{player.name}</Text>
-              </View>
+              <Player
+                key={player._id}
+                id={player._id}
+                name={player.name}
+                onVote={handleVote}
+              />
             ))}
           </View>
-          <View
-            style={{
-              flex: 4,
-              justifyContent: "flex-end",
-              alignItems: "center",
-              borderRadius: 50,
-              margin: 10,
-            }}
-          >
-            <TouchableOpacity style={styles.containerReady}>
-              <LinearGradient
-                colors={["#6B91FF", "#62C7FF"]}
-                start={[0, 0]}
-                end={[1, 0]}
-                style={styles.gradientButton}
-              >
-                <Text style={{ color: "white", fontSize: 18 }}>Sẵng sàng</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <View style={{ height: 20 }}></View>
-            <TouchableOpacity style={styles.containerStart}>
-              <LinearGradient
-                colors={["#F3D14F", "#FA972B"]}
-                start={[0, 0]}
-                end={[1, 0]}
-                style={styles.gradientButton}
-              >
-                <Text style={{ color: "white", fontSize: 18 }}>Bắt đầu</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
           <View style={styles.column}>
-            {players.slice(4, 8).map((player) => (
-              <View key={player.id} style={styles.player}>
-                <Text style={{ color: "white" }}>{player.name}</Text>
-              </View>
+            {usersInRoom.slice(4, 8).map((player) => (
+              <Player
+                key={player._id}
+                id={player._id}
+                name={player.name}
+                onVote={handleVote}
+              />
             ))}
           </View>
         </View>
-        {/* Chat history */}
 
-        <ChatHistory message={messageHistory}/>
-          {/* Placeholder for chat messages */}
+        {/* Chat history */}
+        <ChatHistory message={messageHistory} />
+
         {/* Input box */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Type a message..."
+            placeholder="Nhập tin nhắn..."
             multiline
-            value= {message}
+            value={message}
             onChangeText={(text) => setMessage(text)}
-          // onChangeText={...}
-          // value={...}
           />
-          {/* Send button */}
-          <Button title="Send" onPress={sendMessage} />
+          <Button title="Gửi" onPress={sendMessage} />
         </View>
       </ImageBackground>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  background: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingTop: 8,
+  },
+  roomBanner: {
+    alignItems: "center",
+  },
+  roomNameText: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "white",
+  },
+  roomIdText: {
+    fontSize: 14,
+    color: "white",
+  },
+  playersContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    marginTop: 16,
+  },
+  column: {
+    flex: 1,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginRight: 8,
+    backgroundColor: "white",
+  },
+});
+
 export default SpyScreen;
