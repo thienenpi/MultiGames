@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
-import { userLogin, userLogout, userRegister } from "../api/UserApi";
+import { userLogin, userLogout, userRegister, getUserById } from "../api/UserApi";
 import { Alert } from "react-native";
 // import auth from "@react-native-firebase/auth";
 
@@ -112,6 +112,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const fetchUserInfo = async (id) => {
+    try {
+      const res = await getUserById({ id });
+      if (res.status === 200) {
+        const data = res.data;
+        setUserInfo(data);
+        AsyncStorage.setItem("userInfo", JSON.stringify(data));
+      } else {
+        Alert.alert("Failed to fetch user info", res.data, [
+          {
+            text: "Try again",
+            style: "cancel",
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching user info: ", error);
+    }
+  };
+
   useEffect(() => {
     const isLoggedIn = async () => {
       try {
@@ -136,7 +156,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ login, logout, register, isLoading, userToken, userInfo }}
+      value={{ login, logout, register, fetchUserInfo, isLoading, userToken, userInfo }}
     >
       {children}
     </AuthContext.Provider>

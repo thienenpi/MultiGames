@@ -1,17 +1,22 @@
-import React, { useContext } from "react";
+import React, { useContext, useCallback } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard } from "../components";
-//import { getActiveRoom } from "../api";
 import { joinRoom, accessRoom } from "../services";
 
 const Dashboard = () => {
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, fetchUserInfo } = useContext(AuthContext);
   const navigation = useNavigation();
+
+  useFocusEffect(
+    useCallback(() => {
+        fetchUserInfo(userInfo._id);
+        console.log("Dashboard focused");
+    }, [])
+  );
 
   const handleAccessRoom = async () => {
     const data = {
