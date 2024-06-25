@@ -197,15 +197,7 @@ const GuessingWord = () => {
     return playerInfo.current._id === userInfo._id;
   };
 
-  const updatePlayerIndex = () => {
-    playerIndex = playerIndex < usersInRoom.length - 1 ? playerIndex + 1 : 0;
-  };
-
-  const handleGamingTimelines = () => {
-    closeAllModal();
-    if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
-      if (checkRoomFull()) {
-        updatePlayerIndex();
+const updatePlayerIndex = () => {
         playerInfo.current = usersInRoom[playerIndex];
         gameScoreController.setDrawPlayer(playerInfo.current._id);
         console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
@@ -216,8 +208,8 @@ const GuessingWord = () => {
         }
         // checkYourTurn() && setShowKeywordDialog(true);
         setIsClear(true);
-      }
-    }
+      }},
+    
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
@@ -235,8 +227,7 @@ const GuessingWord = () => {
           socket.off();
         }
       });
-    }
-  };
+    };
 
   // UseEffect to join the room and get chat history
   useEffect(() => {
@@ -698,6 +689,5 @@ const GuessingWord = () => {
       </View>
     </View>
   );
-};
 
 export default GuessingWord;

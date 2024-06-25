@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import styles from "./styles/spyMain.style";
-import { View, Text, ImageBackground, Image, Pressable } from "react-native";
 import { COLORS } from "../constants";
-import { LinearGradient } from "expo-linear-gradient";
 import GameHeader from "../components/spyGame/GameHeader";
 import GameType from "../components/spyGame/GameType";
 import { useNavigation } from "@react-navigation/native";
@@ -15,29 +13,29 @@ const SpyMainScreen = () => {
   const handleAccessRoom = async () => {
     const data = {
       gameMode: "Ai Là Gián Điệp - Chế độ giọng nói",
-    }
-    var roomInfo = await accessRoom({data: data});
+    };
+    var roomInfo = await accessRoom({ data: data });
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
-    console.log(roomInfo)
+    console.log(roomInfo);
     await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
     navigation.navigate("Spy Game", { roomInfo: roomInfo });
-  }
+  };
   return (
-    <View style={{ flexDirection: "column" }}>
+    <View style={styles.container}>
       <ImageBackground
         source={require("../../assets/spy_game_main_background.png")}
         style={styles.background}
       >
         <GameHeader />
+
+        {/* Game option container 1 */}
         <View style={styles.gameOptionContainer("#FCBE4F")}>
           <Text style={styles.gameText}> Ai Là Gián Điệp</Text>
           <View style={styles.gameTypeContainer}>
-            <Pressable
-              onPress={handleAccessRoom}
-            >
+            <Pressable onPress={() => navigation.navigate("Spy Game")}>
               <GameType
                 backgroundColor={COLORS.lightOrange}
                 textColor={COLORS.orange}
@@ -45,10 +43,7 @@ const SpyMainScreen = () => {
                 gametypeName={"Chế độ giọng nói"}
               ></GameType>
             </Pressable>
-            <Pressable
-              onPress={handleAccessRoom}
-            >
-
+            <Pressable onPress={() => navigation.navigate("Spy Game")}>
               <GameType
                 backgroundColor={COLORS.lightOrange}
                 textColor={COLORS.orange}
@@ -61,8 +56,7 @@ const SpyMainScreen = () => {
         <View style={styles.gameOptionContainer("#2CADFE")}>
           <Text style={styles.gameText}> Gián điệp không lời</Text>
           <View style={styles.gameTypeContainer}>
-            <Pressable
-              onPress={handleAccessRoom}>
+            <Pressable onPress={() => navigation.navigate("Spy Game")}>
               <GameType
                 backgroundColor={COLORS.brightBlue}
                 textColor={COLORS.darkBlue}
@@ -70,9 +64,7 @@ const SpyMainScreen = () => {
                 gametypeName={"Chế độ giọng nói"}
               ></GameType>
             </Pressable>
-            <Pressable
-              onPress={handleAccessRoom}
-            >
+            <Pressable onPress={() => navigation.navigate("Spy Game")}>
               <GameType
                 backgroundColor={COLORS.brightBlue}
                 textColor={COLORS.darkBlue}
@@ -83,11 +75,11 @@ const SpyMainScreen = () => {
           </View>
         </View>
         <View style={styles.buttonContainers}>
-          <View style={styles.containerFindRoom}>
+          <Pressable style={styles.containerFindRoom} onPress={handleStartGame}>
             <LinearGradient
               colors={COLORS.blueGradient}
-              start={[0, 0]}
-              end={[1, 0]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={styles.gradientButton}
             >
               <Image
@@ -95,15 +87,19 @@ const SpyMainScreen = () => {
                 style={{ flex: 1, resizeMode: "center" }}
               />
               <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                Tìm phòng
+                Bắt đầu trò chơi
               </Text>
             </LinearGradient>
-          </View>
-          <View style={styles.containerCreateRoom}>
+          </Pressable>
+
+          <Pressable
+            style={styles.containerCreateRoom}
+            onPress={navigateToCreateRoom}
+          >
             <LinearGradient
               colors={COLORS.redGradient}
-              start={[0, 0]}
-              end={[1, 0]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={styles.gradientButton}
             >
               <Image
@@ -114,10 +110,11 @@ const SpyMainScreen = () => {
                 Tạo Phòng
               </Text>
             </LinearGradient>
-          </View>
+          </Pressable>
         </View>
       </ImageBackground>
     </View>
   );
 };
+
 export default SpyMainScreen;

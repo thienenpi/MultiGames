@@ -16,6 +16,10 @@ class GameScoreController {
     this.drawPlayerId = drawPlayerId;
   }
 
+  removeDrawPlayer() {
+    this.drawPlayerId = "";
+  }
+
   addPlayer(player) {
     player["score"] = 0;
     this.players.push(player);
@@ -87,7 +91,6 @@ class GameScoreController {
             player["score"] += 0;
             break;
         }
-        // Index of
         this.players.forEach((player) => {
           if (player["_id"] === this.drawPlayerId) {
             player["score"] += DRAWING_GAME_SCORE.GUESS_RIGHT;
@@ -98,7 +101,6 @@ class GameScoreController {
     });
   }
 
-  // Method to display scores
   displayScores() {
     this.players.forEach((player) => {
       console.log(player["name"] + " - Score: " + player["score"]);

@@ -56,6 +56,9 @@ const SpyScreen = () => {
 
         if (res.status === 200) {
           const user = res.data;
+
+          // Add player to game score controller
+          //   gameScoreController.addPlayer(user);
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
@@ -90,25 +93,19 @@ const SpyScreen = () => {
     }
   };
 
-  const handleVote = (userId) => {
-    // Logic to handle vote for the user with userId
-    console.log(`Voted for user with id: ${userId}`);
-    // You can implement further logic here based on your requirements
-  };
-
   return (
     <View style={styles.container}>
       <ImageBackground
         source={require("../../assets/background_spygame_image.png")}
         style={styles.background}
       >
-        <View style={styles.headerContainer}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+        <View style={styles.headerCotainer}>
+          <Pressable>
             <Image
               source={require("../../assets/menu.png")}
-              style={{ width: 32, height: 32 }}
+              style={styles.menuIcon}
             />
-          </TouchableOpacity>
+          </Pressable>
           <View style={styles.roomBanner}>
             <Text style={styles.roomNameText}>Số phòng {roomInfo.name}</Text>
             <Text style={styles.roomIdText}>Phòng {roomInfo._id}</Text>
@@ -116,13 +113,12 @@ const SpyScreen = () => {
           <TouchableOpacity onPress={() => navigation.navigate("Room Config")}>
             <Image
               source={require("../../assets/friend_setting.png")}
-              style={{ width: 40, height: 40 }}
+              style={styles.settingIcon}
             />
           </TouchableOpacity>
         </View>
-
-        {/* Players section */}
         <View style={styles.playersContainer}>
+          {/* Hai cột người chơi */}
           <View style={styles.column}>
             {usersInRoom.slice(0, 4).map((player) => (
               <Player
@@ -133,29 +129,60 @@ const SpyScreen = () => {
               />
             ))}
           </View>
+          <View
+            style={{
+              flex: 4,
+              justifyContent: "flex-end",
+              alignItems: "center",
+              borderRadius: 50,
+              margin: 10,
+            }}
+          >
+            <TouchableOpacity style={styles.containerReady}>
+              <LinearGradient
+                colors={["#6B91FF", "#62C7FF"]}
+                start={[0, 0]}
+                end={[1, 0]}
+                style={styles.gradientButton}
+              >
+                <Text style={{ color: "white", fontSize: 18 }}>Sẵng sàng</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <View style={{ height: 20 }}></View>
+            <TouchableOpacity style={styles.containerStart}>
+              <LinearGradient
+                colors={["#F3D14F", "#FA972B"]}
+                start={[0, 0]}
+                end={[1, 0]}
+                style={styles.gradientButton}
+              >
+                <Text style={{ color: "white", fontSize: 18 }}>Bắt đầu</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
           <View style={styles.column}>
-            {usersInRoom.slice(4, 8).map((player) => (
-              <Player
-                key={player._id}
-                id={player._id}
-                name={player.name}
-                onVote={handleVote}
-              />
+            {players.slice(4, 8).map((player) => (
+              <View key={player.id} style={styles.player}>
+                <Text style={{ color: "white" }}>{player.name}</Text>
+              </View>
             ))}
           </View>
         </View>
-
         {/* Chat history */}
         <ChatHistory message={messageHistory} />
 
+        <ChatHistory message={messageHistory} />
+        {/* Placeholder for chat messages */}
         {/* Input box */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Nhập tin nhắn..."
+            placeholder="Type a message..."
             multiline
             value={message}
             onChangeText={(text) => setMessage(text)}
+            // onChangeText={...}
+            // value={...}
           />
           <Button title="Gửi" onPress={sendMessage} />
         </View>
@@ -163,61 +190,4 @@ const SpyScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  background: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-  },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 8,
-  },
-  roomBanner: {
-    alignItems: "center",
-  },
-  roomNameText: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "white",
-  },
-  roomIdText: {
-    fontSize: 14,
-    color: "white",
-  },
-  playersContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    marginTop: 16,
-  },
-  column: {
-    flex: 1,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
-    backgroundColor: "white",
-  },
-});
-
 export default SpyScreen;
