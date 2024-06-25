@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { AuthContext } from "../context/AuthContext";
 import { View, Text, Image, FlatList, Modal, Pressable, TouchableOpacity } from "react-native";
 import { Dimensions } from 'react-native';
 import styles from './styles/shop.style';
 import { Item, AppBar } from '../components';
 
 const Shop = () => {
+  const { userInfo, fetchUserInfo } = useContext(AuthContext);
+
+  useFocusEffect(
+    useCallback(() => {
+        fetchUserInfo(userInfo._id);
+    }, [])
+  );
+
   const data = [
     { id: 1, image: require('../../assets/bg01.png'), description: "Description 1", price: 200, },
     { id: 2, image: require('../../assets/bg02.png'), description: "Description 2", price: 300, },
@@ -56,7 +65,7 @@ const Shop = () => {
         <Text style={styles.balanceText}>Balance:</Text>
         <View style={styles.balanceContent}>
           <Ionicons name="cash-outline" style={styles.icon} />
-          <Text style={styles.balanceAmount}>100</Text>
+          <Text style={styles.balanceAmount}>{userInfo.money}</Text>
         </View>
       </View>
       <View style={styles.bannerContainer}>
