@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback, useRef } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
@@ -6,30 +6,44 @@ import { View, Text, Image, FlatList, Modal, Pressable, TouchableOpacity } from 
 import { Dimensions } from 'react-native';
 import styles from './styles/shop.style';
 import { Item, AppBar } from '../components';
+import { getAllItems } from "../api/ShopApi";
 
 const Shop = () => {
   const { userInfo, fetchUserInfo } = useContext(AuthContext);
+  const [items, setItems] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
         fetchUserInfo(userInfo._id);
+        fetchItems();
     }, [])
   );
 
-  const data = [
-    { id: 1, image: require('../../assets/bg01.png'), description: "Description 1", price: 200, },
-    { id: 2, image: require('../../assets/bg02.png'), description: "Description 2", price: 300, },
-    { id: 3, image: require('../../assets/bg03.png'), description: "Description 3", price: 300, },
-    { id: 4, image: require('../../assets/bg04.png'), description: "Description 4", price: 500, },
-    { id: 5, image: require('../../assets/bg05.png'), description: "Description 5", price: 600, },
-    { id: 6, image: require('../../assets/bg06.png'), description: "Description 6", price: 100, },
-    { id: 7, image: require('../../assets/bg01.png'), description: "Description 1", price: 100, },
-    { id: 8, image: require('../../assets/bg02.png'), description: "Description 2", price: 100, },
-    { id: 9, image: require('../../assets/bg03.png'), description: "Description 3", price: 100, },
-    { id: 10, image: require('../../assets/bg04.png'), description: "Description 4", price: 100, },
-    { id: 11, image: require('../../assets/bg05.png'), description: "Description 5", price: 100, },
-    { id: 12, image: require('../../assets/bg06.png'), description: "Description 6", price: 100, },
-  ];
+  async function fetchItems() {
+    try {
+      const res = await getAllItems();
+      if (res.status === 200) {
+        setItems(res.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // const data = [
+  //   { id: 1, image: require('../../assets/bg01.png'), name: "name 1", price: 200, },
+  //   { id: 2, image: require('../../assets/bg02.png'), name: "name 2", price: 300, },
+  //   { id: 3, image: require('../../assets/bg03.png'), name: "name 3", price: 300, },
+  //   { id: 4, image: require('../../assets/bg04.png'), name: "name 4", price: 500, },
+  //   { id: 5, image: require('../../assets/bg05.png'), name: "name 5", price: 600, },
+  //   { id: 6, image: require('../../assets/bg06.png'), name: "name 6", price: 100, },
+  //   { id: 7, image: require('../../assets/bg01.png'), name: "name 1", price: 100, },
+  //   { id: 8, image: require('../../assets/bg02.png'), name: "name 2", price: 100, },
+  //   { id: 9, image: require('../../assets/bg03.png'), name: "name 3", price: 100, },
+  //   { id: 10, image: require('../../assets/bg04.png'), name: "name 4", price: 100, },
+  //   { id: 11, image: require('../../assets/bg05.png'), name: "name 5", price: 100, },
+  //   { id: 12, image: require('../../assets/bg06.png'), name: "name 6", price: 100, },
+  // ];
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -78,11 +92,11 @@ const Shop = () => {
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
       </View>
       <FlatList
-        data={data}
+        data={items}
         renderItem={({ item }) => (
           <Item item={item} handleItemPress={handleItemPress} showPrice={true} />
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id}
         numColumns={3}
         contentContainerStyle={{ justifyContent: 'flex-start' }}
       />
@@ -96,7 +110,7 @@ const Shop = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.itemContainer}>
-              <Image source={selectedItem?.image} style={{ width: screenWidth * 0.8, height: screenWidth * 0.7, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
+              <Image source={ { uri: selectedItem?.image }} style={{ width: screenWidth * 0.8, height: screenWidth * 0.7, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
               <View style={{
                 flexDirection: "row",
                 alignSelf: "stretch", justifyContent: "space-between", padding: 20,

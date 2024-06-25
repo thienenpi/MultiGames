@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         marginBottom: 8,
     },
-    description: {
+    name: {
         fontSize: 14,
         textAlign: "left",
         marginBottom: 4,
