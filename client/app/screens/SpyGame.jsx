@@ -9,6 +9,7 @@ import {
   Button,
   Modal,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,6 +28,8 @@ const SpyScreen = () => {
   const [messageHistory, setMessageHistory] = useState([]);
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [message, setMessage] = useState("");
+  const [isVoting, setIsVoting] = useState(false);
+  const [votes, setVotes] = useState({});
 
   useEffect(() => {
     spySocket.emit("join", roomInfo._id);
@@ -56,9 +59,6 @@ const SpyScreen = () => {
 
         if (res.status === 200) {
           const user = res.data;
-
-          // Add player to game score controller
-          //   gameScoreController.addPlayer(user);
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
@@ -93,6 +93,35 @@ const SpyScreen = () => {
     }
   };
 
+  const handleVote = (userId) => {
+    setVotes((prevVotes) => {
+      const newVotes = { ...prevVotes };
+      newVotes[userId] = (newVotes[userId] || 0) + 1;
+      return newVotes;
+    });
+  };
+
+  const endRound = () => {
+    setIsVoting(true);
+  };
+
+  const submitVotes = () => {
+    setIsVoting(false);
+    let maxVotes = 0;
+    let eliminatedUser = null;
+    for (let userId in votes) {
+      if (votes[userId] > maxVotes) {
+        maxVotes = votes[userId];
+        eliminatedUser = userId;
+      }
+    }
+    spySocket.emit("eliminate", {
+      roomId: roomInfo._id,
+      userId: eliminatedUser,
+    });
+    setVotes({});
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -118,7 +147,6 @@ const SpyScreen = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.playersContainer}>
-          {/* Hai cột người chơi */}
           <View style={styles.column}>
             {usersInRoom.slice(0, 4).map((player) => (
               <Player
@@ -145,7 +173,7 @@ const SpyScreen = () => {
                 end={[1, 0]}
                 style={styles.gradientButton}
               >
-                <Text style={{ color: "white", fontSize: 18 }}>Sẵng sàng</Text>
+                <Text style={{ color: "white", fontSize: 18 }}>Sẵn sàng</Text>
               </LinearGradient>
             </TouchableOpacity>
             <View style={{ height: 20 }}></View>
@@ -161,19 +189,17 @@ const SpyScreen = () => {
             </TouchableOpacity>
           </View>
           <View style={styles.column}>
-            {players.slice(4, 8).map((player) => (
-              <View key={player.id} style={styles.player}>
-                <Text style={{ color: "white" }}>{player.name}</Text>
-              </View>
+            {usersInRoom.slice(4, 8).map((player) => (
+              <Player
+                key={player._id}
+                id={player._id}
+                name={player.name}
+                onVote={handleVote}
+              />
             ))}
           </View>
         </View>
-        {/* Chat history */}
         <ChatHistory message={messageHistory} />
-
-        <ChatHistory message={messageHistory} />
-        {/* Placeholder for chat messages */}
-        {/* Input box */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -181,13 +207,94 @@ const SpyScreen = () => {
             multiline
             value={message}
             onChangeText={(text) => setMessage(text)}
-            // onChangeText={...}
-            // value={...}
           />
           <Button title="Gửi" onPress={sendMessage} />
         </View>
+        {isVoting && (
+          <Modal transparent={true} visible={isVoting}>
+            <View style={styles.modalBackground}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>
+                  Vote for a player to eliminate
+                </Text>
+                {usersInRoom.map((player) => (
+                  <TouchableOpacity
+                    key={player._id}
+                    onPress={() => handleVote(player._id)}
+                    style={styles.voteButton}
+                  >
+                    <Text style={styles.voteButtonText}>{player.name}</Text>
+                  </TouchableOpacity>
+                ))}
+                <Button title="Submit Votes" onPress={submitVotes} />
+              </View>
+            </View>
+          </Modal>
+        )}
+        <Button title="End Round" onPress={endRound} />
       </ImageBackground>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  background: { flex: 1, justifyContent: "center", alignItems: "center" },
+  headerCotainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+  },
+  menuIcon: { width: 30, height: 30 },
+  roomBanner: { alignItems: "center" },
+  roomNameText: { fontSize: 18, color: "white" },
+  roomIdText: { fontSize: 14, color: "white" },
+  settingIcon: { width: 30, height: 30 },
+  playersContainer: { flexDirection: "row", flex: 1 },
+  column: { flex: 1, justifyContent: "center", alignItems: "center" },
+  containerReady: { padding: 10 },
+  containerStart: { padding: 10 },
+  gradientButton: {
+    padding: 15,
+    borderRadius: 25,
+    alignItems: "center",
+    width: 150,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "white",
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 25,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalTitle: { fontSize: 18, marginBottom: 20 },
+  voteButton: {
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: "#ccc",
+    borderRadius: 10,
+  },
+  voteButtonText: { fontSize: 16 },
+});
+
 export default SpyScreen;
