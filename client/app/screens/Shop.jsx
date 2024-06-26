@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useRef } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
@@ -66,7 +66,7 @@ const Shop = () => {
     if (isBought(selectedItem._id)) {
       return alert('Item already bought');
     }
-    
+
     if (userInfo.money >= selectedItem.price) {
       // Deduct money
       handleDeductMoney(selectedItem.price);
