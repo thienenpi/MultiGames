@@ -25,6 +25,8 @@ import AddFriendDialog from "./drawing/AddFriendDialog";
 import UserCardView from "./drawing/UserCardView";
 import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
 import GameScoreController from "./systems/scoringSystem/gameScoreController";
+import InviteDialog from "./drawing/InviteDialog";
+import InvitationDialog from "./InvitationDialog";
 
 export {
   CustomButton,
@@ -54,4 +56,6 @@ export {
   UserCardView,
   EndTurnResult,
   GameScoreController,
+  InviteDialog,
+  InvitationDialog
 };

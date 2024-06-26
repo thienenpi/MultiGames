@@ -1,5 +1,6 @@
 const socketIo = require("socket.io");
 const Message = require("./models/Message");
+const User = require("./models/Users");
 
 // Store clients per room
 const rooms = {};
@@ -47,6 +48,7 @@ const socketSetup = (server) => {
         io.to(room).emit("message", message);
       });
     };
+
     const leaveHandler = (room) => {
       console.log(`A user leaved from ${room}`);
       socket.to(room).emit("leave", room);
@@ -78,8 +80,32 @@ const socketSetup = (server) => {
         socket.to(room).emit("startGame");
       }
     };
-    socket.on('ready', readyHandler);
-    console.log("A user connected");
+
+    const inviteHandler = ({ room, friendId }) => {
+      console.log(`Inviting ${friendId} to ${room}`);
+      socket.to(friendId).emit("invite", room);
+    };
+
+    const onlineHandler = async (userId) => {
+      console.log("User connected", userId);
+      console.log("Socket id", socket.id);
+
+      const res = await User.updateOne(
+        { _id: userId },
+        { socketId: socket.id }
+      );
+
+      if (res.modifiedCount === 0) {
+        console.log("Failed to update socket id");
+      }
+    };
+
+    socket.on("online", onlineHandler);
+
+    socket.on("invite", inviteHandler);
+
+    socket.on("ready", readyHandler);
+
     const getMessages = async ({ userId, friendId }) => {
       try {
         const messages = await Message.find({
@@ -93,7 +119,8 @@ const socketSetup = (server) => {
         console.error(err);
         socket.emit("messages", []);
       }
-    }
+    };
+
     socket.on("getMessages", getMessages);
 
     socket.on("sendMessage", async (message) => {
@@ -104,7 +131,7 @@ const socketSetup = (server) => {
     });
 
     socket.on("disconnect", () => {
-      console.log(`user disconnected`);
+      //   console.log(`user disconnected`);
       // find the room that the user is in
       let room = null;
 

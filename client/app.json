@@ -28,6 +28,10 @@
         "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera.",
         "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to your Microphone.",
         "NSPhotoLibraryUsageDescription": "We need access to your photo library"
+      },
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "cover"
       }
     },
     "android": {

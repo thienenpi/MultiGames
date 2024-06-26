@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -6,42 +6,32 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard } from "../components";
-//import { getActiveRoom } from "../api";
 import { joinRoom, accessRoom } from "../services";
+import { socket } from "../utils/config";
 
 const Dashboard = () => {
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
 
-  // const accessRoom = async () => {
-  //   var data = {
-  //     gameMode: "1"
-  //   }
-  //   const res = await getActiveRoom({data: data});
-  //   const roomInfo = res.data;
-
-  //   // if roomInfo is empty, navigate to create room
-  //   if (!roomInfo) {
-  //     navigation.navigate("Room Create");
-  //     return;
-  //   }
-
-  //   await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
-
-  //   navigation.navigate("Guessing Word", { roomInfo: roomInfo });
-  // };
   const handleAccessRoom = async () => {
     const data = {
-      gameMode: "Bạn Vẽ Tôi Đoán"
-    }
-    var roomInfo = await accessRoom({data: data});
+      gameMode: "Bạn Vẽ Tôi Đoán",
+    };
+    var roomInfo = await accessRoom({ data: data });
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
+
     await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
     navigation.navigate("Guessing Word", { roomInfo: roomInfo });
-  }
+  };
+
+  useEffect(() => {
+    socket.connect();
+    socket.emit("online", userInfo._id);
+  }, [userInfo]);
+
   return (
     <View>
       <ProfileRow
@@ -57,8 +47,8 @@ const Dashboard = () => {
           <Text style={styles.text}>Ranking</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
-          <Ionicons name="list" size={34} color="red" />
-          <Text style={styles.text}>Tasks</Text>
+          <Ionicons name="add-circle-outline" size={34} color="red" />
+          <Text style={styles.text}>Invitations</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
           <Ionicons name="people-sharp" size={34} color="purple" />

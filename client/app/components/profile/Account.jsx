@@ -1,11 +1,11 @@
-import { 
-  ImageBackground, 
-  Text, 
-  TouchableOpacity, 
-  View, 
-  ToastAndroid, // For Android-specific toast message 
-  AlertIOS,     // For iOS-specific alert message 
-  Platform      // To handle cross-platform differences 
+import {
+  ImageBackground,
+  Text,
+  TouchableOpacity,
+  View,
+  ToastAndroid, // For Android-specific toast message
+  AlertIOS, // For iOS-specific alert message
+  Platform, // To handle cross-platform differences
 } from "react-native";
 import React from "react";
 import styles from "../styles/account.style";
@@ -13,29 +13,28 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-// import Clipboard from "@react-native-clipboard/clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 const Account = () => {
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const handleCopyText = (text) => {
-    // Clipboard.setString(text);
-    console.log(`Đã copy ${text}`);
-    if (Platform.OS === 'android') {
-      ToastAndroid.show(`Đã copy ${text}`,
-        ToastAndroid.SHORT);
-    } else if (Platform.OS === 'ios') {
+    Clipboard.setString(text);
+    // console.log(`Đã copy ${text}`);
+    if (Platform.OS === "android") {
+      ToastAndroid.show(`Đã copy ${text}`, ToastAndroid.SHORT);
+    } else if (Platform.OS === "ios") {
       AlertIOS.alert(`Đã copy ${text}`);
     }
-  }
-
+  };
+//   65ed877e0da840aa5bc41fd7
   return (
     <View style={styles.container}>
       <ImageBackground
         source={{
-          //   uri: userInfo.avatarUrl,
-          uri: "https://multigames.blob.core.windows.net/images/user.png",
+          uri: userInfo.avatarUrl,
+          //   uri: "https://multigames.blob.core.windows.net/images/user.png",
         }}
         style={styles.avatar}
         imageStyle={styles.avatar}
