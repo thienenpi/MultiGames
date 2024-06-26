@@ -130,6 +130,28 @@ const acceptFriendRequest = async ({ userId, friendId }) => {
   }
 };
 
+const updateUserInfo = async ({ id, data }) => {
+  try {
+    const url = `/users/id=${id}`;
+    const config = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+}
+
 export {
   userLogin,
   userLogout,
@@ -137,4 +159,5 @@ export {
   getUserById,
   sendFriendRequest,
   acceptFriendRequest,
+  updateUserInfo,
 };

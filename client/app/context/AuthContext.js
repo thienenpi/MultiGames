@@ -1,8 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
-import { userLogin, userLogout, userRegister, getUserById } from "../api/UserApi";
+import { userLogin, userLogout, userRegister, getUserById, updateUserInfo } from "../api/UserApi";
 import { Alert } from "react-native";
-// import auth from "@react-native-firebase/auth";
 
 export const AuthContext = createContext();
 
@@ -132,6 +131,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateInfo = async ({ id, data }) => {
+    AsyncStorage.setItem("userInfo", JSON.stringify(data));
+    try {
+      const res = await updateUserInfo({ id, data });
+      if (res.status === 200) {
+        const data = res.data;
+      } else {
+        Alert.alert("Failed to update user info", res.data, [
+          {
+            text: "Try again",
+            style: "cancel",
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error updating user info: ", error);
+    }
+  };
+
   useEffect(() => {
     const isLoggedIn = async () => {
       try {
@@ -156,7 +174,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ login, logout, register, fetchUserInfo, isLoading, userToken, userInfo }}
+      value={{ login, logout, register, fetchUserInfo, updateInfo, isLoading, userToken, userInfo }}
     >
       {children}
     </AuthContext.Provider>

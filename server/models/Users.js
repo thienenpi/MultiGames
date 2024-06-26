@@ -22,12 +22,7 @@ const UserSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    items: [
-      {
-        type: String,
-        ref: "Shop",
-      },
-    ],
+    bag: {type: Array, required: false},
   },
   { timestamps: true }
 );

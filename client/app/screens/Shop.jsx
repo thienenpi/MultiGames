@@ -9,7 +9,7 @@ import { Item, AppBar } from '../components';
 import { getAllItems } from "../api/ShopApi";
 
 const Shop = () => {
-  const { userInfo, fetchUserInfo } = useContext(AuthContext);
+  const { userInfo, fetchUserInfo, updateInfo } = useContext(AuthContext);
   const [items, setItems] = useState([]);
 
   useFocusEffect(
@@ -30,21 +30,6 @@ const Shop = () => {
     }
   }
 
-  // const data = [
-  //   { id: 1, image: require('../../assets/bg01.png'), name: "name 1", price: 200, },
-  //   { id: 2, image: require('../../assets/bg02.png'), name: "name 2", price: 300, },
-  //   { id: 3, image: require('../../assets/bg03.png'), name: "name 3", price: 300, },
-  //   { id: 4, image: require('../../assets/bg04.png'), name: "name 4", price: 500, },
-  //   { id: 5, image: require('../../assets/bg05.png'), name: "name 5", price: 600, },
-  //   { id: 6, image: require('../../assets/bg06.png'), name: "name 6", price: 100, },
-  //   { id: 7, image: require('../../assets/bg01.png'), name: "name 1", price: 100, },
-  //   { id: 8, image: require('../../assets/bg02.png'), name: "name 2", price: 100, },
-  //   { id: 9, image: require('../../assets/bg03.png'), name: "name 3", price: 100, },
-  //   { id: 10, image: require('../../assets/bg04.png'), name: "name 4", price: 100, },
-  //   { id: 11, image: require('../../assets/bg05.png'), name: "name 5", price: 100, },
-  //   { id: 12, image: require('../../assets/bg06.png'), name: "name 6", price: 100, },
-  // ];
-
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
@@ -63,6 +48,38 @@ const Shop = () => {
   const closeModal = () => {
     setModalVisible(false);
     setOverlayVisible(false);
+  };
+
+  const handleDeductMoney = (money) => {
+    userInfo.money -= money;
+  }
+
+  const handleAddItemIntoBag = (itemId) => {
+    userInfo.bag.push(itemId);
+  }
+
+  const isBought = (itemId) => {
+    return userInfo.bag.includes(itemId);
+  }
+
+  const handleBuyItem = () => {
+    if (isBought(selectedItem._id)) {
+      return alert('Item already bought');
+    }
+    
+    if (userInfo.money >= selectedItem.price) {
+      // Deduct money
+      handleDeductMoney(selectedItem.price);
+      // Add item into bag
+      handleAddItemIntoBag(selectedItem._id);
+      // Update user info
+      updateInfo({ id: userInfo._id, data: userInfo });
+      // Close modal
+      alert('Item bought successfully');
+      closeModal();
+    } else {
+      alert('Not enough money');
+    }
   };
 
   return (
@@ -122,8 +139,8 @@ const Shop = () => {
                 </View>
               </View>
             </View>
-            <TouchableOpacity style={[styles.button, styles.buttonBuy]} >
-              <Text style={styles.textStyle}>Buy</Text>
+            <TouchableOpacity style={[styles.button, styles.buttonBuy]} onPress={handleBuyItem}>
+              <Text style={styles.textStyle}>{isBought(selectedItem._id) ? 'Đã mua' : 'Mua'}</Text>
             </TouchableOpacity>
           </View>
         </View>

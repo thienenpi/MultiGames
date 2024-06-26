@@ -4,8 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import styles from './styles/item.style';
 
 const ItemComponent = ({ item, handleItemPress, showPrice }) => {
-  console.log(item);
-
   return (
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={() => handleItemPress(item)}>
