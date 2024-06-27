@@ -1,11 +1,11 @@
-import { 
-  ImageBackground, 
-  Text, 
-  TouchableOpacity, 
-  View, 
-  ToastAndroid, // For Android-specific toast message 
-  AlertIOS,     // For iOS-specific alert message 
-  Platform      // To handle cross-platform differences 
+import {
+  ImageBackground,
+  Text,
+  TouchableOpacity,
+  View,
+  ToastAndroid, // For Android-specific toast message
+  AlertIOS, // For iOS-specific alert message
+  Platform, // To handle cross-platform differences
 } from "react-native";
 import React from "react";
 import styles from "../styles/account.style";
@@ -21,21 +21,19 @@ const Account = () => {
 
   const handleCopyText = (text) => {
     Clipboard.setString(text);
-    console.log(`Đã copy ${text}`);
-    if (Platform.OS === 'android') {
-      ToastAndroid.show(`Đã copy ${text}`,
-        ToastAndroid.SHORT);
-    } else if (Platform.OS === 'ios') {
+    // console.log(`Đã copy ${text}`);
+    if (Platform.OS === "android") {
+      ToastAndroid.show(`Đã copy ${text}`, ToastAndroid.SHORT);
+    } else if (Platform.OS === "ios") {
       AlertIOS.alert(`Đã copy ${text}`);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
       <ImageBackground
         source={{
-          //   uri: userInfo.avatarUrl,
-          uri: "https://multigames.blob.core.windows.net/images/user.png",
+          uri: userInfo.avatarUrl,
         }}
         style={styles.avatar}
         imageStyle={styles.avatar}

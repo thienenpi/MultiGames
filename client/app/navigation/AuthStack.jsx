@@ -28,6 +28,7 @@ const AuthStack = () => {
         component={Register}
         options={{ headerShown: false }}
       ></Stack.Screen>
+      
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPassword}

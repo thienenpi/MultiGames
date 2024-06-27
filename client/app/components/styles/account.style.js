@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "100%",
     paddingHorizontal: SIZES.medium,
+    backgroundColor: COLORS.white
   },
 
   avatar: {

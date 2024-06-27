@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -6,6 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard } from "../components";
 import { joinRoom, accessRoom } from "../services";
+import { socket, spySocket } from "../utils/config";
 
 const Dashboard = () => {
   const { userInfo, fetchUserInfo } = useContext(AuthContext);
@@ -13,22 +14,29 @@ const Dashboard = () => {
 
   useFocusEffect(
     useCallback(() => {
-        fetchUserInfo(userInfo._id);
+      fetchUserInfo(userInfo._id);
     }, [])
   );
 
   const handleAccessRoom = async () => {
     const data = {
-      gameMode: "Bạn Vẽ Tôi Đoán"
-    }
-    var roomInfo = await accessRoom({data: data});
+      gameMode: "Bạn Vẽ Tôi Đoán",
+    };
+    var roomInfo = await accessRoom({ data: data });
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
+
     await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
     navigation.navigate("Guessing Word", { roomInfo: roomInfo });
-  }
+  };
+
+  useEffect(() => {
+    socket.connect();
+    spySocket.connect();
+    socket.emit("online", userInfo._id);
+  }, [userInfo]);
 
   return (
     <View>
@@ -45,8 +53,8 @@ const Dashboard = () => {
           <Text style={styles.text}>Ranking</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
-          <Ionicons name="list" size={34} color="red" />
-          <Text style={styles.text}>Tasks</Text>
+          <Ionicons name="add-circle-outline" size={34} color="red" />
+          <Text style={styles.text}>Invitations</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
           <Ionicons name="people-sharp" size={34} color="purple" />
