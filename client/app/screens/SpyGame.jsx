@@ -30,6 +30,8 @@ const SpyScreen = () => {
   const [message, setMessage] = useState("");
   const [isVoting, setIsVoting] = useState(false);
   const [votes, setVotes] = useState({});
+  const [scores, setScores] = useState({});
+  const [isScoresDialogVisible, setIsScoresDialogVisible] = useState(false);
 
   useEffect(() => {
     spySocket.emit("join", roomInfo._id);
@@ -115,12 +117,37 @@ const SpyScreen = () => {
         eliminatedUser = userId;
       }
     }
+
+    const newScores = { ...scores };
+    if (eliminatedUser === spyUserId) {
+      // Giả sử spyUserId là ID của gián điệp
+      usersInRoom.forEach((user) => {
+        if (user._id !== spyUserId) {
+          newScores[user._id] = (newScores[user._id] || 0) + 1;
+        }
+      });
+    } else {
+      newScores[spyUserId] = (newScores[spyUserId] || 0) + usersInRoom.length;
+    }
+    setScores(newScores);
+
     spySocket.emit("eliminate", {
       roomId: roomInfo._id,
       userId: eliminatedUser,
     });
     setVotes({});
+    showScoresDialog();
   };
+
+  const showScoresDialog = () => {
+    setIsScoresDialogVisible(true);
+  };
+
+  const hideScoresDialog = () => {
+    setIsScoresDialogVisible(false);
+  };
+
+  const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
 
   return (
     <View style={styles.container}>
@@ -135,81 +162,40 @@ const SpyScreen = () => {
               style={styles.menuIcon}
             />
           </Pressable>
-          <View style={styles.roomBanner}>
-            <Text style={styles.roomNameText}>Số phòng {roomInfo.name}</Text>
-            <Text style={styles.roomIdText}>Phòng {roomInfo._id}</Text>
-          </View>
-          <TouchableOpacity onPress={() => navigation.navigate("Room Config")}>
+          <Text style={styles.headerTitle}>{roomInfo.roomName}</Text>
+          <Pressable>
             <Image
-              source={require("../../assets/friend_setting.png")}
-              style={styles.settingIcon}
+              source={require("../../assets/setting.png")}
+              style={styles.menuIcon}
             />
-          </TouchableOpacity>
+          </Pressable>
         </View>
+
+        <LinearGradient
+          colors={["#d68f7f", "#ba5a3c", "#994136"]}
+          style={styles.chatContainer}
+        >
+          <ChatHistory messageHistory={messageHistory} />
+        </LinearGradient>
+
         <View style={styles.playersContainer}>
-          <View style={styles.column}>
-            {usersInRoom.slice(0, 4).map((player) => (
-              <Player
-                key={player._id}
-                id={player._id}
-                name={player.name}
-                onVote={handleVote}
-              />
-            ))}
-          </View>
-          <View
-            style={{
-              flex: 4,
-              justifyContent: "flex-end",
-              alignItems: "center",
-              borderRadius: 50,
-              margin: 10,
-            }}
-          >
-            <TouchableOpacity style={styles.containerReady}>
-              <LinearGradient
-                colors={["#6B91FF", "#62C7FF"]}
-                start={[0, 0]}
-                end={[1, 0]}
-                style={styles.gradientButton}
-              >
-                <Text style={{ color: "white", fontSize: 18 }}>Sẵn sàng</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <View style={{ height: 20 }}></View>
-            <TouchableOpacity style={styles.containerStart}>
-              <LinearGradient
-                colors={["#F3D14F", "#FA972B"]}
-                start={[0, 0]}
-                end={[1, 0]}
-                style={styles.gradientButton}
-              >
-                <Text style={{ color: "white", fontSize: 18 }}>Bắt đầu</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.column}>
-            {usersInRoom.slice(4, 8).map((player) => (
-              <Player
-                key={player._id}
-                id={player._id}
-                name={player.name}
-                onVote={handleVote}
-              />
-            ))}
-          </View>
+          {usersInRoom.map((user) => (
+            <Player user={user} key={user._id} />
+          ))}
         </View>
-        <ChatHistory message={messageHistory} />
-        <View style={styles.inputContainer}>
+
+        <View style={styles.messageContainer}>
           <TextInput
-            style={styles.input}
-            placeholder="Type a message..."
-            multiline
+            style={styles.messageInput}
             value={message}
-            onChangeText={(text) => setMessage(text)}
+            onChangeText={setMessage}
+            placeholder="Enter your message..."
+            placeholderTextColor="#BDBDBD"
           />
-          <Button title="Gửi" onPress={sendMessage} />
+          <Button title="Send" onPress={sendMessage} />
         </View>
+        <Button title="End Round" onPress={endRound} />
+
         {isVoting && (
           <Modal transparent={true} visible={isVoting}>
             <View style={styles.modalBackground}>
@@ -217,62 +203,98 @@ const SpyScreen = () => {
                 <Text style={styles.modalTitle}>
                   Vote for a player to eliminate
                 </Text>
-                {usersInRoom.map((player) => (
-                  <TouchableOpacity
-                    key={player._id}
-                    onPress={() => handleVote(player._id)}
-                    style={styles.voteButton}
-                  >
-                    <Text style={styles.voteButtonText}>{player.name}</Text>
-                  </TouchableOpacity>
-                ))}
+                {usersInRoom
+                  .filter((user) => user._id !== userInfo._id)
+                  .map((player) => (
+                    <TouchableOpacity
+                      key={player._id}
+                      onPress={() => handleVote(player._id)}
+                      style={styles.voteButton}
+                    >
+                      <Text style={styles.voteButtonText}>{player.name}</Text>
+                    </TouchableOpacity>
+                  ))}
                 <Button title="Submit Votes" onPress={submitVotes} />
               </View>
             </View>
           </Modal>
         )}
-        <Button title="End Round" onPress={endRound} />
+
+        {isScoresDialogVisible && (
+          <Modal transparent={true} visible={isScoresDialogVisible}>
+            <View style={styles.modalBackground}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>Điểm số sau trò chơi</Text>
+                {sortedScores.map(([userId, score]) => {
+                  const user = usersInRoom.find((user) => user._id === userId);
+                  return (
+                    <Text key={userId} style={styles.scoreText}>
+                      {user ? user.name : "Unknown"}: {score}
+                    </Text>
+                  );
+                })}
+                <Button title="Đóng" onPress={hideScoresDialog} />
+              </View>
+            </View>
+          </Modal>
+        )}
       </ImageBackground>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  background: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: {
+    flex: 1,
+  },
+  background: {
+    flex: 1,
+    resizeMode: "cover",
+  },
   headerCotainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
   },
-  menuIcon: { width: 30, height: 30 },
-  roomBanner: { alignItems: "center" },
-  roomNameText: { fontSize: 18, color: "white" },
-  roomIdText: { fontSize: 14, color: "white" },
-  settingIcon: { width: 30, height: 30 },
-  playersContainer: { flexDirection: "row", flex: 1 },
-  column: { flex: 1, justifyContent: "center", alignItems: "center" },
-  containerReady: { padding: 10 },
-  containerStart: { padding: 10 },
-  gradientButton: {
-    padding: 15,
-    borderRadius: 25,
-    alignItems: "center",
-    width: 150,
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
   },
-  inputContainer: {
+  menuIcon: {
+    width: 24,
+    height: 24,
+  },
+  chatContainer: {
+    flex: 1,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    padding: 10,
+  },
+  playersContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  messageContainer: {
     flexDirection: "row",
     alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#ddd",
     padding: 10,
-    backgroundColor: "white",
   },
-  input: {
+  messageInput: {
     flex: 1,
+    height: 40,
+    borderColor: "#ddd",
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 25,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    color: "#333",
   },
   modalBackground: {
     flex: 1,
@@ -283,18 +305,30 @@ const styles = StyleSheet.create({
   modalContainer: {
     width: 300,
     padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     borderRadius: 10,
     alignItems: "center",
   },
-  modalTitle: { fontSize: 18, marginBottom: 20 },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 15,
+  },
   voteButton: {
+    backgroundColor: "#ddd",
     padding: 10,
     marginVertical: 5,
-    backgroundColor: "#ccc",
-    borderRadius: 10,
+    borderRadius: 5,
+    width: "100%",
+    alignItems: "center",
   },
-  voteButtonText: { fontSize: 16 },
+  voteButtonText: {
+    fontSize: 16,
+  },
+  scoreText: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
 });
 
 export default SpyScreen;
