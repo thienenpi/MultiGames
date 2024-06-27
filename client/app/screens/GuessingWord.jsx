@@ -388,7 +388,11 @@ const GuessingWord = () => {
     <View style={styles.container}>
       {/* Show invite dialog */}
       {showInviteDialog && (
-        <InviteDialog isShow={showInviteDialog} roomInfo={roomInfo}></InviteDialog>
+        <InviteDialog
+          onChangeShow={setShowInviteDialog}
+          isShow={showInviteDialog}
+          roomInfo={roomInfo}
+        ></InviteDialog>
       )}
 
       {/* Show keyword dialog */}
@@ -532,7 +536,10 @@ const GuessingWord = () => {
             }}
           />
           <View style={styles.buttonContainers}>
-            <TouchableOpacity style={styles.containerInvite} onPress={() => setShowInviteDialog(true)}>
+            <TouchableOpacity
+              style={styles.containerInvite}
+              onPress={() => setShowInviteDialog(true)}
+            >
               <LinearGradient
                 colors={["#2CB4FF", "#62C7FF"]}
                 start={[0, 0]}

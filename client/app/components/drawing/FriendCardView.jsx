@@ -14,7 +14,7 @@ const FriendCardView = ({ item, roomId }) => {
       try {
         const res = await getUserById({ id: item });
 
-        if (res.data.socketId === undefined) {
+        if (res.data.socketId === null) {
           return;
         }
 

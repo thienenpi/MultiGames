@@ -1,24 +1,34 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { SIZES } from "../../constants";
 import FriendsColumn from "./FriendsColumn";
 import { AuthContext } from "../../context/AuthContext";
 import { getFriends } from "../../services";
+import { getRoomGuests } from "../../api";
 
-const InviteDialog = ({ isShow, roomInfo }) => {
+const InviteDialog = ({ isShow, roomInfo, onChangeShow }) => {
   const [show, setShow] = useState(isShow);
-  const [friends, setFriends] = useState([]); // [1
+  const [friends, setFriends] = useState([]);
 
   const { userInfo } = useContext(AuthContext);
 
   const fetchFriends = async () => {
     try {
-      const res = await getFriends({ id: userInfo._id });
+      const guests = await getRoomGuests({ id: roomInfo._id });
+      const guestIds = guests.data;
 
+      var res = await getFriends({ id: userInfo._id });
+
+      // remove friend from list
+      res = res.filter((friend) => !guestIds.includes(friend));
       setFriends(res);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const closeModal = () => {
+    onChangeShow(false);
   };
 
   useEffect(() => {
@@ -30,8 +40,13 @@ const InviteDialog = ({ isShow, roomInfo }) => {
   }, [userInfo]);
 
   return (
-    <Modal animationType="fade" transparent={true} visible={show}>
-      <View style={styles.overlay} />
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={show}
+      onRequestClose={closeModal}
+    >
+      <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
       <View style={styles.modalView}>
         <View style={styles.header}>
           <Text style={styles.headerText}>Mời bạn</Text>

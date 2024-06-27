@@ -100,6 +100,17 @@ const socketSetup = (server) => {
       }
     };
 
+    const offlineHandler = async ({ socket }) => {
+      const res = await User.findOneAndUpdate(
+        { socketId: socket.id },
+        { socketId: null }
+      );
+
+      if (!res) {
+        console.log("Failed to update socket id");
+      }
+    };
+
     socket.on("online", onlineHandler);
 
     socket.on("invite", inviteHandler);
@@ -133,6 +144,7 @@ const socketSetup = (server) => {
     socket.on("disconnect", () => {
       //   console.log(`user disconnected`);
       // find the room that the user is in
+      offlineHandler({ socket: socket });
       let room = null;
 
       for (const key in rooms) {

@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard } from "../components";
 import { joinRoom, accessRoom } from "../services";
-import { socket } from "../utils/config";
+import { socket, spySocket } from "../utils/config";
 
 const Dashboard = () => {
   const { userInfo } = useContext(AuthContext);
@@ -29,6 +29,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     socket.connect();
+    spySocket.connect();
     socket.emit("online", userInfo._id);
   }, [userInfo]);
 

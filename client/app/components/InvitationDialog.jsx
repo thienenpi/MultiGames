@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Modal, Image, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../constants";
 import CustomButton from "./CustomButton";
 import { getRoom } from "../api";
@@ -11,8 +11,9 @@ const InvitationDialog = ({ inviteRoom, visible, onChangeVisible }) => {
   const navigation = useNavigation();
   const [roomInfo, setRoomInfo] = useState({});
 
-  const handleAcceptInvitation = async () => {
-    try {
+  useEffect(() => {
+    if (!inviteRoom) return;
+    const fetchRoomInfo = async () => {
       const res = await getRoom({ id: inviteRoom });
 
       if (res.status !== 200) {
@@ -21,6 +22,14 @@ const InvitationDialog = ({ inviteRoom, visible, onChangeVisible }) => {
       }
 
       const roomInfo = res.data;
+      setRoomInfo(roomInfo);
+    };
+
+    fetchRoomInfo();
+  }, [inviteRoom]);
+
+  const handleAcceptInvitation = async () => {
+    try {
       var userInfo = await AsyncStorage.getItem("userInfo");
       userInfo = JSON.parse(userInfo);
 
@@ -51,7 +60,9 @@ const InvitationDialog = ({ inviteRoom, visible, onChangeVisible }) => {
               ></Image>
             </View>
             <View style={styles.roomInfo}>
-              <Text style={styles.modalText}>Invite you to {inviteRoom}</Text>
+              <Text style={styles.modalText}>
+                Invite you to {roomInfo.name}
+              </Text>
               <Text style={styles.gameMode}>Guess My Drawing</Text>
             </View>
           </View>
