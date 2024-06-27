@@ -305,10 +305,6 @@ const GuessingWord = () => {
         if (res.status === 200) {
           const user = res.data;
 
-          // Add player to game score controller
-          //   gameScoreController.addPlayer(user);
-          // gameScoreController.addPlayer(user);
-
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }

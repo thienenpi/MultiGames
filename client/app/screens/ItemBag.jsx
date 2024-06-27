@@ -16,6 +16,7 @@ import styles from "./styles/itemBag.style";
 import { Item, AppBar } from "../components";
 import { getItemById } from "../api/ShopApi";
 import { AuthContext } from "../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ItemBag = () => {
   const { userInfo } = useContext(AuthContext);
@@ -47,11 +48,10 @@ const ItemBag = () => {
 
       for (let itemId of userInfo.bag) {
         const res = await getItemById({ id: itemId });
-        console.log("Response:", res.data); // In ra phản hồi để kiểm tra
         if (res && res.status === 200) {
           setItems((prevItems) => [...prevItems, res.data]);
         } else {
-          console.error("Failed to fetch item:", res.message || res.error);
+          Alert.alert("Error", "Failed to fetch items bag");
         }
       }
     } catch (error) {
@@ -70,6 +70,18 @@ const ItemBag = () => {
   const closeModal = () => {
     setModalVisible(false);
     setOverlayVisible(false);
+  };
+
+  const handleUseItem = async () => {
+    if (selectedItem) {
+      try {
+        await AsyncStorage.setItem('usedItemId', selectedItem._id);
+        Alert.alert("Item Used", `${selectedItem.name} has been used and saved.`);
+        closeModal();
+      } catch (error) {
+        console.error("Failed to save item to AsyncStorage:", error);
+      }
+    }
   };
 
   return (
@@ -135,7 +147,7 @@ const ItemBag = () => {
                   </Text>
                 </View>
               </View>
-              <TouchableOpacity style={[styles.button, styles.buttonUse]}>
+              <TouchableOpacity style={[styles.button, styles.buttonUse]} onPress={handleUseItem}>
                 <Text style={styles.textStyle}>Sử dụng</Text>
               </TouchableOpacity>
             </View>
