@@ -28,6 +28,7 @@ import {
   AddFriendDialog,
   UserCardView,
   GameScoreController,
+  InviteDialog,
 } from "../components";
 import { getRoomGuests, isRoomFull, getUserById, getKeyWords } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
@@ -383,7 +384,13 @@ const GuessingWord = () => {
   return (
     <View style={styles.container}>
       {/* Show invite dialog */}
-      {showInviteDialog && <View></View>}
+      {showInviteDialog && (
+        <InviteDialog
+          onChangeShow={setShowInviteDialog}
+          isShow={showInviteDialog}
+          roomInfo={roomInfo}
+        ></InviteDialog>
+      )}
 
       {/* Show keyword dialog */}
       {showKeywordDialog && (
@@ -526,7 +533,10 @@ const GuessingWord = () => {
             }}
           />
           <View style={styles.buttonContainers}>
-            <View style={styles.containerInvite}>
+            <TouchableOpacity
+              style={styles.containerInvite}
+              onPress={() => setShowInviteDialog(true)}
+            >
               <LinearGradient
                 colors={["#2CB4FF", "#62C7FF"]}
                 start={[0, 0]}
@@ -541,7 +551,7 @@ const GuessingWord = () => {
                   Mời bạn
                 </Text>
               </LinearGradient>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.containerStart}
               onPress={isReady ? () => {} : handleReady}

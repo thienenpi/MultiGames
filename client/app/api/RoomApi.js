@@ -24,7 +24,7 @@ const createRoom = async ({ data }) => {
 
 const getRoom = async ({ id }) => {
   try {
-    const url = `/rooms/id=${id}`;
+    const url = `/rooms/roomId=${id}`;
     const config = {
       method: "GET",
       headers: {
