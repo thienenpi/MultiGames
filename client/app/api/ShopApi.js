@@ -21,7 +21,7 @@ const getAllItems = async () => {
     }
 };
 
-const getItemById = async (id) => {
+const getItemById = async ({id}) => {
     try {
         const url = `/shop/id=${id}`;
         const config = {

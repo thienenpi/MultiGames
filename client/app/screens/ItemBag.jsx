@@ -26,17 +26,17 @@ const ItemBag = () => {
 
   const screenWidth = Dimensions.get("window").width;
 
-  const [itemsBag, setItems] = useState([]);
+  const [items, setItems] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
-        fetchItemsBag();
+      fetchItemsBag();
     }, [])
   );
 
   const checkInventoryEmpty = () => {
-      return !userInfo.bag || userInfo.bag.length === 0;
-    };
+    return !userInfo.bag || userInfo.bag.length === 0;
+  };
 
   async function fetchItemsBag() {
     try {
@@ -44,12 +44,16 @@ const ItemBag = () => {
       if (checkInventoryEmpty()) {
         return;
       }
-      // for(let id of userInfo.bag) {
-      //   const res = await getItemById({ id: id });
-      //   if (res.status === 200) {
-      //     setItems((prevItems) => [...prevItems, res.data]);
-      //   }
-      // };
+
+      for (let itemId of userInfo.bag) {
+        const res = await getItemById({ id: itemId });
+        console.log("Response:", res.data); // In ra phản hồi để kiểm tra
+        if (res && res.status === 200) {
+          setItems((prevItems) => [...prevItems, res.data]);
+        } else {
+          console.error("Failed to fetch item:", res.message || res.error);
+        }
+      }
     } catch (error) {
       Alert.alert("Error", "Failed to fetch items bag");
     }
@@ -80,13 +84,13 @@ const ItemBag = () => {
         <Text style={styles.categoryText}>Drawing Boards</Text>
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
       </View>
-      {checkInventoryEmpty() && 
+      {checkInventoryEmpty() &&
         <View style={styles.emptyBag}>
           <Text style={styles.emptyText}>Your bag is empty</Text>
         </View>
       }
       <FlatList
-        data={itemsBag}
+        data={items}
         renderItem={({ item }) => (
           <Item
             item={item}
@@ -94,7 +98,7 @@ const ItemBag = () => {
             showPrice={false}
           />
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id}
         numColumns={3}
         contentContainerStyle={{ justifyContent: "flex-start" }}
       />
@@ -110,7 +114,7 @@ const ItemBag = () => {
             <View style={styles.modalView}>
               <View style={styles.itemContainer}>
                 <Image
-                  source={selectedItem?.image}
+                  source={{ uri: selectedItem?.image }}
                   style={{
                     width: screenWidth * 0.8,
                     height: screenWidth * 0.7,

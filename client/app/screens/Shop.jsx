@@ -127,7 +127,7 @@ const Shop = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.itemContainer}>
-              <Image source={ { uri: selectedItem?.image }} style={{ width: screenWidth * 0.8, height: screenWidth * 0.7, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
+              <Image source={{ uri: selectedItem?.image }} style={{ width: screenWidth * 0.8, height: screenWidth * 0.7, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
               <View style={{
                 flexDirection: "row",
                 alignSelf: "stretch", justifyContent: "space-between", padding: 20,

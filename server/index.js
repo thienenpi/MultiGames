@@ -22,8 +22,8 @@ mongoose
   .then(() => console.log("db connected"))
   .catch((error) => console.error(error));
 
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use(express.json({ limit: "10MB" }));
+app.use(express.urlencoded({ limit: "10MB", extended: true }));
 app.use(bodyParser.json());
 
 app.get("/", (req, res) =>
