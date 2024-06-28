@@ -3,7 +3,7 @@ import { COLORS } from "../../constants";
 
 const styles = StyleSheet.create({
   chatBox: {
-    flex: 4, 
+    flex: 2, 
     backgroundColor: "white", 
     padding: 20,
     borderRadius: 10,

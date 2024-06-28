@@ -21,7 +21,6 @@ const SpyMainScreen = () => {
       navigation.navigate("Room Create");
       return;
     }
-    console.log(roomInfo)
     await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
     navigation.navigate("Spy Game", { roomInfo: roomInfo });
   }

@@ -25,7 +25,10 @@ import AddFriendDialog from "./drawing/AddFriendDialog";
 import UserCardView from "./drawing/UserCardView";
 import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
 import GameScoreController from "./systems/scoringSystem/gameScoreController";
-
+import KeyWordDialog from "./spyGame/KeyWordDialog";
+import Player from "./spyGame/Player";
+import GameTimer from "./spyGame/GameTimer";
+import NotificationDialog from "./spyGame/NotificationDialog";
 export {
   CustomButton,
   CustomDatePicker,
@@ -54,4 +57,8 @@ export {
   UserCardView,
   EndTurnResult,
   GameScoreController,
+  KeyWordDialog,
+  Player,
+  GameTimer,
+  NotificationDialog,
 };

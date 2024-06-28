@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Button,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
@@ -17,6 +18,7 @@ const FriendChat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const route = useRoute();
+  const flatListRef = useRef(null);
 
   const { item } = route.params;
   const { userInfo } = useContext(AuthContext);
@@ -28,10 +30,15 @@ const FriendChat = () => {
       
       socket.on("messages", (messages) => {
         setMessages(messages);
+        flatListRef.current?.scrollToEnd({ animated: true });
       });
 
       socket.on("receiveMessage", (message) => {
-        setMessages((prevMessages) => [...prevMessages, message]);
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages, message];
+          flatListRef.current?.scrollToEnd({ animated: true });
+          return updatedMessages;
+        });
       });
 
       return () => {
@@ -83,19 +90,21 @@ const FriendChat = () => {
       ></AppBar>
       <View style={styles.header}>
         <Image
-          source={{ uri: item.avatarUrl }} // Thay thế bằng đường dẫn đến ảnh profile
+          source={{ uri: item.avatarUrl }}
           style={styles.profileImage}
         />
         <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>{item.userName}</Text>
+          <Text style={styles.headerText}>{item.name}</Text>
           <Text style={styles.status}>Đang hoạt động</Text>
         </View>
       </View>
       <FlatList
+        ref={flatListRef}
         data={messages}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.chatContainer}
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
       />
       <View style={styles.inputContainer}>
         <TextInput
@@ -105,7 +114,12 @@ const FriendChat = () => {
           placeholder="Nhắn tin"
           onSubmitEditing={handleSendMessage}
         />
-        <Button title="Send" onPress={handleSendMessage} />
+         <TouchableOpacity onPress={handleSendMessage} style={styles.iconButton}>
+            <Image
+              source={require("../../assets/send.png")}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
       </View>
     </View>
   );
@@ -180,6 +194,14 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginRight: 10,
     marginTop: -5,
+  },
+  iconButton: {
+    padding: 10,
+  },
+
+  icon: {
+    width: 24,
+    height: 24,
   },
 });
 
