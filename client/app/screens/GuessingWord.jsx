@@ -173,10 +173,6 @@ const GuessingWord = () => {
       // Send message to server
       socket.emit("message", newMessage);
       setMessage("");
-      // setMessageHistory((prevMessageHistory) => [
-      //   ...prevMessageHistory,
-      //   newMessage,
-      // ]);
     }
   };
 
@@ -215,7 +211,6 @@ const GuessingWord = () => {
         if (checkYourTurn()) {
           setShowKeywordDialog(true);
         }
-        // checkYourTurn() && setShowKeywordDialog(true);
         setIsClear(true);
       }
     }
@@ -233,7 +228,7 @@ const GuessingWord = () => {
             setShowEndGameResultDialog(true);
             gameScoreController.displayScores();
             gameScoreController.updateMoneyForPlayers();
-          }, 2000); // 3 second delay
+          }, 2000);
           socket.off();
         }
       });
@@ -246,29 +241,26 @@ const GuessingWord = () => {
 
     // Join the room when component mounts
     socket.on("message", (data) => {
-      console.log(data);
       if (data !== null) {
         // Calculate score
         if (data.isCheckGuessCorrectness === true) {
           gameScoreController.calculateScoreForDrawGuessGame(data.senderId);
-          // Get score of sender
-          console.log(
-            data.sender +
-              " - Score: " +
-              gameScoreController.getScoreForDrawGuessGame(data.senderId)
-          );
 
-          const noti = {
-            sender: "Thong bao",
-            content:
-              data.sender +
-              " - Score: " +
-              gameScoreController.getScoreForDrawGuessGame(data.senderId),
-          };
-          setMessageHistory((prevMessageHistory) => [
-            ...prevMessageHistory,
-            noti,
-          ]);
+          if (gameScoreController.checkGuessCorrectedPlayer(data.senderId)) {
+            const noti = {
+              sender: "Hệ thống",
+              content:
+                data.sender +
+                " đã đoán đúng! +" +
+                gameScoreController.getAddedScoreInTurn(data.senderId)
+                + " điểm",
+            };
+
+            setMessageHistory((prevMessageHistory) => [
+              ...prevMessageHistory,
+              noti,
+            ]);
+          }
         }
 
         setMessageHistory((prevMessageHistory) => [
@@ -506,7 +498,7 @@ const GuessingWord = () => {
               onClearDrawing={updateIsClear}
             ></WhiteBoard>
             {showOptions && (
-              <Animated.View style={styles.topBar}>
+              <Animated.View style={styles.optionBar}>
                 <DrawingOptionsBar
                   onUpdateColor={updateColor}
                   onUpdateSize={updateSize}

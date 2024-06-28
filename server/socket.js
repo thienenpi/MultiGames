@@ -142,7 +142,6 @@ const socketSetup = (server) => {
     });
 
     socket.on("disconnect", () => {
-      //   console.log(`user disconnected`);
       // find the room that the user is in
       offlineHandler({ socket: socket });
       let room = null;
@@ -161,6 +160,10 @@ const socketSetup = (server) => {
 
     socket.on("leave", leaveHandler);
     socket.on("join", joinHandler);
+
+    socket.on("boardBackgroundUrl" , (url) => {
+      socket.emit("boardBackgroundUrl", url);
+    });
   });
 };
 

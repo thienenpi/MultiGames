@@ -153,20 +153,26 @@ const WhiteBoard = ({
         const res = await getItemById({ id: itemId });
         if (res && res.status === 200) {
           backgroundUrl.current = res.data.image;
-          console.log("Background image fetched successfully");
-          console.log("Background image url: ", backgroundUrl.current);
+          // Emit background image to server
+          socket.emit("boardBackgroundUrl", backgroundUrl.current);
         } else {
           Alert.alert("Error", "Failed to fetch background image");
         }
       }
       else {
         backgroundUrl.current = "";
-        console.log("No item id found in AsyncStorage");
       }
     } catch (error) {
       Alert.alert("Error", error.message);
     }
   };
+
+  useEffect(() => {
+    // Listen for background image from server
+    socket.on("boardBackgroundUrl", (url) => {
+      backgroundUrl.current = url;
+    });
+  }, []);
 
   if (backgroundUrl.current === "") {
     return (

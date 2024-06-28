@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   whiteBoard: {
     flex: 1,
     width: SIZES.width,
+    position: "relative",
     backgroundColor: COLORS.background,
   },
 
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  topBar: {
+  optionBar: {
     height: 60,
     width: "100%",
     flexDirection: "row",
@@ -198,6 +199,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopHeight: 1,
     backgroundColor: "white",
+    position: "absolute",
+    bottom: 0,
   },
 
   separator: {
