@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
@@ -48,9 +48,11 @@ const Dashboard = () => {
         eventIcon="star-outline"
         eventText="Events"
       />
-      <GestureHandlerRootView>
+
+      {/* <GestureHandlerRootView>
         <MyCarousel />
-      </GestureHandlerRootView>
+      </GestureHandlerRootView> */}
+
       <View style={styles.containerTask}>
         <TouchableOpacity style={styles.item}>
           <Ionicons name="stats-chart" size={34} color="blue" />
@@ -65,6 +67,9 @@ const Dashboard = () => {
           <Text style={styles.text}>Friends</Text>
         </TouchableOpacity>
       </View>
+
+      <Image source={require("../../assets/slide1.jpg")} style={{ height: 250, width: '100%' }} resizeMode="cover"/>
+
       <View style={styles.containerInfo}>
         <View style={styles.row}>
           <Text style={{ fontSize: 30, fontWeight: "600" }}>Let's Play</Text>

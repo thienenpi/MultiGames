@@ -188,6 +188,10 @@ const EditProfile = () => {
               requestCameraPermission().then(async (status) => {
                 if (status === "granted") {
                   await pickImageFromCamera();
+                  if (selectedImage.current !== null) {
+                    await uploadImage();
+                    await fetchUserInfo(userInfo._id);
+                  }
                   actionSheetRef.current?.setModalVisible(false);
                 }
               });

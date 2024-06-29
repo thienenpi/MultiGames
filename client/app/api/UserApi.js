@@ -157,10 +157,13 @@ const updateAvatar = async ({ userId, uri }) => {
     const url = `/users/updateAvatar/`;
     let formData = new FormData();
 
+    const fileType = uri.split('.').pop();
+    const mimeType = `image/${fileType}`;
+
     formData.append("avatar", {
       uri: uri,
-      name: `${userId}.png`,
-      type: "image/png",
+      name: `${userId}.${fileType}`,
+      type: mimeType,
     });
 
     formData.append("userId", userId);
