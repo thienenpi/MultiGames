@@ -11,7 +11,7 @@ import React from 'react';
 import styles from "./styles/roomConfig.style";
 import { AppBar, CustomButton, HorizontalItem } from "../components/";
 import { useNavigation } from "@react-navigation/native";
-// import Clipboard from "@react-native-clipboard/clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 const players = [
   {
@@ -32,7 +32,7 @@ const players = [
 ];
 
 const handleCopyText = (text) => {
-  // Clipboard.setString(text);
+  Clipboard.setString(text);
   console.log(`Đã copy ${text}`);
   if (Platform.OS === 'android') {
     ToastAndroid.show(`Đã copy ${text}`,

@@ -1,33 +1,49 @@
-import React, { useState } from "react";
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { View, Text, Image, FlatList, Modal, Pressable, TouchableOpacity } from "react-native";
-import { Dimensions } from 'react-native';
-import styles from './styles/shop.style';
-import { Item, AppBar } from '../components';
+import React, { useState, useContext, useCallback } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { AuthContext } from "../context/AuthContext";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  Modal,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
+import { Dimensions } from "react-native";
+import styles from "./styles/shop.style";
+import { Item, AppBar } from "../components";
+import { getAllItems } from "../api/ShopApi";
 
 const Shop = () => {
-  const data = [
-    { id: 1, image: require('../../assets/bg01.png'), description: "Description 1", price: 200, },
-    { id: 2, image: require('../../assets/bg02.png'), description: "Description 2", price: 300, },
-    { id: 3, image: require('../../assets/bg03.png'), description: "Description 3", price: 300, },
-    { id: 4, image: require('../../assets/bg04.png'), description: "Description 4", price: 500, },
-    { id: 5, image: require('../../assets/bg05.png'), description: "Description 5", price: 600, },
-    { id: 6, image: require('../../assets/bg06.png'), description: "Description 6", price: 100, },
-    { id: 7, image: require('../../assets/bg01.png'), description: "Description 1", price: 100, },
-    { id: 8, image: require('../../assets/bg02.png'), description: "Description 2", price: 100, },
-    { id: 9, image: require('../../assets/bg03.png'), description: "Description 3", price: 100, },
-    { id: 10, image: require('../../assets/bg04.png'), description: "Description 4", price: 100, },
-    { id: 11, image: require('../../assets/bg05.png'), description: "Description 5", price: 100, },
-    { id: 12, image: require('../../assets/bg06.png'), description: "Description 6", price: 100, },
-  ];
+  const { userInfo, fetchUserInfo, updateInfo } = useContext(AuthContext);
+  const [items, setItems] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserInfo(userInfo._id);
+      fetchItems();
+    }, [])
+  );
+
+  async function fetchItems() {
+    try {
+      const res = await getAllItems();
+      if (res.status === 200) {
+        setItems(res.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const navigation = useNavigation();
 
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
 
   // Trong hàm handleItemPress, set state của modal và lớp phủ thành true
   const handleItemPress = (item) => {
@@ -39,7 +55,39 @@ const Shop = () => {
   // Thêm hàm để đóng modal và lớp phủ
   const closeModal = () => {
     setModalVisible(false);
-    setOverlayVisible(false);
+    // setOverlayVisible(false);
+  };
+
+  const handleDeductMoney = (money) => {
+    userInfo.money -= money;
+  };
+
+  const handleAddItemIntoBag = (itemId) => {
+    userInfo.bag.push(itemId);
+  };
+
+  const isBought = (itemId) => {
+    return userInfo.bag.includes(itemId);
+  };
+
+  const handleBuyItem = () => {
+    if (isBought(selectedItem._id)) {
+      return alert("Item already bought");
+    }
+
+    if (userInfo.money >= selectedItem.price) {
+      // Deduct money
+      handleDeductMoney(selectedItem.price);
+      // Add item into bag
+      handleAddItemIntoBag(selectedItem._id);
+      // Update user info
+      updateInfo({ id: userInfo._id, data: userInfo });
+      // Close modal
+      alert("Item bought successfully");
+      closeModal();
+    } else {
+      alert("Not enough money");
+    }
   };
 
   return (
@@ -50,17 +98,21 @@ const Shop = () => {
         showRightIcon={true}
         rightIconStyle={{ fontSize: 24 }}
         onPressLeftIcon={() => navigation.goBack()}
-        onPressRightIcon={() => navigation.navigate('Item Bag')} />
+        onPressRightIcon={() => navigation.navigate("Item Bag")}
+      />
       <View style={styles.separator} />
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceText}>Balance:</Text>
         <View style={styles.balanceContent}>
           <Ionicons name="cash-outline" style={styles.icon} />
-          <Text style={styles.balanceAmount}>100</Text>
+          <Text style={styles.balanceAmount}>{userInfo.money}</Text>
         </View>
       </View>
       <View style={styles.bannerContainer}>
-        <Image source={require('../../assets/store_banner.png')} style={styles.bannerImage} />
+        <Image
+          source={require("../../assets/store_banner.png")}
+          style={styles.bannerImage}
+        />
       </View>
       <View style={styles.separator} />
       <View style={styles.categoryContainer}>
@@ -69,42 +121,65 @@ const Shop = () => {
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
       </View>
       <FlatList
-        data={data}
+        data={items}
         renderItem={({ item }) => (
-          <Item item={item} handleItemPress={handleItemPress} showPrice={true} />
+          <Item
+            item={item}
+            handleItemPress={handleItemPress}
+            showPrice={true}
+          />
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id}
         numColumns={3}
-        contentContainerStyle={{ justifyContent: 'flex-start' }}
+        contentContainerStyle={{ justifyContent: "flex-start" }}
       />
-      {isOverlayVisible && <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={closeModal}
-      >
-        <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
-        <View style={styles.centeredView}>
+      {isOverlayVisible && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={closeModal}
+        >
+          <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
           <View style={styles.modalView}>
             <View style={styles.itemContainer}>
-              <Image source={selectedItem?.image} style={{ width: screenWidth * 0.8, height: screenWidth * 0.7, borderTopLeftRadius: 10, borderTopRightRadius: 10 }} />
-              <View style={{
-                flexDirection: "row",
-                alignSelf: "stretch", justifyContent: "space-between", padding: 20,
-              }}>
-                <Text style={{ fontWeight: "bold", fontSize: 16 }}>{selectedItem?.description}</Text>
+              <Image
+                source={{ uri: selectedItem?.image }}
+                style={{
+                  width: screenWidth * 0.8,
+                  height: screenWidth * 0.7,
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignSelf: "stretch",
+                  justifyContent: "space-between",
+                  padding: 20,
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                  {selectedItem?.description}
+                </Text>
                 <View style={styles.priceContainer}>
                   <Ionicons name="cash-outline" style={styles.icon} />
                   <Text style={styles.price}>{selectedItem?.price}</Text>
                 </View>
               </View>
             </View>
-            <TouchableOpacity style={[styles.button, styles.buttonBuy]} >
-              <Text style={styles.textStyle}>Buy</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonBuy]}
+              onPress={handleBuyItem}
+            >
+              <Text style={styles.textStyle}>
+                {isBought(selectedItem._id) ? "Đã mua" : "Mua"}
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </Modal>}
+        </Modal>
+      )}
     </View>
   );
 };

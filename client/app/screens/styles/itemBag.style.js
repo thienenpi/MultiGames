@@ -83,7 +83,16 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      }
+    },
+    emptyBag: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 20,
+        color: 'black',
+    },
 });
 
 export default styles;

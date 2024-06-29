@@ -14,6 +14,7 @@ const userRouter = require("./routes/user");
 const roomRouter = require("./routes/room");
 const messageRouter = require("./routes/message");
 const keywordRouter = require("./routes/keyword");
+const shopRouter = require("./routes/shop");
 
 dotenv.config();
 mongoose
@@ -21,8 +22,8 @@ mongoose
   .then(() => console.log("db connected"))
   .catch((error) => console.error(error));
 
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use(express.json({ limit: "10MB" }));
+app.use(express.urlencoded({ limit: "10MB", extended: true }));
 app.use(bodyParser.json());
 
 app.get("/", (req, res) =>
@@ -34,6 +35,7 @@ app.use("/api/users", userRouter);
 app.use("/api/rooms", roomRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/keywords", keywordRouter);
+app.use("/api/shop", shopRouter);
 app.get("/privacy-policy", (req, res) => {
   res.sendFile(__dirname + "/privacy-policy.html");
 });

@@ -28,6 +28,7 @@ import {
   AddFriendDialog,
   UserCardView,
   GameScoreController,
+  InviteDialog,
 } from "../components";
 import { getRoomGuests, isRoomFull, getUserById, getKeyWords } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
@@ -172,10 +173,6 @@ const GuessingWord = () => {
       // Send message to server
       socket.emit("message", newMessage);
       setMessage("");
-      // setMessageHistory((prevMessageHistory) => [
-      //   ...prevMessageHistory,
-      //   newMessage,
-      // ]);
     }
   };
 
@@ -214,7 +211,6 @@ const GuessingWord = () => {
         if (checkYourTurn()) {
           setShowKeywordDialog(true);
         }
-        // checkYourTurn() && setShowKeywordDialog(true);
         setIsClear(true);
       }
     }
@@ -231,7 +227,8 @@ const GuessingWord = () => {
             setShowEndTurnResultDialog(false);
             setShowEndGameResultDialog(true);
             gameScoreController.displayScores();
-          }, 2000); // 3 second delay
+            gameScoreController.updateMoneyForPlayers();
+          }, 2000);
           socket.off();
         }
       });
@@ -244,29 +241,26 @@ const GuessingWord = () => {
 
     // Join the room when component mounts
     socket.on("message", (data) => {
-      console.log(data);
       if (data !== null) {
         // Calculate score
         if (data.isCheckGuessCorrectness === true) {
           gameScoreController.calculateScoreForDrawGuessGame(data.senderId);
-          // Get score of sender
-          console.log(
-            data.sender +
-              " - Score: " +
-              gameScoreController.getScoreForDrawGuessGame(data.senderId)
-          );
 
-          const noti = {
-            sender: "Thong bao",
-            content:
-              data.sender +
-              " - Score: " +
-              gameScoreController.getScoreForDrawGuessGame(data.senderId),
-          };
-          setMessageHistory((prevMessageHistory) => [
-            ...prevMessageHistory,
-            noti,
-          ]);
+          if (gameScoreController.checkGuessCorrectedPlayer(data.senderId)) {
+            const noti = {
+              sender: "Hệ thống",
+              content:
+                data.sender +
+                " đã đoán đúng! +" +
+                gameScoreController.getAddedScoreInTurn(data.senderId)
+                + " điểm",
+            };
+
+            setMessageHistory((prevMessageHistory) => [
+              ...prevMessageHistory,
+              noti,
+            ]);
+          }
         }
 
         setMessageHistory((prevMessageHistory) => [
@@ -303,10 +297,6 @@ const GuessingWord = () => {
 
         if (res.status === 200) {
           const user = res.data;
-
-          // Add player to game score controller
-          //   gameScoreController.addPlayer(user);
-          // gameScoreController.addPlayer(user);
 
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
@@ -386,7 +376,13 @@ const GuessingWord = () => {
   return (
     <View style={styles.container}>
       {/* Show invite dialog */}
-      {showInviteDialog && <View></View>}
+      {showInviteDialog && (
+        <InviteDialog
+          onChangeShow={setShowInviteDialog}
+          isShow={showInviteDialog}
+          roomInfo={roomInfo}
+        ></InviteDialog>
+      )}
 
       {/* Show keyword dialog */}
       {showKeywordDialog && (
@@ -502,7 +498,7 @@ const GuessingWord = () => {
               onClearDrawing={updateIsClear}
             ></WhiteBoard>
             {showOptions && (
-              <Animated.View style={styles.topBar}>
+              <Animated.View style={styles.optionBar}>
                 <DrawingOptionsBar
                   onUpdateColor={updateColor}
                   onUpdateSize={updateSize}
@@ -529,7 +525,10 @@ const GuessingWord = () => {
             }}
           />
           <View style={styles.buttonContainers}>
-            <View style={styles.containerInvite}>
+            <TouchableOpacity
+              style={styles.containerInvite}
+              onPress={() => setShowInviteDialog(true)}
+            >
               <LinearGradient
                 colors={["#2CB4FF", "#62C7FF"]}
                 start={[0, 0]}
@@ -544,7 +543,7 @@ const GuessingWord = () => {
                   Mời bạn
                 </Text>
               </LinearGradient>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.containerStart}
               onPress={isReady ? () => {} : handleReady}

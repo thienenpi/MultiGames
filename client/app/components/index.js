@@ -29,6 +29,10 @@ import KeyWordDialog from "./spyGame/KeyWordDialog";
 import Player from "./spyGame/Player";
 import GameTimer from "./spyGame/GameTimer";
 import NotificationDialog from "./spyGame/NotificationDialog";
+import MyCarousel from "./MyCarousel";
+import InviteDialog from "./drawing/InviteDialog";
+import InvitationDialog from "./InvitationDialog";
+
 export {
   CustomButton,
   CustomDatePicker,
@@ -61,4 +65,7 @@ export {
   Player,
   GameTimer,
   NotificationDialog,
+  MyCarousel,
+  InviteDialog,
+  InvitationDialog
 };
