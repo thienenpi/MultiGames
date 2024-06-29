@@ -25,9 +25,13 @@ import AddFriendDialog from "./drawing/AddFriendDialog";
 import UserCardView from "./drawing/UserCardView";
 import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
 import GameScoreController from "./systems/scoringSystem/gameScoreController";
-import MyCarousel from "./MyCarousel";
+import MyCarousel from "./carousel/MyCarousel";
 import InviteDialog from "./drawing/InviteDialog";
 import InvitationDialog from "./InvitationDialog";
+import SBImageItem from "./carousel/SBImageItem";
+import SBTextItem from "./carousel/SBTextItem";
+import SButton from "./carousel/SButton";
+import SBItem from "./carousel/SBItem";
 
 export {
   CustomButton,
@@ -59,5 +63,9 @@ export {
   GameScoreController,
   MyCarousel,
   InviteDialog,
-  InvitationDialog
+  InvitationDialog,
+  SBImageItem,
+  SBTextItem,
+  SButton,
+  SBItem
 };

@@ -4,9 +4,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
-import { ProfileRow, GameCard } from "../components";
+import { ProfileRow, GameCard, MyCarousel } from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Dashboard = () => {
   const { userInfo, fetchUserInfo } = useContext(AuthContext);
@@ -47,6 +48,9 @@ const Dashboard = () => {
         eventIcon="star-outline"
         eventText="Events"
       />
+      <GestureHandlerRootView>
+        <MyCarousel />
+      </GestureHandlerRootView>
       <View style={styles.containerTask}>
         <TouchableOpacity style={styles.item}>
           <Ionicons name="stats-chart" size={34} color="blue" />
