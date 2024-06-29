@@ -141,9 +141,9 @@ const socketSetup = (server) => {
       io.emit("receiveMessage", savedMessage);
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       // find the room that the user is in
-      offlineHandler({ socket: socket });
+      await offlineHandler({ socket: socket });
       let room = null;
 
       for (const key in rooms) {
