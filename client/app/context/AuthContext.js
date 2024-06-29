@@ -116,6 +116,7 @@ export const AuthProvider = ({ children }) => {
       const res = await getUserById({ id });
       if (res.status === 200) {
         const data = res.data;
+        console.log(data)
         setUserInfo(data);
         AsyncStorage.setItem("userInfo", JSON.stringify(data));
       } else {

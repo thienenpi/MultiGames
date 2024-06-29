@@ -150,7 +150,39 @@ const updateUserInfo = async ({ id, data }) => {
       throw error;
     }
   }
-}
+};
+
+const updateAvatar = async ({ userId, uri }) => {
+  try {
+    const url = `/users/updateAvatar/`;
+    let formData = new FormData();
+
+    formData.append("avatar", {
+      uri: uri,
+      name: `${userId}.png`,
+      type: "image/png",
+    });
+
+    formData.append("userId", userId);
+
+    const config = {
+      method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
 
 export {
   userLogin,
@@ -160,4 +192,5 @@ export {
   sendFriendRequest,
   acceptFriendRequest,
   updateUserInfo,
+  updateAvatar,
 };

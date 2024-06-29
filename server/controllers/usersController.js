@@ -1,7 +1,7 @@
 const User = require("../models/Users");
 const multer = require("multer");
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 const { uploadBlob } = require("../services/azureStorageBlob");
 
 const createUser = async (req, res) => {
@@ -63,12 +63,15 @@ const updateUser = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const fileBuffer = req.file.buffer;
-  const fileName = req.body.userId;
+  const userId = req.body.userId;
 
   try {
-    const avatarUrl = await uploadBlob("avatars", fileName, fileBuffer);
+    const avatarUrl = await uploadBlob("avatars", userId, fileBuffer);
+    const updatedUser = await User.findByIdAndUpdate(userId, {
+      avatarUrl: avatarUrl,
+    });
 
-    res.status(200).json(avatarUrl);
+    res.status(200).json(updatedUser.avatarUrl);
   } catch (error) {
     res.status(500).json("Failed to upload avatar", error);
   }
