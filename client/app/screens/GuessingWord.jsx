@@ -71,6 +71,8 @@ const GuessingWord = () => {
   var playerIndex = 0;
   const playerInfo = useRef({});
 
+  const countCorrectGuess = useRef(0);
+
   // Set game time
   const gameTimeController = new GameTimeController();
   gameTimeController.setModeDrawing();
@@ -219,6 +221,7 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
       captureAndSaveImage().then(() => {
         setShowEndTurnResultDialog(true);
+        countCorrectGuess.current = gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
         if (playerIndex === usersInRoom.length - 1) {
@@ -400,7 +403,7 @@ const GuessingWord = () => {
           player={playerInfo.current}
           image={capturedImage.current}
           keyword={selectedKeyword.current.keyword}
-          numPlayersCorrect={2}
+          numPlayersCorrect={countCorrectGuess.current}
         />
       )}
 

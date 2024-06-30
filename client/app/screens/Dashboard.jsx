@@ -7,7 +7,6 @@ import styles from "./styles/dashboard.style";
 import { ProfileRow, GameCard, MyCarousel } from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Dashboard = () => {
   const { userInfo, fetchUserInfo } = useContext(AuthContext);
@@ -49,9 +48,7 @@ const Dashboard = () => {
         eventText="Events"
       />
 
-      {/* <GestureHandlerRootView>
-        <MyCarousel />
-      </GestureHandlerRootView> */}
+      {/* <MyCarousel /> */}
 
       <View style={styles.containerTask}>
         <TouchableOpacity style={styles.item}>
@@ -68,7 +65,7 @@ const Dashboard = () => {
         </TouchableOpacity>
       </View>
 
-      <Image source={require("../../assets/slide1.jpg")} style={{ height: 250, width: '100%' }} resizeMode="cover"/>
+      <Image source={require("../../assets/slide1.jpg")} style={{ height: 250, width: '100%' }} resizeMode="cover" />
 
       <View style={styles.containerInfo}>
         <View style={styles.row}>

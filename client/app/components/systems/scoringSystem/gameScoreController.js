@@ -1,6 +1,7 @@
 import {
   DRAWING_GAME_SCORE,
 } from "../../../constants";
+import ApiManager from "../../../api/ApiManager";
 
 const updateUserInfo = async ({ id, data }) => {
   try {
@@ -61,7 +62,7 @@ class GameScoreController {
   }
 
   getAddedScoreInTurn(userId) {
-    if (checkGuessCorrectedPlayer(userId)) {
+    if (this.checkGuessCorrectedPlayer(userId)) {
       let index = this.guessCorrectedPlayerIds.indexOf(userId);
       switch (index) {
         case 0:
@@ -80,6 +81,10 @@ class GameScoreController {
           return 0;
       }
     }
+  }
+
+  getCountCorrectGuesses() {
+    return this.guessCorrectedPlayerIds.length;
   }
 
   checkGuessCorrectedPlayer(userId) {

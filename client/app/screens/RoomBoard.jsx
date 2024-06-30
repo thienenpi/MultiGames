@@ -7,6 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 import { getRoomsOwner } from "../api/RoomApi";
 import Dialog from "react-native-dialog";
 import styles from "./styles/boardroom.style";
+import { joinRoom, accessRoom } from "../services";
 
 const renderItem = ({ item }) => <RoomCardView item={item}></RoomCardView>;
 
@@ -46,6 +47,20 @@ const RoomBoard = () => {
   const handleConfirm = () => {
     // Xử lý số phòng ở đây
     setDialogVisible(false);
+  };
+
+  const handleAccessRoom = async () => {
+    // const data = {
+    //   gameMode: "Bạn Vẽ Tôi Đoán",
+    // };
+    // var roomInfo = await accessRoom({ data: data });
+    // if (!roomInfo) {
+    //   navigation.navigate("Room Create");
+    //   return;
+    // }
+
+    // await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+    // navigation.navigate("Guessing Word", { roomInfo: roomInfo });
   };
 
   return (
@@ -111,6 +126,7 @@ const RoomBoard = () => {
         data={items}
         renderItem={renderItem}
         keyExtractor={(item) => JSON.stringify(item._id)}
+        onPress={handleAccessRoom}
       ></FlatList>
       <Dialog.Container visible={dialogVisible}>
         <Dialog.Title style={{ textAlign: "center" }}>Tìm phòng</Dialog.Title>
