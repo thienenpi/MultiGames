@@ -28,6 +28,7 @@ const socketSetup = (server) => {
       socket.removeAllListeners("selectKeyword");
       socket.removeAllListeners("draw");
       socket.removeAllListeners("message");
+      socket.removeAllListeners("boardBackgroundUrl");
 
       socket.on("selectKeyword", (keyword) => {
         socket.to(room).emit("selectKeyword", keyword);
@@ -46,6 +47,10 @@ const socketSetup = (server) => {
 
         chatHistory[room].push(message);
         io.to(room).emit("message", message);
+      });
+
+      socket.on("boardBackgroundUrl", (url) => {
+        socket.to(room).emit("boardBackgroundUrl", url);
       });
     };
 
@@ -107,7 +112,7 @@ const socketSetup = (server) => {
       );
 
       if (!res) {
-        console.log("Failed to update socket id");
+        console.log("Failed to remove socket id");
       }
     };
 
@@ -160,10 +165,6 @@ const socketSetup = (server) => {
 
     socket.on("leave", leaveHandler);
     socket.on("join", joinHandler);
-
-    socket.on("boardBackgroundUrl" , (url) => {
-      socket.emit("boardBackgroundUrl", url);
-    });
   });
 };
 

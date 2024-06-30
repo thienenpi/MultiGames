@@ -24,6 +24,8 @@ const WhiteBoard = ({
   const sizeRef = useRef(0);
 
   const [backgroundUrl, setBackgroundUrl] = useState("");
+//   const defaultBackgroundUrl =
+//     "https://multigames.blob.core.windows.net/shop/default.png";
 
   const path = useRef("");
   const count = useRef(0);
@@ -130,7 +132,7 @@ const WhiteBoard = ({
 
   useEffect(() => {
     fetchBackGroundUrl();
-  }, []);
+  }, [enableDrawing]);
 
   const undo = () => {
     if (paths.length === 0) return;
@@ -148,9 +150,11 @@ const WhiteBoard = ({
 
   const fetchBackGroundUrl = async () => {
     try {
-      const itemId = await AsyncStorage.getItem('usedItemId');
-      if (itemId !== null) {
+      const itemId = await AsyncStorage.getItem("usedItemId");
+
+      if (itemId !== null && enableDrawing) {
         const res = await getItemById({ id: itemId });
+        
         if (res && res.status === 200) {
           // backgroundUrl.current = res.data.image;
           setBackgroundUrl(res.data.image);
@@ -159,9 +163,9 @@ const WhiteBoard = ({
         } else {
           Alert.alert("Error", "Failed to fetch background image");
         }
-      }
-      else {
+      } else {
         setBackgroundUrl("");
+        socket.emit("boardBackgroundUrl", "");
       }
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -177,7 +181,7 @@ const WhiteBoard = ({
     return () => {
       // Clean up the socket event subscription
       socket.off("boardBackgroundUrl");
-    };  
+    };
   }, []);
 
   if (backgroundUrl === "") {
@@ -214,9 +218,7 @@ const WhiteBoard = ({
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={{ uri: backgroundUrl }}
-        style={styles.container}>
+      <ImageBackground source={{ uri: backgroundUrl }} style={styles.container}>
         <Svg style={styles.svg}>
           {pathToDisplay.length !== 0 &&
             pathToDisplay.map((p, index) => (

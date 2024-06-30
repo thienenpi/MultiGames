@@ -5,7 +5,7 @@ import {
   View,
   ToastAndroid, // For Android-specific toast message
   AlertIOS, // For iOS-specific alert message
-  Platform, // To handle cross-platform differences
+  Platform, // To handle cross-platform differences 
 } from "react-native";
 import React from "react";
 import styles from "../styles/account.style";
@@ -21,7 +21,7 @@ const Account = () => {
 
   const handleCopyText = (text) => {
     Clipboard.setString(text);
-    // console.log(`Đã copy ${text}`);
+    console.log(`Đã copy ${text}`);
     if (Platform.OS === "android") {
       ToastAndroid.show(`Đã copy ${text}`, ToastAndroid.SHORT);
     } else if (Platform.OS === "ios") {

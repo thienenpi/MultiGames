@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     alignItems: "center",
     color: COLORS.text,
-    alignItems: "flex-end"
   },
 
   forward: {
