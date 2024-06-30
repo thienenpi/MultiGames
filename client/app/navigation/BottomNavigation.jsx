@@ -2,8 +2,8 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Message, Profile, Shop, Dashboard } from "../screens";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import { COLORS } from "../constants";
-import { Platform } from "react-native";
+import { COLORS, SIZES } from "../constants";
+import { Platform, StyleSheet, Text } from "react-native";
 
 const IS_IOS = Platform.OS === "ios";
 const Tab = createBottomTabNavigator();
@@ -33,8 +33,17 @@ const BottomNavigation = () => {
         name="Dashboard"
         component={Dashboard}
         options={{
-          tabBarIcon: () => {
-            return <Ionicons name="game-controller-outline" size={24} />;
+          tabBarIcon: ({ focused }) => {
+            return (
+              <Ionicons
+                name="game-controller-outline"
+                size={24}
+                color={focused ? COLORS.lightBlue : COLORS.text}
+              />
+            );
+          },
+          tabBarLabel: ({ focused }) => {
+            return <Text style={styles.tabBarLabel(focused)}>Dashboard</Text>;
           },
         }}
       ></Tab.Screen>
@@ -43,8 +52,17 @@ const BottomNavigation = () => {
         name="Shop"
         component={Shop}
         options={{
-          tabBarIcon: () => {
-            return <Feather name="shopping-bag" size={22} color="black" />;
+          tabBarIcon: ({ focused }) => {
+            return (
+              <Feather
+                name="shopping-bag"
+                size={24}
+                color={focused ? COLORS.lightBlue : COLORS.text}
+              />
+            );
+          },
+          tabBarLabel: ({ focused }) => {
+            return <Text style={styles.tabBarLabel(focused)}>Shop</Text>;
           },
         }}
       ></Tab.Screen>
@@ -53,10 +71,17 @@ const BottomNavigation = () => {
         name="Message"
         component={Message}
         options={{
-          tabBarIcon: () => {
+          tabBarIcon: ({ focused }) => {
             return (
-              <Ionicons name="chatbubble-ellipses-outline" size={24}></Ionicons>
+              <Ionicons
+                name="chatbubble-ellipses-outline"
+                size={24}
+                color={focused ? COLORS.lightBlue : COLORS.text}
+              ></Ionicons>
             );
+          },
+          tabBarLabel: ({ focused }) => {
+            return <Text style={styles.tabBarLabel(focused)}>Message</Text>;
           },
         }}
       ></Tab.Screen>
@@ -65,8 +90,17 @@ const BottomNavigation = () => {
         name="Profile"
         component={Profile}
         options={{
-          tabBarIcon: () => {
-            return <Ionicons name="person-circle-outline" size={24}></Ionicons>;
+          tabBarIcon: ({ focused }) => {
+            return (
+              <Ionicons
+                color={focused ? COLORS.lightBlue : COLORS.text}
+                name="person-circle-outline"
+                size={24}
+              ></Ionicons>
+            );
+          },
+          tabBarLabel: ({ focused }) => {
+            return <Text style={styles.tabBarLabel(focused)}>Profile</Text>;
           },
         }}
       ></Tab.Screen>
@@ -75,3 +109,11 @@ const BottomNavigation = () => {
 };
 
 export default BottomNavigation;
+
+const styles = StyleSheet.create({
+  tabBarLabel: (focused) => ({
+    fontSize: SIZES.medium,
+    fontFamily: "sfProBold",
+    color: focused ? COLORS.lightBlue : COLORS.text,
+  }),
+});

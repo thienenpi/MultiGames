@@ -221,7 +221,8 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
       captureAndSaveImage().then(() => {
         setShowEndTurnResultDialog(true);
-        countCorrectGuess.current = gameScoreController.getCountCorrectGuesses();
+        countCorrectGuess.current =
+          gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
         if (playerIndex === usersInRoom.length - 1) {
@@ -255,8 +256,8 @@ const GuessingWord = () => {
               content:
                 data.sender +
                 " đã đoán đúng! +" +
-                gameScoreController.getAddedScoreInTurn(data.senderId)
-                + " điểm",
+                gameScoreController.getAddedScoreInTurn(data.senderId) +
+                " điểm",
             };
 
             setMessageHistory((prevMessageHistory) => [
@@ -465,7 +466,14 @@ const GuessingWord = () => {
 
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
-        <Pressable onPress={() => navigation.navigate("Room Config")}>
+        <Pressable
+          onPress={() =>
+            navigation.navigate("Room Config", {
+              roomInfo: roomInfo,
+              usersInRoom: usersInRoom,
+            })
+          }
+        >
           <Ionicons
             name="settings"
             size={26}

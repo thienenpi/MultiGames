@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 
   actionSheetContent: {
     // padding: 20,
-    gap: SIZES.xSmall
+    gap: SIZES.xSmall,
   },
 
   btnContainer: (backgroundColor) => ({
@@ -45,6 +45,22 @@ const styles = StyleSheet.create({
   btnLabel: {
     fontSize: 18,
     fontFamily: "sfPro",
+  },
+
+  modalBackground: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  activityIndicatorWrapper: {
+    backgroundColor: "#FFFFFF",
+    height: 100,
+    width: 100,
+    borderRadius: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

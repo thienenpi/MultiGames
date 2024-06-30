@@ -71,7 +71,7 @@ const updateAvatar = async (req, res) => {
       avatarUrl: avatarUrl,
     });
 
-    res.status(200).json(updatedUser.avatarUrl);
+    res.status(200).json(updatedUser);
   } catch (error) {
     res.status(500).json("Failed to upload avatar", error);
   }

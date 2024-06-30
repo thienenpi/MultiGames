@@ -5,32 +5,23 @@ import {
   View,
   ToastAndroid, // For Android-specific toast message
   Alert, // For iOS-specific alert message
-  Platform, // To handle cross-platform differences
+  Platform,
+  TouchableOpacity, // To handle cross-platform differences
 } from "react-native";
 import React from "react";
 import styles from "./styles/roomConfig.style";
-import { AppBar, CustomButton, HorizontalItem } from "../components/";
-import { useNavigation } from "@react-navigation/native";
-// import Clipboard from "@react-native-clipboard/clipboard";
+import {
+  AppBar,
+  CustomButton,
+  HorizontalItem,
+  UserCardView,
+} from "../components/";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
-
-const players = [
-  {
-    _id: "1",
-    name: "Player 1",
-    avatarUrl: "https://picsum.photos/200/300",
-  },
-  {
-    _id: "2",
-    name: "Player 2",
-    avatarUrl: "https://picsum.photos/200/300",
-  },
-  {
-    _id: "3",
-    name: "Player 3",
-    avatarUrl: "https://picsum.photos/200/300",
-  },
-];
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { LinearGradient } from "expo-linear-gradient";
+import { COLORS } from "../constants";
 
 const handleCopyText = async (text) => {
   await Clipboard.setStringAsync(text);
@@ -41,22 +32,12 @@ const handleCopyText = async (text) => {
   }
 };
 
-const renderPlayer = ({ item }) => {
-  return (
-    <View style={styles.playerContainer}>
-      <Image
-        style={styles.playerAvatar}
-        source={{ uri: item.avatarUrl }}
-      ></Image>
-      <Text ellipsizeMode="tail" numberOfLines={1} style={styles.playerName}>
-        {item.name}
-      </Text>
-    </View>
-  );
-};
 
 const RoomConfig = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { roomInfo, usersInRoom } = route.params;
+  const { userInfo } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
@@ -66,26 +47,37 @@ const RoomConfig = () => {
       ></AppBar>
 
       <View style={styles.body}>
-        <View style={styles.playersRow}>
-          <FlatList
-            data={players}
-            renderItem={renderPlayer}
-            keyExtractor={(item) => item._id}
-            horizontal={true}
-          ></FlatList>
-        </View>
+        <LinearGradient
+            colors={COLORS.blueGradient}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={styles.playersRow}
+        >
+            {usersInRoom.map((user) => (
+              <TouchableOpacity
+                key={user._id}
+                onPress={() => {
+                  if (user._id === userInfo._id) return;
+                  setShowAddFriendDialog(true);
+                  setUserToAddFriend(user);
+                }}
+              >
+                <UserCardView user={user}></UserCardView>
+              </TouchableOpacity>
+            ))}
+        </LinearGradient>
 
         <View style={styles.settingsColumn}>
           <HorizontalItem
             title={"ID phòng"}
-            desc={"ID123456"}
-            onPress={() => handleCopyText("ID123456")}
+            desc={roomInfo._id}
+            onPress={() => handleCopyText(roomInfo._id)}
             iconRight={"copy-outline"}
           ></HorizontalItem>
 
           <HorizontalItem
             title={"Tên phòng"}
-            desc={"Phòng này hề"}
+            desc={roomInfo.name}
             iconRight={"chevron-forward-outline"}
           ></HorizontalItem>
 
@@ -97,13 +89,13 @@ const RoomConfig = () => {
 
           <HorizontalItem
             title={"Chế độ chơi"}
-            desc={"Bạn vẽ tôi đoán"}
+            desc={roomInfo.mode}
             iconRight={"chevron-forward-outline"}
           ></HorizontalItem>
 
           <HorizontalItem
             title={"Số lượng người chơi"}
-            desc={"6"}
+            desc={usersInRoom.length}
             iconRight={"chevron-forward-outline"}
           ></HorizontalItem>
         </View>
@@ -111,7 +103,7 @@ const RoomConfig = () => {
         <View style={styles.footer}>
           <CustomButton
             title={"Tạo phòng"}
-            onPress={() => {}}
+            onPress={() => navigation.navigate("Dashboard")}
             styles={styles}
             isValid={true}
             label={"Thoát phòng"}

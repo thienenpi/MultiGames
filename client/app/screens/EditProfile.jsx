@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Alert, View } from "react-native";
+import { ActivityIndicator, Alert, Modal, View } from "react-native";
 import styles from "./styles/editProfile.style";
 import { HorizontalItem, AppBar, CustomButton } from "../components";
 import ActionSheet from "react-native-actions-sheet";
@@ -15,7 +15,8 @@ const EditProfile = () => {
   const actionSheetRef = useRef();
   const selectedImage = useRef(null);
   const [uploading, setUploading] = useState(false);
-  const { fetchUserInfo, userInfo } = useContext(AuthContext);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const { fetchUserInfo, userInfo, setUserInfo } = useContext(AuthContext);
 
   const requestMediaLibraryPermission = async () => {
     const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
@@ -98,15 +99,22 @@ const EditProfile = () => {
 
   const uploadImage = async () => {
     setUploading(true);
+    setIsModalVisible(true);
     let userInfo = await AsyncStorage.getItem("userInfo");
     userInfo = JSON.parse(userInfo);
 
-    console.log(selectedImage.current);
+    // console.log(selectedImage.current);
     const res = await updateAvatar({
       userId: userInfo._id,
       uri: selectedImage.current,
     });
-    console.log(res.data);
+    // console.log(res.data);
+    setUserInfo((prevUserInfo) => ({
+      ...prevUserInfo,
+      avatarUrl: res.data.avatarUrl,
+    }));
+    setUploading(false);
+    setIsModalVisible(false);
   };
 
   return (
@@ -115,7 +123,9 @@ const EditProfile = () => {
         title="Edit Profile"
         onPressLeftIcon={() => navigation.goBack()}
       />
+
       <View style={styles.separator} />
+
       <HorizontalItem
         title="Avatar"
         isAvt={true}
@@ -123,31 +133,36 @@ const EditProfile = () => {
         isCenter={false}
         onPress={() => actionSheetRef.current?.setModalVisible(true)}
       />
+
       <HorizontalItem
         title="Nickname"
-        desc="Huynh Phat"
+        desc={userInfo.name}
         iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />
+
       <HorizontalItem
         title="User ID"
-        isIconDesc={true}
+        isIconDesc={userInfo._id !== "" ? false : true}
         iconDesc="alert-circle"
         colorIconDesc="red"
-        desc="Not set"
-        colorDesc="red"
+        desc={userInfo._id !== "" ? userInfo._id : "Not set"}
+        colorDesc={userInfo._id !== "" ? "black" : "red"}
         iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
       />
+
       <HorizontalItem
         title="QR Code Contact Card"
         iconRight="qr-code-sharp"
         isCenter={false}
         onPress={() => {}}
       />
+
       <View style={styles.separator} />
+
       <HorizontalItem
         title="Gender"
         desc="Male"
@@ -155,9 +170,14 @@ const EditProfile = () => {
         isCenter={false}
         onPress={() => {}}
       />
+
       <HorizontalItem
         title="Birthday"
-        desc="24/09/2003"
+        isIconDesc={userInfo.birth !== null ? false : true}
+        iconDesc="alert-circle"
+        colorIconDesc="red"
+        desc={userInfo.birth !== null ? userInfo.birth : "Not set"}
+        colorDesc={userInfo.birth !== null ? "black" : "red"}
         iconRight="chevron-forward"
         isCenter={false}
         onPress={() => {}}
@@ -169,6 +189,7 @@ const EditProfile = () => {
         isCenter={false}
         onPress={() => {}}
       />
+
       <HorizontalItem
         title="Signature"
         desc=""
@@ -176,9 +197,26 @@ const EditProfile = () => {
         isCenter={false}
         onPress={() => {}}
       />
+
       <View style={styles.separator} />
 
       <ActionSheet ref={actionSheetRef}>
+        <Modal
+          transparent={true}
+          animationType="slide"
+          visible={isModalVisible}
+          onRequestClose={() => setIsModalVisible(false)}
+        >
+          <View style={styles.modalBackground}>
+            <View style={styles.activityIndicatorWrapper}>
+              <ActivityIndicator
+                animating={uploading}
+                size="large"
+                color="#0000ff"
+              />
+            </View>
+          </View>
+        </Modal>
         <View style={styles.actionSheetContent}>
           <CustomButton
             label={"Camera"}
@@ -197,6 +235,7 @@ const EditProfile = () => {
               });
             }}
           ></CustomButton>
+
           <CustomButton
             label={"Library"}
             styles={styles}
@@ -214,6 +253,7 @@ const EditProfile = () => {
               });
             }}
           ></CustomButton>
+
           <CustomButton
             label={"Cancel"}
             styles={styles}
