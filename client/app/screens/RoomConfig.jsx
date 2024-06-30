@@ -3,15 +3,16 @@ import {
   Image,
   Text,
   View,
-  ToastAndroid, // For Android-specific toast message 
-  AlertIOS,     // For iOS-specific alert message 
-  Platform      // To handle cross-platform differences 
+  ToastAndroid, // For Android-specific toast message
+  Alert, // For iOS-specific alert message
+  Platform, // To handle cross-platform differences
 } from "react-native";
-import React from 'react';
+import React from "react";
 import styles from "./styles/roomConfig.style";
 import { AppBar, CustomButton, HorizontalItem } from "../components/";
 import { useNavigation } from "@react-navigation/native";
-import Clipboard from "@react-native-clipboard/clipboard";
+// import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 
 const players = [
   {
@@ -31,16 +32,14 @@ const players = [
   },
 ];
 
-const handleCopyText = (text) => {
-  Clipboard.setString(text);
-  console.log(`Đã copy ${text}`);
-  if (Platform.OS === 'android') {
-    ToastAndroid.show(`Đã copy ${text}`,
-      ToastAndroid.SHORT);
-  } else if (Platform.OS === 'ios') {
-    AlertIOS.alert(`Đã copy ${text}`);
+const handleCopyText = async (text) => {
+  await Clipboard.setStringAsync(text);
+  if (Platform.OS === "android") {
+    ToastAndroid.show(`Đã copy ${text}`, ToastAndroid.SHORT);
+  } else if (Platform.OS === "ios") {
+    Alert.alert(`Đã copy ${text}`);
   }
-}
+};
 
 const renderPlayer = ({ item }) => {
   return (
@@ -112,7 +111,7 @@ const RoomConfig = () => {
         <View style={styles.footer}>
           <CustomButton
             title={"Tạo phòng"}
-            onPress={() => { }}
+            onPress={() => {}}
             styles={styles}
             isValid={true}
             label={"Thoát phòng"}
