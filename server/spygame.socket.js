@@ -7,6 +7,7 @@ const chatHistory = {};
 const votes = {};
 const eliminated = {};
 const descriptionMessages = {};
+let voted = 0;
 const spyGameSocketSetup = (server) => {
   const io = socketIo(server, {
     path: "/api/spyGame/",
@@ -28,7 +29,6 @@ const spyGameSocketSetup = (server) => {
       socket.removeAllListeners("message");
 
       socket.on("message", (message) => {
-        console.log(message);
         if (!chatHistory[room]) {
           chatHistory[room] = [];
         }
@@ -87,6 +87,11 @@ const spyGameSocketSetup = (server) => {
       // Chọn ngẫu nhiên một người dùng
       const randomUser = selectRandomUser(clients);
 
+      io.to(room).emit("SpyPlayer", randomUser);
+
+      socket.on("SpyData", (data)=>{
+        io.to(room).emit("SpyData", data);
+      })
       // Gửi từ khóa đến người dùng
       clients.forEach((userId) => {
         const assignedKeyword =
@@ -107,8 +112,7 @@ const spyGameSocketSetup = (server) => {
     };
 
     const voteHandler = (voteData) => {
-      const { voter, votee, room } = voteData;
-
+      const { voter, votee, room, amoutVoter } = voteData;
       if (!votes[room]) {
         votes[room] = {};
       }
@@ -119,30 +123,28 @@ const spyGameSocketSetup = (server) => {
       if (voter !== votee) {
         votes[room][votee]++;
       }
-
-      // Notify all clients about the current vote status (optional)
-      io.to(room).emit("voteUpdate", votes[room]);
+      voted++;
+      if(voted === amoutVoter){
+        io.to(room).emit("voteUpdate", votes[room]);
+        voted = 0;
+      }
     };
 
     console.log("A user connected");
 
-    const handleVotingResult = (room) => {
-      const voteResults = votes[room];
-      const highestVotedPlayer = Object.entries(voteResults).reduce(
-        (highest, [id, count]) => {
-          return count > highest.count ? { id, count } : highest;
-        },
-        { id: null, count: 0 }
-      );
-      console.log(highestVotedPlayer);
-      if (highestVotedPlayer.id) {
+    const handleVotingResult = (data) => {
+      const {voteFinalResult, room} = data; 
+
+      const highestVotedPlayer = Object.entries(voteFinalResult).reduce((acc, [key, value]) => {
+        return value > acc.value ? { id: key, value: value } : acc;
+      }, { id: null, value: -Infinity });
+      
         if (!eliminated[room]) {
           eliminated[room] = [];
         }
-        
-        eliminated[room].push(highestVotedPlayer.id);
-      }
-
+        if(!eliminated[room].includes(highestVotedPlayer.id)){
+          eliminated[room].push(highestVotedPlayer.id);
+        }
       io.to(room).emit("eliminated", eliminated[room]);
     };
 

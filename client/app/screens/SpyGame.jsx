@@ -19,6 +19,7 @@ import {
   KeyWordDialog,
   NotificationDialog,
   Player,
+  ResultDialog,
 } from "../components";
 import { spySocket } from "../utils/config";
 import { getRoomGuests, getUserById, isRoomFull } from "../api";
@@ -40,27 +41,40 @@ const SpyScreen = () => {
   const [isShowVote, setisShowVote] = useState(false);
   const [showKeyWordModal, setShowKeyWordModal] = useState(false);
   const [showVoteDialog, setShowVoteDialog] = useState(false);
+  const [spyData, setSpyData] = useState({});
 
   const [messageHistory, setMessageHistory] = useState([]);
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [descriptionMessage, setDescriptionMessage] = useState([]);
-  const [eliminatedPlayers, setEliminatedPlayers] = useState([]);
-
-  const voteResult = useRef();
+  const eliminatedPlayers = useRef([])
+  const [IsShowDialogResult, setIsShowDialogResult] = useState(false);
+  const voteResult = useRef({});
 
   const [message, setMessage] = useState("");
   const [keyword, setKeyword] = useState(null);
+  const [resultDialog, setResultDialog] = useState({
+    isVisible: false,
+    text: "",
+    identify: "",
+  });
 
+  const eliminatedPlayer = useRef("");
   const gameTimeController = new GameTimeController();
   gameTimeController.setModeSpy();
 
   const [timer, setTimer] = useState(gameTimeController.getTime());
 
+  const checkEliminated = (id) => {
+    if (eliminatedPlayers.current) {
+      return eliminatedPlayers.current.includes(id);
+    }
+  };
   const confirmVote = async (selectedId) => {
     spySocket.emit("vote", {
       voter: userInfo._id,
       votee: selectedId,
       room: roomInfo._id,
+      amoutVotes: usersInRoom.length,
     });
   };
 
@@ -76,8 +90,13 @@ const SpyScreen = () => {
     ) {
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.DESCRIPTION) {
+      setisShowVote(false);
       setIsDesrTime(true);
-      console.log("Phần mô tả");
+      const notification = {
+        sender: "Hệ thống",
+        content: "Hãy nhập miêu tả có liên quan về từ khóa",
+      };
+      setMessageHistory((pervMessages) => [...pervMessages, notification]);
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.VOTE) {
       setIsDesrTime(false);
@@ -88,14 +107,49 @@ const SpyScreen = () => {
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.RESULT) {
       setIsShowDes(false);
+      setDescriptionMessage([]);
       setisShowVote(true);
-      console.log(voteResult.current);
-      spySocket.emit("votingResult", roomInfo._id);
-      spySocket.on("eliminated", (data) => {
-        console.log(data)
-        setEliminatedPlayers(data);
+
+      spySocket.emit("votingResult", {
+        room: roomInfo._id,
+        voteFinalResult: voteResult.current,
       });
-      console.log("Kết quả");
+
+      spySocket.on("eliminated", (data) => {
+        eliminatedPlayers.current = data;
+        console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
+      });
+
+      eliminatedPlayer.current = eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
+      console.log("Id người bị loại " + eliminatedPlayer.current);
+      // Check if the eliminated player is the spy
+      if (spyData._id === eliminatedPlayer.current) {
+        setIsShowDialogResult(true);
+        console.log("Gián điệp đã bị loại, thường dân chiến thắng");
+        // Show result dialog for winning
+        setResultDialog({
+          isVisible: true,
+          text: "Thường dân chiến thắng!",
+          identify: "thường dân",
+        });
+      } else if (usersInRoom.length - eliminatedPlayers.current.length === 2) {
+        const remainingPlayers = usersInRoom.filter(
+          (player) => !eliminatedPlayers.current.includes(player._id)
+        );
+        if (remainingPlayers.some((player) => player._id === spyData._id)) {
+          setIsShowDialogResult(true);
+          console.log("Gián điệp chiến thắng");
+          // Show result dialog for spy winning
+          setResultDialog({
+            isVisible: true,
+            text: "Gián điệp chiến thắng!",
+            identify: "gián điệp",
+          });
+        }
+      } else {
+        setIsShowDialogResult(true);
+        console.log("Kết quả");
+      }
     }
   };
 
@@ -118,6 +172,18 @@ const SpyScreen = () => {
 
     spySocket.on("startGame", () => {
       setIsStart(true);
+    });
+
+    spySocket.on("SpyPlayer", async (data) => {
+      console.log(data);
+      console.log(spySocket.id);
+      if (data === spySocket.id) {
+        const res = await getUserById({ id: userInfo._id });
+        spySocket.emit("SpyData", res.data);
+      }
+    });
+    spySocket.on("SpyData", (data) => {
+      setSpyData(data);
     });
 
     spySocket.on("assignKeyword", (data) => {
@@ -158,7 +224,6 @@ const SpyScreen = () => {
       const users = res.data;
       for (let userId of users) {
         const res = await getUserById({ id: userId });
-
         if (res.status === 200) {
           const user = res.data;
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
@@ -185,7 +250,7 @@ const SpyScreen = () => {
   }, []);
 
   const sendMessage = () => {
-    if (eliminatedPlayers.includes(userInfo._id)) {
+    if (eliminatedPlayers.current.includes(userInfo._id)) {
       let notification = {
         sender: "Hệ thống",
         content: "Bạn đã bị loại!",
@@ -281,6 +346,7 @@ const SpyScreen = () => {
                 isShowDes={isShowDes}
                 isShowVote={isShowVote}
                 voteCount={isShowVote && voteResult.current[player._id]}
+                isEliminated={checkEliminated(player._id)}
               />
             ))}
           </View>
@@ -359,6 +425,16 @@ const SpyScreen = () => {
             onClose={() => setShowVoteDialog(false)}
             text={"Bắt đầu chọn ra gián điệp"}
             duration={3}
+          />
+        )}
+        {IsShowDialogResult && (
+          <ResultDialog
+            name={eliminatedPlayer.name}
+            identify={resultDialog.identify}
+            isVisible={resultDialog.isVisible}
+            onClose={() => setIsShowDialogResult(false)}
+            text={resultDialog.text}
+            duration={5}
           />
         )}
       </ImageBackground>

@@ -32,6 +32,7 @@ import NotificationDialog from "./spyGame/NotificationDialog";
 import MyCarousel from "./MyCarousel";
 import InviteDialog from "./drawing/InviteDialog";
 import InvitationDialog from "./InvitationDialog";
+import ResultDialog from "./spyGame/ResultDialog";
 
 export {
   CustomButton,
@@ -67,5 +68,6 @@ export {
   NotificationDialog,
   MyCarousel,
   InviteDialog,
-  InvitationDialog
+  InvitationDialog,
+  ResultDialog,
 };

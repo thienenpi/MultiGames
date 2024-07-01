@@ -47,6 +47,23 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
+  eliminated:{
+    zIndex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "85%",
+    height: "100%",
+    borderRadius: 50,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  eliminatedText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: COLORS.white,
+  },
 });
 
 export default styles;

@@ -8,7 +8,7 @@ const ChatRoomHistory = ({ message }) => {
       <FlatList
         data={message}
         renderItem={({ item }) => (
-          <View style={{ flexDirection: "row", width: "100%" }}>
+          <View style={{ flexDirection: "row", width: "80%" }}>
             <Text style={styles.senderName}>{item.sender}: </Text>
             <Text style={styles.context}>{item.content}</Text>
           </View>

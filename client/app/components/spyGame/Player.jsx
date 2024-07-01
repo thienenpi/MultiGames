@@ -12,6 +12,7 @@ const Player = ({
   isShowDes,
   isShowVote,
   voteCount = 0,
+  isEliminated,
 }) => {
   return (
     <View key={id} style={styles.player}>
@@ -27,6 +28,9 @@ const Player = ({
           <Text>
             Số phiếu: {voteCount}
           </Text>
+        </View>}
+        {isEliminated && <View style={styles.eliminated}>
+          <Text style={styles.eliminatedText}> Loại </Text>
         </View>}
       </TouchableOpacity>
       <Text style={{ color: "white", fontSize: 10 }}>{name}</Text>
