@@ -33,13 +33,16 @@ const spyGameSocketSetup = (server) => {
           chatHistory[room] = [];
         }
         if (message.isDescMessage) {
+          if(!descriptionMessages[room]){
+            descriptionMessages[room] = {};
+          }
           socket.on("users", (data) => {
             data.forEach((user) => {
               if (message.senderId === user._id) {
-                descriptionMessages[user._id] = message.content;
+                descriptionMessages[room][user._id] = message.content;
               }
             });
-            io.to(room).emit("descriptionMessage", descriptionMessages);
+            io.to(room).emit("descriptionMessage", descriptionMessages[room]);
           });
         } else {
           chatHistory[room].push(message);
@@ -76,21 +79,19 @@ const spyGameSocketSetup = (server) => {
     const startGameHandler = async (room) => {
       console.log(`Game started in room ${room}`);
 
-      // Lấy từ khóa từ database
       const keywords = await getKeyWords();
-      // Chọn ngẫu nhiên 2 từ khóa
+
       const selectedKeywords = selectRandomKeywords(keywords, 2);
 
-      // Lấy tất cả người dùng trong phòng
       const clients = rooms[room].map((client) => client.id);
 
-      // Chọn ngẫu nhiên một người dùng
       const randomUser = selectRandomUser(clients);
 
       io.to(room).emit("SpyPlayer", randomUser);
 
-      socket.on("SpyData", (data)=>{
-        io.to(room).emit("SpyData", data);
+      socket.on("SpyData", (userInfo)=>{
+        console.log(userInfo);
+        io.to(room).emit("SpyData", userInfo);
       })
       // Gửi từ khóa đến người dùng
       clients.forEach((userId) => {
@@ -113,6 +114,7 @@ const spyGameSocketSetup = (server) => {
 
     const voteHandler = (voteData) => {
       const { voter, votee, room, amoutVoter } = voteData;
+
       if (!votes[room]) {
         votes[room] = {};
       }
@@ -145,6 +147,7 @@ const spyGameSocketSetup = (server) => {
         if(!eliminated[room].includes(highestVotedPlayer.id)){
           eliminated[room].push(highestVotedPlayer.id);
         }
+
       io.to(room).emit("eliminated", eliminated[room]);
     };
 
@@ -180,6 +183,7 @@ const spyGameSocketSetup = (server) => {
         delete rooms[room];
         delete chatHistory[room];
         delete votes[room];
+        delete eliminated[room]
         delete descriptionMessages[room];
       }
     });

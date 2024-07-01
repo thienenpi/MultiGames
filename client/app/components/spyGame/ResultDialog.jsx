@@ -28,7 +28,7 @@ const ResultDialog = ({ isVisible, onClose, duration, name, identify}) => {
       <View style={styles.modalView}>
         <Text style={styles.gameTile}>Kết quả ván vòng đấu!</Text>
         <Text style={styles.title}>Người chơi {name} đã bị loại</Text>
-        <Text style={styles.word}>Người chơi {name} là {identify}</Text>
+        <Text style={styles.word}>Chúc mừng {identify} chiến thắng</Text>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Text style={styles.closeButtonText}>Kết thúc</Text>
         </TouchableOpacity>
