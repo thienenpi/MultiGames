@@ -71,6 +71,8 @@ const GuessingWord = () => {
   var playerIndex = 0;
   const playerInfo = useRef({});
 
+  const countCorrectGuess = useRef(0);
+
   // Set game time
   const gameTimeController = new GameTimeController();
   gameTimeController.setModeDrawing();
@@ -219,6 +221,8 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
       captureAndSaveImage().then(() => {
         setShowEndTurnResultDialog(true);
+        countCorrectGuess.current =
+          gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
         if (playerIndex === usersInRoom.length - 1) {
@@ -252,8 +256,8 @@ const GuessingWord = () => {
               content:
                 data.sender +
                 " đã đoán đúng! +" +
-                gameScoreController.getAddedScoreInTurn(data.senderId)
-                + " điểm",
+                gameScoreController.getAddedScoreInTurn(data.senderId) +
+                " điểm",
             };
 
             setMessageHistory((prevMessageHistory) => [
@@ -400,7 +404,7 @@ const GuessingWord = () => {
           player={playerInfo.current}
           image={capturedImage.current}
           keyword={selectedKeyword.current.keyword}
-          numPlayersCorrect={2}
+          numPlayersCorrect={countCorrectGuess.current}
         />
       )}
 
@@ -462,7 +466,14 @@ const GuessingWord = () => {
 
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
-        <Pressable onPress={() => navigation.navigate("Room Config")}>
+        <Pressable
+          onPress={() =>
+            navigation.navigate("Room Config", {
+              roomInfo: roomInfo,
+              usersInRoom: usersInRoom,
+            })
+          }
+        >
           <Ionicons
             name="settings"
             size={26}

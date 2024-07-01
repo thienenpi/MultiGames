@@ -57,6 +57,7 @@ const RoomCreate = () => {
 
       if (res.status === 200) {
         Alert.alert('Room created successfully');
+        navigation.goBack();
       } else {
         Alert.alert('Failed to create room');
       }

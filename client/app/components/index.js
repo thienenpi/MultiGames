@@ -30,6 +30,7 @@ import Player from "./spyGame/Player";
 import GameTimer from "./spyGame/GameTimer";
 import NotificationDialog from "./spyGame/NotificationDialog";
 import MyCarousel from "./MyCarousel";
+// import MyCarousel from "./MyCarousel";
 import InviteDialog from "./drawing/InviteDialog";
 import InvitationDialog from "./InvitationDialog";
 import ResultDialog from "./spyGame/ResultDialog";
@@ -70,4 +71,7 @@ export {
   InviteDialog,
   InvitationDialog,
   ResultDialog,
+  // MyCarousel,
+  InviteDialog,
+  InvitationDialog,
 };

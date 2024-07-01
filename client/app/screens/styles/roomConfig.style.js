@@ -18,7 +18,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: SIZES.medium,
+    // justifyContent: "space-between",
+    gap: SIZES.medium,
   },
 
   playerContainer: {

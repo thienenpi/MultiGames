@@ -63,7 +63,9 @@ const styles = StyleSheet.create({
   userImagesContainer: {
     flexDirection: "row",
     flex: 1,
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
+    marginBottom: 8,
+    gap: SIZES.medium,
     alignItems: "center",
     borderTopWidth: 1,
     borderTopColor: "#ccc",

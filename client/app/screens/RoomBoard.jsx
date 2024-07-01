@@ -4,7 +4,7 @@ import { AppBar, CustomButton, RoomCardView } from "../components";
 import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AuthContext } from "../context/AuthContext";
-import { getRoomsOwner } from "../api/RoomApi";
+import { getRoom, getRoomsOwner } from "../api/RoomApi";
 import Dialog from "react-native-dialog";
 import styles from "./styles/boardroom.style";
 
@@ -17,6 +17,7 @@ const RoomBoard = () => {
   const [roomNumber, setRoomNumber] = useState("");
   const [items, setItems] = useState([]);
   const isFocused = useIsFocused();
+
   const showDialog = () => {
     setDialogVisible(true);
   };
@@ -32,10 +33,10 @@ const RoomBoard = () => {
       Alert.alert("Error", "Error retrieving data from the server");
     }
   }
-  
+
   useEffect(() => {
     if (isFocused) {
-      fetchRoomsOwner();
+    //   fetchRoomsOwner();
     }
   }, [isFocused]);
 
@@ -43,9 +44,31 @@ const RoomBoard = () => {
     setDialogVisible(false);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     // Xử lý số phòng ở đây
+    try {
+      const res = await getRoom({ id: roomNumber });
+
+      if (res.status === 200) {
+        const roomInfo = res.data;
+        // console.log(roomInfo);
+        setItems([roomInfo]);
+      }
+    } catch (error) {}
     setDialogVisible(false);
+  };
+
+  const handleAccessRoom = async () => {
+    // const data = {
+    //   gameMode: "Bạn Vẽ Tôi Đoán",
+    // };
+    // var roomInfo = await accessRoom({ data: data });
+    // if (!roomInfo) {
+    //   navigation.navigate("Room Create");
+    //   return;
+    // }
+    // await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+    // navigation.navigate("Guessing Word", { roomInfo: roomInfo });
   };
 
   return (
@@ -54,6 +77,7 @@ const RoomBoard = () => {
         title="Phòng Board"
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
+
       <View
         style={[
           {
@@ -112,11 +136,12 @@ const RoomBoard = () => {
         renderItem={renderItem}
         keyExtractor={(item) => JSON.stringify(item._id)}
       ></FlatList>
+
       <Dialog.Container visible={dialogVisible}>
         <Dialog.Title style={{ textAlign: "center" }}>Tìm phòng</Dialog.Title>
         <Dialog.Input
           onChangeText={(number) => setRoomNumber(number)}
-          placeholder="Nhập số phòng"
+          placeholder="Nhập Room ID"
           underlineColorAndroid="transparent"
           placeholderTextColor="#C7C7C7"
           backgroundColor="#F5F5F5"
@@ -127,6 +152,7 @@ const RoomBoard = () => {
             padding: 10,
           }}
         ></Dialog.Input>
+
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <TouchableOpacity
             onPress={handleCancel}
@@ -144,6 +170,7 @@ const RoomBoard = () => {
           >
             <Text style={{ color: "#00CDF9", fontWeight: "bold" }}>Hủy</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             onPress={handleConfirm}
             style={{

@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 50,
     width: 50,
+    borderRadius: 50,
   },
 
   userInfo: {

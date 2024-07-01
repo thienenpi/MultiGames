@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   ImageBackground,
   StyleSheet,
@@ -7,6 +7,9 @@ import {
   View,
 } from "react-native";
 import { COLORS, SIZES } from "../../constants";
+import { joinRoom } from "../../services";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
 function excuitionModeName(mode) {
   const lowerCaseMode = mode.toLowerCase();
@@ -20,6 +23,8 @@ function excuitionModeName(mode) {
 
 const RoomCardView = ({ item }) => {
   const [gameTypeColor, setGameTypeColor] = useState(COLORS.background);
+  const { userInfo } = useContext(AuthContext);
+  const navigation = useNavigation();
 
   useEffect(() => {
     handleGameTypePress();
@@ -33,8 +38,19 @@ const RoomCardView = ({ item }) => {
     }
   };
 
+  const handleJoinRoom = async () => {
+    await joinRoom({ roomId: item._id, userId: userInfo._id });
+    const gameMode = excuitionModeName(item.mode);
+
+    if (gameMode === "Bạn vẽ tôi đoán") {
+      navigation.navigate("Guessing Word", { roomInfo: item });
+    } else {
+      //   navigation.navigate("Spy", { roomInfo: item._id });
+    }
+  };
+
   return (
-    <TouchableOpacity onPress={handleGameTypePress}>
+    <TouchableOpacity onPress={handleJoinRoom}>
       <View style={styles.container}>
         <ImageBackground
           source={{

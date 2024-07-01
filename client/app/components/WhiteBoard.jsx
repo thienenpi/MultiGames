@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, PanResponder, Alert, ImageBackground } from "react-native";
-import Svg, { Path, Image } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 import styles from "./styles/whiteBoard.style";
 import { socket } from "../utils/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -23,7 +23,9 @@ const WhiteBoard = ({
   const colorRef = useRef("");
   const sizeRef = useRef(0);
 
-  const backgroundUrl = useRef("");
+  const [backgroundUrl, setBackgroundUrl] = useState("");
+//   const defaultBackgroundUrl =
+//     "https://multigames.blob.core.windows.net/shop/default.png";
 
   const path = useRef("");
   const count = useRef(0);
@@ -130,7 +132,7 @@ const WhiteBoard = ({
 
   useEffect(() => {
     fetchBackGroundUrl();
-  }, []);
+  }, [enableDrawing]);
 
   const undo = () => {
     if (paths.length === 0) return;
@@ -148,19 +150,22 @@ const WhiteBoard = ({
 
   const fetchBackGroundUrl = async () => {
     try {
-      const itemId = await AsyncStorage.getItem('usedItemId');
-      if (itemId !== null) {
+      const itemId = await AsyncStorage.getItem("usedItemId");
+
+      if (itemId !== null && enableDrawing) {
         const res = await getItemById({ id: itemId });
+        
         if (res && res.status === 200) {
-          backgroundUrl.current = res.data.image;
+          // backgroundUrl.current = res.data.image;
+          setBackgroundUrl(res.data.image);
           // Emit background image to server
-          socket.emit("boardBackgroundUrl", backgroundUrl.current);
+          socket.emit("boardBackgroundUrl", res.data.image);
         } else {
           Alert.alert("Error", "Failed to fetch background image");
         }
-      }
-      else {
-        backgroundUrl.current = "";
+      } else {
+        setBackgroundUrl("");
+        socket.emit("boardBackgroundUrl", "");
       }
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -170,11 +175,16 @@ const WhiteBoard = ({
   useEffect(() => {
     // Listen for background image from server
     socket.on("boardBackgroundUrl", (url) => {
-      backgroundUrl.current = url;
+      setBackgroundUrl(url);
     });
+
+    return () => {
+      // Clean up the socket event subscription
+      socket.off("boardBackgroundUrl");
+    };
   }, []);
 
-  if (backgroundUrl.current === "") {
+  if (backgroundUrl === "") {
     return (
       <View style={styles.container}>
         <Svg style={styles.svg}>
@@ -208,9 +218,7 @@ const WhiteBoard = ({
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={{ uri: backgroundUrl.current }}
-        style={styles.container}>
+      <ImageBackground source={{ uri: backgroundUrl }} style={styles.container}>
         <Svg style={styles.svg}>
           {pathToDisplay.length !== 0 &&
             pathToDisplay.map((p, index) => (

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import {
@@ -23,6 +23,7 @@ const ItemBag = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
+  const [isItemUsed, setIsItemUsed] = useState(null);
   const navigation = useNavigation();
 
   const screenWidth = Dimensions.get("window").width;
@@ -70,19 +71,55 @@ const ItemBag = () => {
   const closeModal = () => {
     setModalVisible(false);
     setOverlayVisible(false);
+    setSelectedItem(null);
   };
 
   const handleUseItem = async () => {
-    if (selectedItem) {
-      try {
-        await AsyncStorage.setItem('usedItemId', selectedItem._id);
-        Alert.alert("Item Used", `${selectedItem.name} has been used and saved.`);
+    try {
+      const usedItemId = await AsyncStorage.getItem("usedItemId");
+
+      if (usedItemId === selectedItem._id) {
+        await AsyncStorage.removeItem("usedItemId");
+        Alert.alert("Item Used", `${selectedItem.name} has been removed.`);
         closeModal();
-      } catch (error) {
-        console.error("Failed to save item to AsyncStorage:", error);
+        return;
+      } else {
+        await AsyncStorage.setItem("usedItemId", selectedItem._id);
+        Alert.alert(
+          "Item Used",
+          `${selectedItem.name} has been used and saved.`
+        );
+        closeModal();
+        return;
       }
+    } catch (error) {
+      console.error("Failed to save item to AsyncStorage:", error);
     }
   };
+
+  useEffect(() => {
+    const checkItemUsed = async () => {
+      try {
+        if (!selectedItem) {
+          return;
+        }
+
+        const usedItemId = await AsyncStorage.getItem("usedItemId");
+
+        console.log("usedItemId", usedItemId);
+
+        if (usedItemId === null) {
+          setIsItemUsed(false);
+        } else {
+          setIsItemUsed(usedItemId === selectedItem._id);
+        }
+      } catch (error) {
+        console.error("Failed to check item used:", error);
+      }
+    };
+
+    checkItemUsed();
+  }, [selectedItem]);
 
   return (
     <View style={styles.container}>
@@ -96,11 +133,11 @@ const ItemBag = () => {
         <Text style={styles.categoryText}>Drawing Boards</Text>
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
       </View>
-      {checkInventoryEmpty() &&
+      {checkInventoryEmpty() && (
         <View style={styles.emptyBag}>
           <Text style={styles.emptyText}>Your bag is empty</Text>
         </View>
-      }
+      )}
       <FlatList
         data={items}
         renderItem={({ item }) => (
@@ -122,35 +159,38 @@ const ItemBag = () => {
           onRequestClose={closeModal}
         >
           <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View style={styles.itemContainer}>
-                <Image
-                  source={{ uri: selectedItem?.image }}
-                  style={{
-                    width: screenWidth * 0.8,
-                    height: screenWidth * 0.7,
-                    borderTopLeftRadius: 10,
-                    borderTopRightRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignSelf: "center",
-                    justifyContent: "space-between",
-                    padding: 20,
-                  }}
-                >
-                  <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                    {selectedItem?.description}
-                  </Text>
-                </View>
+          <View style={styles.modalView}>
+            <View style={styles.itemContainer}>
+              <Image
+                source={{ uri: selectedItem?.image }}
+                style={{
+                  width: screenWidth * 0.8,
+                  height: screenWidth * 0.7,
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignSelf: "center",
+                  justifyContent: "space-between",
+                  padding: 20,
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                  {selectedItem?.description}
+                </Text>
               </View>
-              <TouchableOpacity style={[styles.button, styles.buttonUse]} onPress={handleUseItem}>
-                <Text style={styles.textStyle}>Sử dụng</Text>
-              </TouchableOpacity>
             </View>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonUse]}
+              onPress={handleUseItem}
+            >
+              <Text style={styles.textStyle}>
+                {isItemUsed === true ? "Đang dùng" : "Sử dụng"}
+              </Text>
+            </TouchableOpacity>
           </View>
         </Modal>
       )}
