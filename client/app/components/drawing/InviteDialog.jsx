@@ -49,7 +49,7 @@ const InviteDialog = ({ isShow, roomInfo, onChangeShow }) => {
       <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
       <View style={styles.modalView}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Mời bạn</Text>
+          <Text style={styles.headerText}>Invite your friends</Text>
         </View>
 
         <View style={styles.body}>

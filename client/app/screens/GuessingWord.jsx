@@ -56,6 +56,7 @@ const GuessingWord = () => {
   const [isClear, setIsClear] = useState(false);
 
   const [usersInRoom, setUsersInRoom] = useState([]);
+  const [usersOutRoom, setUsersOutRoom] = useState([]);
   const [userToAddFriend, setUserToAddFriend] = useState(null);
 
   const [showDownloadImageDialog, setShowDownloadImageDialog] = useState(false);
@@ -69,6 +70,7 @@ const GuessingWord = () => {
   const [keywordList, setKeywordList] = useState([]);
 
   var playerIndex = 0;
+  const numUsersOut = useRef(0);
   const playerInfo = useRef({});
 
   const countCorrectGuess = useRef(0);
@@ -96,7 +98,10 @@ const GuessingWord = () => {
   };
 
   const handleButtonPress = () => {
-    captureAndSaveImage().then(hanldeDialog());
+    captureAndSaveImage().then(async () => {
+      await hanldeDialog();
+      // save image to camera roll
+    });
   };
 
   const handleSendImage = () => {};
@@ -190,14 +195,20 @@ const GuessingWord = () => {
     if (playerInfo.current._id === undefined) {
       playerInfo.current = usersInRoom[playerIndex];
       gameScoreController.setDrawPlayer(playerInfo.current._id);
-      console.log(playerIndex + " - " + playerInfo.current._id);
+    //   console.log(playerIndex + " - " + playerInfo.current._id);
     }
 
     return playerInfo.current._id === userInfo._id;
   };
 
   const updatePlayerIndex = () => {
-    playerIndex = playerIndex < usersInRoom.length - 1 ? playerIndex + 1 : 0;
+    do {
+      playerIndex++;
+      console.log(playerIndex);
+    } while (
+      usersOutRoom.includes(usersInRoom[playerIndex]._id) ||
+      playerIndex < usersInRoom.length - 1
+    );
   };
 
   const handleGamingTimelines = () => {
@@ -206,8 +217,9 @@ const GuessingWord = () => {
       if (checkRoomFull()) {
         updatePlayerIndex();
         playerInfo.current = usersInRoom[playerIndex];
+
         gameScoreController.setDrawPlayer(playerInfo.current._id);
-        console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
+        // console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
 
         selectedKeyword.current = {};
         if (checkYourTurn()) {
@@ -225,6 +237,7 @@ const GuessingWord = () => {
           gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
+        // console.log(numUsersOut.current)
         if (playerIndex === usersInRoom.length - 1) {
           setIsStart(false);
           setTimeout(() => {
@@ -252,12 +265,12 @@ const GuessingWord = () => {
 
           if (gameScoreController.checkGuessCorrectedPlayer(data.senderId)) {
             const noti = {
-              sender: "Hệ thống",
+              sender: "System",
               content:
                 data.sender +
-                " đã đoán đúng! +" +
+                " has guessed correctly! +" +
                 gameScoreController.getAddedScoreInTurn(data.senderId) +
-                " điểm",
+                " points",
             };
 
             setMessageHistory((prevMessageHistory) => [
@@ -277,6 +290,7 @@ const GuessingWord = () => {
     // Listen when to start the game
     socket.on("startGame", () => {
       setIsStart(true);
+      setIsReady(false);
     });
 
     socket.on("selectKeyword", (keyword) => {
@@ -285,7 +299,7 @@ const GuessingWord = () => {
 
     return () => {
       leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
-      socket.emit("leave", roomInfo._id);
+      socket.emit("leave", { room: roomInfo._id, userId: userInfo._id });
     };
   }, []);
 
@@ -317,8 +331,14 @@ const GuessingWord = () => {
       setTimeout(async () => getAllUsers(), 500);
     });
 
-    socket.on("leave", (room) => {
-      setTimeout(async () => getAllUsers(), 500);
+    socket.on("leave", ({ userId }) => {
+      if (!playerInfo.current._id) {
+        setTimeout(async () => getAllUsers(), 500);
+      } else {
+        setUsersOutRoom((prevUsers) => [...prevUsers, userId]);
+        numUsersOut.current++;
+        // console.log(numUsersOut)
+      }
     });
   }, []);
 
@@ -413,7 +433,7 @@ const GuessingWord = () => {
         <EndGameResult
           items={gameScoreController.players}
           isShow={showEndGameResultDialog}
-          keyword={"Trò chơi kết thúc"}
+          keyword={"The game has ended"}
         ></EndGameResult>
       )}
 
@@ -438,10 +458,15 @@ const GuessingWord = () => {
           <Pressable style={styles.overlay} onPress={closeAllModal} />
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              {capturedImage && (
+              {capturedImage.current && (
                 <Image
-                  source={{ uri: capturedImage }}
-                  style={{ flex: 1, resizeMode: "center" }}
+                  source={{ uri: capturedImage.current }}
+                  style={{
+                    flex: 1,
+                    resizeMode: "fill",
+                    height: "100%",
+                    width: "100%",
+                  }}
                 />
               )}
             </View>
@@ -464,7 +489,7 @@ const GuessingWord = () => {
             )}
           </View>
 
-          <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
+          <Text style={styles.roomId}>Room ID: {roomInfo._id}</Text>
         </View>
         <Pressable
           onPress={() =>
@@ -551,7 +576,7 @@ const GuessingWord = () => {
                   style={{ flex: 1, resizeMode: "center" }}
                 />
                 <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  Mời bạn
+                  Invite
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -574,7 +599,7 @@ const GuessingWord = () => {
                   style={{ flex: 1, resizeMode: "center" }}
                 />
                 <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  {isReady ? "Chờ người chơi khác..." : "Bắt đầu"}
+                  {isReady ? "Waiting others..." : "Ready"}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -627,7 +652,10 @@ const GuessingWord = () => {
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={handleButtonPress}
+            >
               <Ionicons name="download" size={24} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -662,7 +690,10 @@ const GuessingWord = () => {
                   setUserToAddFriend(user);
                 }}
               >
-                <UserCardView user={user}></UserCardView>
+                <UserCardView
+                  user={user}
+                  isOut={usersOutRoom.includes(user._id)}
+                ></UserCardView>
               </TouchableOpacity>
             ))
           }
@@ -694,7 +725,7 @@ const GuessingWord = () => {
             style={styles.input}
             value={message}
             onChangeText={(text) => setMessage(text)}
-            placeholder="Nhập câu trả lời..."
+            placeholder="Type your answer..."
             placeholderTextColor="#888"
           />
           {/* Icon button chọn bộ icon */}

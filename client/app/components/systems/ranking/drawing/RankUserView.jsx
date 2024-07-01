@@ -28,12 +28,12 @@ const RankUserView = ({ item }) => {
       <View style={styles.addFriend}>
         {isFriend ? (
           <View style={[styles.frStatusContainer, { display: isMe }]}>
-            <Text style={styles.frStatusText}>Bạn bè</Text>
+            <Text style={styles.frStatusText}>Friend</Text>
           </View>
         ) : (
           <CustomButton
             styles={styles}
-            label={"Kết bạn"}
+            label={"Add"}
             isValid={true}
             onPress={async () => {
               await sendFriendRequest({

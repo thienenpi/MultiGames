@@ -63,19 +63,19 @@ const InvitationDialog = ({ inviteRoom, visible, onChangeVisible }) => {
               <Text style={styles.modalText}>
                 Invite you to {roomInfo.name}
               </Text>
-              <Text style={styles.gameMode}>Guess My Drawing</Text>
+              <Text style={styles.gameMode}>{roomInfo.mode}</Text>
             </View>
           </View>
           <View style={styles.action}>
             <CustomButton
               styles={buttonAccept}
-              label={"Chấp nhận"}
+              label={"Accept"}
               isValid={true}
               onPress={handleAcceptInvitation}
             ></CustomButton>
             <CustomButton
               styles={buttonDecline}
-              label={"Từ chối"}
+              label={"Deny"}
               isValid={true}
               onPress={onChangeVisible}
             ></CustomButton>

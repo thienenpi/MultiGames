@@ -54,9 +54,10 @@ const socketSetup = (server) => {
       });
     };
 
-    const leaveHandler = (room) => {
-      console.log(`A user leaved from ${room}`);
-      socket.to(room).emit("leave", room);
+    const leaveHandler = async ({ room, userId }) => {
+      console.log(`${userId} leaved from ${room}`);
+
+      socket.to(room).emit("leave", { userId: userId });
 
       const index = rooms[room].indexOf(socket);
 

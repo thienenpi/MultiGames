@@ -26,7 +26,7 @@ const leaveRoom = async ({ roomId, userId }) => {
 
     const data = {
       list_guest: users.data.filter((guest) => guest !== userId),
-      history_guest: users.data.filter((guest) => guest !== userId),
+    //   history_guest: users.data.filter((guest) => guest !== userId),
     };
 
     const res = await updateRoom({ id: roomId, data: data });
