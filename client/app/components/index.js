@@ -72,6 +72,4 @@ export {
   InvitationDialog,
   ResultDialog,
   // MyCarousel,
-  InviteDialog,
-  InvitationDialog,
 };
