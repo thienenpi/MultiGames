@@ -71,6 +71,8 @@ const GuessingWord = () => {
   var playerIndex = 0;
   const playerInfo = useRef({});
 
+  const countCorrectGuess = useRef(0);
+
   // Set game time
   const gameTimeController = new GameTimeController();
   gameTimeController.setModeDrawing();
@@ -173,10 +175,6 @@ const GuessingWord = () => {
       // Send message to server
       socket.emit("message", newMessage);
       setMessage("");
-      // setMessageHistory((prevMessageHistory) => [
-      //   ...prevMessageHistory,
-      //   newMessage,
-      // ]);
     }
   };
 
@@ -207,7 +205,6 @@ const updatePlayerIndex = () => {
         if (checkYourTurn()) {
           setShowKeywordDialog(true);
         }
-        // checkYourTurn() && setShowKeywordDialog(true);
         setIsClear(true);
       }},
     
@@ -216,6 +213,8 @@ const updatePlayerIndex = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
       captureAndSaveImage().then(() => {
         setShowEndTurnResultDialog(true);
+        countCorrectGuess.current =
+          gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
         if (playerIndex === usersInRoom.length - 1) {
@@ -225,7 +224,7 @@ const updatePlayerIndex = () => {
             setShowEndGameResultDialog(true);
             gameScoreController.displayScores();
             gameScoreController.updateMoneyForPlayers();
-          }, 2000); // 3 second delay
+          }, 2000);
           socket.off();
         }
       });
@@ -237,29 +236,26 @@ const updatePlayerIndex = () => {
 
     // Join the room when component mounts
     socket.on("message", (data) => {
-      console.log(data);
       if (data !== null) {
         // Calculate score
         if (data.isCheckGuessCorrectness === true) {
           gameScoreController.calculateScoreForDrawGuessGame(data.senderId);
-          // Get score of sender
-          console.log(
-            data.sender +
-              " - Score: " +
-              gameScoreController.getScoreForDrawGuessGame(data.senderId)
-          );
 
-          const noti = {
-            sender: "Thong bao",
-            content:
-              data.sender +
-              " - Score: " +
-              gameScoreController.getScoreForDrawGuessGame(data.senderId),
-          };
-          setMessageHistory((prevMessageHistory) => [
-            ...prevMessageHistory,
-            noti,
-          ]);
+          if (gameScoreController.checkGuessCorrectedPlayer(data.senderId)) {
+            const noti = {
+              sender: "Hệ thống",
+              content:
+                data.sender +
+                " đã đoán đúng! +" +
+                gameScoreController.getAddedScoreInTurn(data.senderId) +
+                " điểm",
+            };
+
+            setMessageHistory((prevMessageHistory) => [
+              ...prevMessageHistory,
+              noti,
+            ]);
+          }
         }
 
         setMessageHistory((prevMessageHistory) => [
@@ -296,10 +292,6 @@ const updatePlayerIndex = () => {
 
         if (res.status === 200) {
           const user = res.data;
-
-          // Add player to game score controller
-          //   gameScoreController.addPlayer(user);
-          // gameScoreController.addPlayer(user);
 
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
@@ -403,7 +395,7 @@ const updatePlayerIndex = () => {
           player={playerInfo.current}
           image={capturedImage.current}
           keyword={selectedKeyword.current.keyword}
-          numPlayersCorrect={2}
+          numPlayersCorrect={countCorrectGuess.current}
         />
       )}
 
@@ -465,7 +457,14 @@ const updatePlayerIndex = () => {
 
           <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
         </View>
-        <Pressable onPress={() => navigation.navigate("Room Config")}>
+        <Pressable
+          onPress={() =>
+            navigation.navigate("Room Config", {
+              roomInfo: roomInfo,
+              usersInRoom: usersInRoom,
+            })
+          }
+        >
           <Ionicons
             name="settings"
             size={26}
@@ -501,7 +500,7 @@ const updatePlayerIndex = () => {
               onClearDrawing={updateIsClear}
             ></WhiteBoard>
             {showOptions && (
-              <Animated.View style={styles.topBar}>
+              <Animated.View style={styles.optionBar}>
                 <DrawingOptionsBar
                   onUpdateColor={updateColor}
                   onUpdateSize={updateSize}

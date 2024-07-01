@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "100%",
     paddingHorizontal: SIZES.medium,
-    backgroundColor: COLORS.white
+    backgroundColor: COLORS.white,
   },
 
   avatar: {
@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     flex: 5,
     height: SIZES.xLarge * 3,
     justifyContent: "space-between",
+
   },
 
   userName: {
@@ -36,13 +37,18 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     alignItems: "center",
     color: COLORS.text,
-    alignItems: "flex-end"
+  },
+
+  iconId: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   forward: {
     flex: 1,
     height: SIZES.xLarge * 3,
     alignItems: "flex-end",
+    justifyContent: 'space-between'
   },
 });
 

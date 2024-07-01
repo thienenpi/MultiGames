@@ -25,7 +25,7 @@ import AddFriendDialog from "./drawing/AddFriendDialog";
 import UserCardView from "./drawing/UserCardView";
 import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
 import GameScoreController from "./systems/scoringSystem/gameScoreController";
-import MyCarousel from "./MyCarousel";
+// import MyCarousel from "./MyCarousel";
 import InviteDialog from "./drawing/InviteDialog";
 import InvitationDialog from "./InvitationDialog";
 
@@ -57,7 +57,7 @@ export {
   UserCardView,
   EndTurnResult,
   GameScoreController,
-  MyCarousel,
+  // MyCarousel,
   InviteDialog,
-  InvitationDialog
+  InvitationDialog,
 };

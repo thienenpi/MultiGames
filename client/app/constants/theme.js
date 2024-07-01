@@ -19,7 +19,7 @@ const COLORS = {
   brightBlue: "#B6EDFF",
   blurBlue: "rgba(2, 138, 216, 0.6)",
   yellowGradient: ["#F3D14F", "#FA972B"],
-  blueGradient: ["#6B91FF", "#62C7FF"],
+  blueGradient: ["#A3BFFF", "#A0E5FF"],
   redGradient: ["#AB012B", "#FF003F"],
   lightOrange: "#F2E19E",
   orange: "#FCB043",

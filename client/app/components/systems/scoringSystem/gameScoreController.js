@@ -1,4 +1,5 @@
 import { DRAWING_GAME_SCORE } from "../../../constants";
+import ApiManager from "../../../api/ApiManager";
 
 const updateUserInfo = async ({ id, data }) => {
   try {
@@ -59,12 +60,40 @@ class GameScoreController {
   }
 
   getScoreForDrawGuessGame(userId) {
-    // if (this.drawPlayerId === userId) {
-    //   const drawPlayer = this.players.find((player) => player['_id'] === userId);
-    //   drawPlayer['score'] += DRAWING_GAME_SCORE.GUESS_RIGHT * this.count;
-    //   return drawPlayer['score'];
-    // }
     return this.players.find((player) => player._id === userId).score;
+  }
+
+  getAddedScoreInTurn(userId) {
+    if (this.checkGuessCorrectedPlayer(userId)) {
+      let index = this.guessCorrectedPlayerIds.indexOf(userId);
+      switch (index) {
+        case 0:
+          return DRAWING_GAME_SCORE.WIN_TOP1;
+        case 1:
+          return DRAWING_GAME_SCORE.WIN_TOP2;
+        case 2:
+          return DRAWING_GAME_SCORE.WIN_TOP3;
+        case 3:
+          return DRAWING_GAME_SCORE.WIN_TOP4;
+        case 4:
+          return DRAWING_GAME_SCORE.WIN_TOP5;
+        case 5:
+          return DRAWING_GAME_SCORE.WIN_TOP6;
+        default:
+          return 0;
+      }
+    }
+  }
+
+  getCountCorrectGuesses() {
+    return this.guessCorrectedPlayerIds.length;
+  }
+
+  checkGuessCorrectedPlayer(userId) {
+    if (this.guessCorrectedPlayerIds.length === 0) {
+      return false;
+    }
+    return this.guessCorrectedPlayerIds.includes(userId);
   }
 
   // Method to check guess correctness for "Vẽ hình đoán chữ"

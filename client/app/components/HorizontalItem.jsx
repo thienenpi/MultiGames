@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./styles/horizontalItem.style";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const HorizontalItem = ({
   title,
@@ -15,7 +17,7 @@ const HorizontalItem = ({
   isIconDesc,
   isAvt,
 }) => {
-  avatarSource = require("../../assets/bg01.png");
+  const { userInfo } = useContext(AuthContext);
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
@@ -32,7 +34,12 @@ const HorizontalItem = ({
                 style={[styles.icon, { color: colorIconDesc, marginRight: 4 }]}
               />
             )}
-            {isAvt && <Image source={avatarSource} style={styles.avatar} />}
+            {isAvt && (
+              <Image
+                source={{ uri: userInfo.avatarUrl }}
+                style={styles.avatar}
+              />
+            )}
             <Text style={[styles.desc, { color: colorDesc }]}>{desc}</Text>
             <Ionicons name={iconRight} size={16} style={styles.icon} />
           </View>

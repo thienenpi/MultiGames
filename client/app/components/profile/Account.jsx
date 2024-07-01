@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   View,
   ToastAndroid, // For Android-specific toast message
-  AlertIOS, // For iOS-specific alert message
+  Alert, // For iOS-specific alert message
   Platform, // To handle cross-platform differences
 } from "react-native";
 import React from "react";
@@ -13,19 +13,18 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 
 const Account = () => {
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
 
-  const handleCopyText = (text) => {
-    Clipboard.setString(text);
-    // console.log(`Đã copy ${text}`);
+  const handleCopyText = async () => {
+    await Clipboard.setStringAsync(userInfo._id);
     if (Platform.OS === "android") {
-      ToastAndroid.show(`Đã copy ${text}`, ToastAndroid.SHORT);
+      ToastAndroid.show(`Đã copy ${userInfo._id}`, ToastAndroid.SHORT);
     } else if (Platform.OS === "ios") {
-      AlertIOS.alert(`Đã copy ${text}`);
+      Alert.alert(`Đã copy ${userInfo._id}`);
     }
   };
 
@@ -50,12 +49,10 @@ const Account = () => {
             style={styles.iconId}
           ></MaterialCommunityIcons>
           <Text style={styles.userId}>{userInfo._id}</Text>
-          <TouchableOpacity onPress={() => handleCopyText(userInfo._id)}>
-            <MaterialCommunityIcons
-              name="content-copy"
-              size={20}
-            ></MaterialCommunityIcons>
-          </TouchableOpacity>
+
+          {/* <TouchableOpacity style={{ width: 50, alignItems: 'flex-start', backgroundColor: 'blue' }} onPress={handleCopyText}>
+            <Ionicons name="copy-outline" size={24}></Ionicons>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -63,6 +60,10 @@ const Account = () => {
       <View style={styles.forward}>
         <TouchableOpacity onPress={() => navigation.navigate("Edit Profile")}>
           <Ionicons name="chevron-forward" size={24}></Ionicons>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleCopyText}>
+          <Ionicons name="copy-outline" size={24}></Ionicons>
         </TouchableOpacity>
       </View>
     </View>

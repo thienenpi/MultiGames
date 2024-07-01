@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   whiteBoard: {
     flex: 1,
     width: SIZES.width,
+    position: "relative",
     backgroundColor: COLORS.background,
   },
 
@@ -62,7 +63,9 @@ const styles = StyleSheet.create({
   userImagesContainer: {
     flexDirection: "row",
     flex: 1,
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
+    marginBottom: 8,
+    gap: SIZES.medium,
     alignItems: "center",
     borderTopWidth: 1,
     borderTopColor: "#ccc",
@@ -189,7 +192,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  topBar: {
+  optionBar: {
     height: 60,
     width: "100%",
     flexDirection: "row",
@@ -198,6 +201,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopHeight: 1,
     backgroundColor: "white",
+    position: "absolute",
+    bottom: 0,
   },
 
   separator: {

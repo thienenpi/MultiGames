@@ -28,6 +28,7 @@ const socketSetup = (server) => {
       socket.removeAllListeners("selectKeyword");
       socket.removeAllListeners("draw");
       socket.removeAllListeners("message");
+      socket.removeAllListeners("boardBackgroundUrl");
 
       socket.on("selectKeyword", (keyword) => {
         socket.to(room).emit("selectKeyword", keyword);
@@ -46,6 +47,10 @@ const socketSetup = (server) => {
 
         chatHistory[room].push(message);
         io.to(room).emit("message", message);
+      });
+
+      socket.on("boardBackgroundUrl", (url) => {
+        socket.to(room).emit("boardBackgroundUrl", url);
       });
     };
 
@@ -107,7 +112,7 @@ const socketSetup = (server) => {
       );
 
       if (!res) {
-        console.log("Failed to update socket id");
+        console.log("Failed to remove socket id");
       }
     };
 
@@ -141,10 +146,9 @@ const socketSetup = (server) => {
       io.emit("receiveMessage", savedMessage);
     });
 
-    socket.on("disconnect", () => {
-      //   console.log(`user disconnected`);
+    socket.on("disconnect", async () => {
       // find the room that the user is in
-      offlineHandler({ socket: socket });
+      await offlineHandler({ socket: socket });
       let room = null;
 
       for (const key in rooms) {

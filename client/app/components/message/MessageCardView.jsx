@@ -10,6 +10,7 @@ import { COLORS, SIZES } from "../../constants";
 import { AuthContext } from "../../context/AuthContext";
 import { getUnreadMessagesCount } from "../../api/MessageApi";
 import { socket } from "../../utils/config";
+
 const MessageCardView = ({ item, onPress }) => {
   const [unReadNumber, setUnreadNumver] = useState(0);
   const [newestMessage, setNewestMessage] = useState("");

@@ -116,6 +116,7 @@ export const AuthProvider = ({ children }) => {
       const res = await getUserById({ id });
       if (res.status === 200) {
         const data = res.data;
+        
         setUserInfo(data);
         AsyncStorage.setItem("userInfo", JSON.stringify(data));
       } else {
@@ -174,7 +175,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ login, logout, register, fetchUserInfo, updateInfo, isLoading, userToken, userInfo }}
+      value={{ login, logout, register, fetchUserInfo, updateInfo, isLoading, userToken, userInfo, setUserInfo }}
     >
       {children}
     </AuthContext.Provider>
