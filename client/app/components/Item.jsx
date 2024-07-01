@@ -7,8 +7,8 @@ const ItemComponent = ({ item, handleItemPress, showPrice }) => {
   return (
     <View style={styles.itemContainer}>
       <TouchableOpacity onPress={() => handleItemPress(item)}>
-        <Image source={item.image} style={styles.image} />
-        <Text style={styles.description}>{item.description}</Text>
+        <Image source={{ uri: item.image }} style={styles.image} />
+        <Text style={styles.name}>{item.name}</Text>
         {showPrice && (
           <View style={styles.priceContainer}>
             <Ionicons name="cash-outline" style={styles.icon} />

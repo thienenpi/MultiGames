@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     width: "100%",
-    backgroundColor: COLORS.disable,
+    backgroundColor: COLORS.background,
     alignItems: "center",
     justifyContent: "space-around",
   },

@@ -1,8 +1,26 @@
-import {
-  GAME_MODE,
-  SPY_GAME_SCORE,
-  DRAWING_GAME_SCORE,
-} from "../../../constants";
+import { DRAWING_GAME_SCORE } from "../../../constants";
+
+const updateUserInfo = async ({ id, data }) => {
+  try {
+    const url = `/users/id=${id}`;
+    const config = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
 
 class GameScoreController {
   constructor() {
@@ -23,14 +41,14 @@ class GameScoreController {
   addPlayer(player) {
     player["score"] = 0;
     this.players.push(player);
-    console.log(player["name"] + " joined the game");
+    console.log(player.name + " joined the game");
   }
 
   removePlayer(player) {
     const index = this.players.indexOf(player);
     if (index > -1) {
       this.players.splice(index, 1);
-      console.log(player["name"] + " left the game");
+      console.log(player.name + " left the game");
     }
   }
 
@@ -46,7 +64,7 @@ class GameScoreController {
     //   drawPlayer['score'] += DRAWING_GAME_SCORE.GUESS_RIGHT * this.count;
     //   return drawPlayer['score'];
     // }
-    return this.players.find((player) => player["_id"] === userId)["score"];
+    return this.players.find((player) => player._id === userId).score;
   }
 
   // Method to check guess correctness for "Vẽ hình đoán chữ"
@@ -67,33 +85,34 @@ class GameScoreController {
 
     this.count++;
     this.players.forEach((player) => {
-      if (player["_id"] === userId) {
+      if (player._id === userId) {
         switch (this.count) {
           case 1:
-            player["score"] += DRAWING_GAME_SCORE.WIN_TOP1;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP1;
             break;
           case 2:
-            player["score"] += DRAWING_GAME_SCORE.WIN_TOP2;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP2;
             break;
           case 3:
-            player["score"] += DRAWING_GAME_SCORE.WIN_TOP3;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP3;
             break;
           case 4:
-            player["score"] += DRAWING_GAME_SCORE.WIN_TOP4;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP4;
             break;
           case 5:
-            player["score"] += DRAWING_GAME_SCORE.WIN_TOP5;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP5;
             break;
           case 6:
-            player["score"] += DRAWING_GAME_SCORE.WIN_TOP6;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP6;
             break;
           default:
-            player["score"] += 0;
+            player.score += 0;
             break;
         }
+
         this.players.forEach((player) => {
-          if (player["_id"] === this.drawPlayerId) {
-            player["score"] += DRAWING_GAME_SCORE.GUESS_RIGHT;
+          if (player._id === this.drawPlayerId) {
+            player.score += DRAWING_GAME_SCORE.GUESS_RIGHT;
           }
         });
         this.guessCorrectedPlayerIds.push(userId);
@@ -103,7 +122,32 @@ class GameScoreController {
 
   displayScores() {
     this.players.forEach((player) => {
-      console.log(player["name"] + " - Score: " + player["score"]);
+      console.log(player.name + " - Score: " + player.score);
+    });
+  }
+
+  updateMoneyForPlayers() {
+    // Sort players by score from highest to lowest
+    this.players.sort((a, b) => b.score - a.score);
+    this.players.forEach((player, index) => {
+      switch (index) {
+        case 0:
+          player.money += 15;
+          break;
+        case 1:
+          player.money += 10;
+          break;
+        case 2:
+          player.money += 5;
+          break;
+        default:
+          player.money += 0;
+          break;
+      }
+      updateUserInfo({
+        id: player._id,
+        data: { money: player.money },
+      });
     });
   }
 }

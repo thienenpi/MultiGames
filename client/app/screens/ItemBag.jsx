@@ -1,65 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
   Image,
-  FlatList,
   Modal,
+  Alert,
+  FlatList,
   Pressable,
   TouchableOpacity,
 } from "react-native";
 import { Dimensions } from "react-native";
 import styles from "./styles/itemBag.style";
 import { Item, AppBar } from "../components";
+import { getItemById } from "../api/ShopApi";
+import { AuthContext } from "../context/AuthContext";
 
 const ItemBag = () => {
-  const data = [
-    {
-      id: 1,
-      image: require("../../assets/bg01.png"),
-      description: "Description 1",
-      price: 200,
-    },
-    {
-      id: 2,
-      image: require("../../assets/bg02.png"),
-      description: "Description 2",
-      price: 300,
-    },
-    {
-      id: 3,
-      image: require("../../assets/bg03.png"),
-      description: "Description 3",
-      price: 300,
-    },
-    {
-      id: 4,
-      image: require("../../assets/bg04.png"),
-      description: "Description 4",
-      price: 500,
-    },
-    {
-      id: 5,
-      image: require("../../assets/bg05.png"),
-      description: "Description 5",
-      price: 600,
-    },
-    {
-      id: 6,
-      image: require("../../assets/bg06.png"),
-      description: "Description 6",
-      price: 100,
-    },
-  ];
-
+  const { userInfo } = useContext(AuthContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const navigation = useNavigation();
 
   const screenWidth = Dimensions.get("window").width;
+
+  const [items, setItems] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchItemsBag();
+    }, [])
+  );
+
+  const checkInventoryEmpty = () => {
+    return !userInfo.bag || userInfo.bag.length === 0;
+  };
+
+  async function fetchItemsBag() {
+    try {
+      setItems([]);
+      if (checkInventoryEmpty()) {
+        return;
+      }
+
+      for (let itemId of userInfo.bag) {
+        const res = await getItemById({ id: itemId });
+        console.log("Response:", res.data); // In ra phản hồi để kiểm tra
+        if (res && res.status === 200) {
+          setItems((prevItems) => [...prevItems, res.data]);
+        } else {
+          console.error("Failed to fetch item:", res.message || res.error);
+        }
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to fetch items bag");
+    }
+  }
 
   // Trong hàm handleItemPress, set state của modal và lớp phủ thành true
   const handleItemPress = (item) => {
@@ -86,8 +84,13 @@ const ItemBag = () => {
         <Text style={styles.categoryText}>Drawing Boards</Text>
         <Ionicons name="flower-sharp" size={22} style={styles.categoryIcon} />
       </View>
+      {checkInventoryEmpty() &&
+        <View style={styles.emptyBag}>
+          <Text style={styles.emptyText}>Your bag is empty</Text>
+        </View>
+      }
       <FlatList
-        data={data}
+        data={items}
         renderItem={({ item }) => (
           <Item
             item={item}
@@ -95,7 +98,7 @@ const ItemBag = () => {
             showPrice={false}
           />
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id}
         numColumns={3}
         contentContainerStyle={{ justifyContent: "flex-start" }}
       />
@@ -111,7 +114,7 @@ const ItemBag = () => {
             <View style={styles.modalView}>
               <View style={styles.itemContainer}>
                 <Image
-                  source={selectedItem?.image}
+                  source={{ uri: selectedItem?.image }}
                   style={{
                     width: screenWidth * 0.8,
                     height: screenWidth * 0.7,
@@ -133,7 +136,7 @@ const ItemBag = () => {
                 </View>
               </View>
               <TouchableOpacity style={[styles.button, styles.buttonUse]}>
-                <Text style={styles.textStyle}>Use</Text>
+                <Text style={styles.textStyle}>Sử dụng</Text>
               </TouchableOpacity>
             </View>
           </View>

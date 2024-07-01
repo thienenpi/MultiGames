@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React, { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { SIZES } from "../../constants";
+import { COLORS, SIZES } from "../../constants";
 
 const UserCardView = ({ user }) => {
   const { userInfo } = useContext(AuthContext);
@@ -29,7 +29,9 @@ const styles = StyleSheet.create({
   },
 
   userName: {
-    fontSize: SIZES.small,
+    fontFamily: "sfProBold",
+    fontSize: SIZES.medium,
+    color: COLORS.white
   },
 
   userImage: {
