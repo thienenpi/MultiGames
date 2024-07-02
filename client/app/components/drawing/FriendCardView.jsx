@@ -33,6 +33,10 @@ const FriendCardView = ({ item, roomId }) => {
     setIsSentInvite(true);
   };
 
+  const handleRemoveFriend = () => {
+    console.log("remove friend");
+  }
+
   return (
     friendInfo && (
       <View style={styles.container}>
@@ -48,18 +52,29 @@ const FriendCardView = ({ item, roomId }) => {
           <Text style={styles.expGain}>{friendInfo.name}</Text>
         </View>
 
-        <View style={styles.invite}>
-          {!isSentInvite ? (
+        {roomId ? (
+          <View style={styles.invite}>
+            {!isSentInvite ? (
+              <CustomButton
+                onPress={handleSendInvite}
+                styles={styles}
+                label={"Invite"}
+                isValid={true}
+              ></CustomButton>
+            ) : (
+              <Text>Pending...</Text>
+            )}
+          </View>
+        ) : (
+          <View style={styles.invite}>
             <CustomButton
-              onPress={handleSendInvite}
+              onPress={handleRemoveFriend}
               styles={styles}
-              label={"Invite"}
-              isValid={true}
+              label={"Remove"}
+              isValid={false}
             ></CustomButton>
-          ) : (
-            <Text>Pending...</Text>
-          )}
-        </View>
+          </View>
+        )}
       </View>
     )
   );
@@ -85,6 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 50,
     width: 50,
+    borderRadius: 50,
   },
 
   userInfo: {
@@ -122,7 +138,7 @@ const styles = StyleSheet.create({
 
   btnLabel: {
     fontFamily: "sfProBold",
-    fontSize: SIZES.medium,
+    fontSize: SIZES.small,
     color: "white",
   },
 

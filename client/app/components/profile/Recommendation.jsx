@@ -12,19 +12,19 @@ import { useNavigation } from "@react-navigation/native";
 const items = [
   {
     _id: 1,
-    name: "Chỉ số",
+    name: "Index",
     imageUrl: "https://multigames.blob.core.windows.net/images/index.png",
     screen: "Index",
   },
   {
     _id: 2,
-    name: "Thành tựu",
+    name: "Achievement",
     imageUrl: "https://multigames.blob.core.windows.net/images/achievement.png",
     screen: "Achievement",
   },
   {
     _id: 3,
-    name: "Cửa hàng",
+    name: "Shop",
     imageUrl: "https://multigames.blob.core.windows.net/images/shop.png",
     screen: "Shop",
   },

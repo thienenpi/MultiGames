@@ -25,13 +25,17 @@ import AddFriendDialog from "./drawing/AddFriendDialog";
 import UserCardView from "./drawing/UserCardView";
 import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
 import DrawingScoreController from "./systems/scoringSystem/drawingScoreController";
+// import MyCarousel from "./MyCarousel";
 import InviteDialog from "./drawing/InviteDialog";
 import InvitationDialog from "./InvitationDialog";
+import RankingDialog from "./dashboard/RankingDialog";
+import FriendsDialog from "./dashboard/FriendsDialog";
 import ResultDialog from "./spyGame/ResultDialog";
 import Player from "./spyGame/Player";
 import GameTimer from "./spyGame/GameTimer";
 import NotificationDialog from "./spyGame/NotificationDialog";
 import KeyWordDialog from "./spyGame/KeyWordDialog";
+import SpyScoreController from "./systems/scoringSystem/spyScoreController";
 
 export {
   CustomButton,
@@ -61,11 +65,15 @@ export {
   UserCardView,
   EndTurnResult,
   DrawingScoreController as GameScoreController,
-  InviteDialog,
-  InvitationDialog,
-  ResultDialog,
+  KeyWordDialog,
   Player,
   GameTimer,
   NotificationDialog,
-  KeyWordDialog,
+  // MyCarousel,
+  InviteDialog,
+  InvitationDialog,
+  RankingDialog,
+  FriendsDialog,
+  ResultDialog,
+  SpyScoreController,
 };

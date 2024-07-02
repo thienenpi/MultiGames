@@ -11,5 +11,6 @@ router.put('/id=:id', roomController.updateRoom);
 router.delete('/id=:id', roomController.deleteRoom);
 router.post('/create', roomController.createRoom);
 router.get('/id=:id/guests', roomController.getRoomGuests);
+router.get('/id=:id/historyGuests', roomController.getRoomHistoryGuests)
 
 module.exports = router

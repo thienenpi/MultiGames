@@ -95,9 +95,9 @@ const Shop = () => {
       <AppBar
         title="Shop"
         rightIconName="cart"
+        showLeftIcon={false}
         showRightIcon={true}
         rightIconStyle={{ fontSize: 24 }}
-        onPressLeftIcon={() => navigation.goBack()}
         onPressRightIcon={() => navigation.navigate("Item Bag")}
       />
       <View style={styles.separator} />
@@ -174,7 +174,7 @@ const Shop = () => {
               onPress={handleBuyItem}
             >
               <Text style={styles.textStyle}>
-                {isBought(selectedItem._id) ? "Đã mua" : "Mua"}
+                {isBought(selectedItem._id) ? "Bought" : "Buy"}
               </Text>
             </TouchableOpacity>
           </View>

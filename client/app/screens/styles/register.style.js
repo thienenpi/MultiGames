@@ -11,8 +11,7 @@ const styles = StyleSheet.create({
   },
 
   btnContainer: () => ({
-    backgroundColor: '#00CDF9',
-    borderRadius: 99,
+    borderRadius: SIZES.medium,
     width: SIZES.width - SIZES.xxLarge * 4,
     height: SIZES.xxLarge,
     alignItems: 'center',
@@ -30,10 +29,9 @@ const styles = StyleSheet.create({
     width: SIZES.width - SIZES.xxLarge * 2,
     alignItems: 'center',
     borderRadius: SIZES.medium,
-    borderColor: COLORS.text,
-    borderWidth: 1,
     paddingVertical: SIZES.small,
     paddingHorizontal: SIZES.small,
+    backgroundColor: 'white',
   },
 
   ipfTextInput: {

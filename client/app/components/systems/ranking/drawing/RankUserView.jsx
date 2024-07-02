@@ -1,15 +1,29 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { COLORS, SIZES } from "../../../../constants";
 import CustomButton from "../../../CustomButton";
 import { sendFriendRequest } from "../../../../api/UserApi";
 import { AuthContext } from "../../../../context/AuthContext";
 import { checkIfFriend } from "../../../../services";
+import { useState } from "react";
 
 const RankUserView = ({ item }) => {
   const { userInfo } = useContext(AuthContext);
-  const isFriend = checkIfFriend({ id: userInfo._id, friendId: item._id });
-  const isMe = userInfo._id === item._id ? "none" : "flex";
+  const isMe = userInfo._id === item._id;
+  const [isFriend, setIsFriend] = useState(false);
+
+  useEffect(() => {
+    const fetchFriendStatus = async () => {
+      setIsFriend(
+        await checkIfFriend({
+          id: userInfo._id,
+          friendId: item._id,
+        })
+      );
+    };
+
+    fetchFriendStatus();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -25,25 +39,29 @@ const RankUserView = ({ item }) => {
         <Text style={styles.expGain}>{item.name}</Text>
       </View>
 
-      <View style={styles.addFriend}>
-        {isFriend ? (
-          <View style={[styles.frStatusContainer, { display: isMe }]}>
-            <Text style={styles.frStatusText}>Bạn bè</Text>
-          </View>
-        ) : (
-          <CustomButton
-            styles={styles}
-            label={"Kết bạn"}
-            isValid={true}
-            onPress={async () => {
-              await sendFriendRequest({
-                senderId: userInfo._id,
-                recipientId: user._id,
-              });
-            }}
-          ></CustomButton>
-        )}
-      </View>
+      {!isMe ? (
+        <View style={styles.addFriend}>
+          {isFriend ? (
+            <View style={styles.frStatusContainer}>
+              <Text style={styles.frStatusText}>Friend</Text>
+            </View>
+          ) : (
+            <CustomButton
+              styles={styles}
+              label={"Add"}
+              isValid={true}
+              onPress={async () => {
+                await sendFriendRequest({
+                  senderId: userInfo._id,
+                  recipientId: user._id,
+                });
+              }}
+            ></CustomButton>
+          )}
+        </View>
+      ) : (
+        <View style={styles.addFriend}></View>
+      )}
     </View>
   );
 };
