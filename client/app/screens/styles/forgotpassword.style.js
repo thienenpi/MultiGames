@@ -5,9 +5,13 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     justifyContent: "center",
     padding: 16,
+    width: "100%",
   },
   container: {
     flex: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: {
     fontSize: 16,
@@ -15,7 +19,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     fontWeight: "bold",
   },
-
   button: {
     backgroundColor: "#00CDF9",
     padding: 10,
@@ -45,7 +48,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
   },
-
   header: {
     flex: 1,
     flexDirection: "row",
@@ -63,6 +65,44 @@ const styles = StyleSheet.create({
 
   headerIcon: {
     fontSize: SIZES.xLarge,
+  },
+  
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 50,
+  },
+
+  ipfContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: SIZES.width - SIZES.xxLarge * 2,
+    borderRadius: SIZES.medium,
+    paddingVertical: SIZES.small,
+    paddingHorizontal: SIZES.small,
+    backgroundColor: "white",
+  },
+
+  ipfTextInput: {
+    flex: 1,
+    paddingHorizontal: 10,
+    fontSize: SIZES.medium,
+    color: COLORS.text,
+  },
+
+  btnContainer: () => ({
+    borderRadius: SIZES.medium,
+    width: SIZES.width - SIZES.xxLarge * 5.6,
+    height: SIZES.xxLarge,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "start",
+  }),
+
+  btnLabel: {
+    fontFamily: "sfProBold",
+    fontSize: SIZES.large,
+    color: "white",
   },
 });
 
