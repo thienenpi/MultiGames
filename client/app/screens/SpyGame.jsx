@@ -148,14 +148,14 @@ const SpyScreen = () => {
           console.log("Number player in room now is 2")
           let remainingPlayers = [];
           for(let i = 0; i < numberOfUser.current.length; i++){
-            if(!eliminatedPlayers.current.includes(numberOfUser.current[i]._id)){
+            if(!eliminatedPlayers.current.includes(numberOfUser.current[i])){
               remainingPlayers.push(numberOfUser.current[i]);
             }
           }
           console.log("remainingPlayer: " + remainingPlayers);
           if (
             remainingPlayers.some(
-              (player) => player._id === spyData.current._id
+              (player) => player === spyData.current._id
             )
           ) {
             setIsShowDialogResult(true);
