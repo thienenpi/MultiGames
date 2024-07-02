@@ -65,6 +65,27 @@ const userRegister = async ({ data }) => {
   }
 };
 
+const getUsers = async () => {
+  try {
+    const url = "/users/";
+    const config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
 const getUserById = async ({ id }) => {
   try {
     const url = `/users/id=${id}`;
@@ -157,7 +178,7 @@ const updateAvatar = async ({ userId, uri }) => {
     const url = `/users/updateAvatar/`;
     let formData = new FormData();
 
-    const fileType = uri.split('.').pop();
+    const fileType = uri.split(".").pop();
     const mimeType = `image/${fileType}`;
 
     formData.append("avatar", {
@@ -191,6 +212,7 @@ export {
   userLogin,
   userLogout,
   userRegister,
+  getUsers,
   getUserById,
   sendFriendRequest,
   acceptFriendRequest,

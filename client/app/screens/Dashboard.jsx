@@ -4,13 +4,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
-import { ProfileRow, GameCard, MyCarousel } from "../components";
+import { ProfileRow, GameCard, MyCarousel, RankingDialog } from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
+import { useState } from "react";
 
 const Dashboard = () => {
   const { userInfo, fetchUserInfo } = useContext(AuthContext);
   const navigation = useNavigation();
+  const [isShowRanking, setIsShowRanking] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -51,10 +53,16 @@ const Dashboard = () => {
       {/* <MyCarousel /> */}
 
       <View style={styles.containerTask}>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => setIsShowRanking((prev) => !prev)}
+        >
           <Ionicons name="stats-chart" size={34} color="blue" />
           <Text style={styles.text}>Ranking</Text>
         </TouchableOpacity>
+
+        {isShowRanking && <RankingDialog isShow={isShowRanking} onChangeShow={setIsShowRanking} />}
+
         <TouchableOpacity style={styles.item}>
           <Ionicons name="add-circle-outline" size={34} color="red" />
           <Text style={styles.text}>Invitations</Text>
@@ -65,7 +73,11 @@ const Dashboard = () => {
         </TouchableOpacity>
       </View>
 
-      <Image source={require("../../assets/slide1.jpg")} style={{ height: 250, width: '100%' }} resizeMode="cover" />
+      <Image
+        source={require("../../assets/slide1.jpg")}
+        style={{ height: 250, width: "100%" }}
+        resizeMode="cover"
+      />
 
       <View style={styles.containerInfo}>
         <View style={styles.row}>
