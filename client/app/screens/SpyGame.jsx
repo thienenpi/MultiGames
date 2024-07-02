@@ -49,7 +49,7 @@ const SpyScreen = () => {
   const eliminatedPlayers = useRef([]);
   const [IsShowDialogResult, setIsShowDialogResult] = useState(false);
   const voteResult = useRef({});
-
+  const numberOfUser = useRef([]);
   const [message, setMessage] = useState("");
   const [keyword, setKeyword] = useState(null);
   const [resultDialog, setResultDialog] = useState({
@@ -114,35 +114,6 @@ const SpyScreen = () => {
         room: roomInfo._id,
         voteFinalResult: voteResult.current,
       });
-
-      // Check if the eliminated player is the spy
-      // if (spyData.current._id === eliminatedPlayer.current) {
-      //   setIsShowDialogResult(true);
-      //   console.log("Gián điệp đã bị loại, thường dân chiến thắng");
-      //   // Show result dialog for winning
-      //   setResultDialog({
-      //     text: "Thường dân chiến thắng!",
-      //     identify: "thường dân",
-      //   });
-      // } else if (usersInRoom.length - eliminatedPlayers.current.length === 2) {
-      //   const remainingPlayers = usersInRoom.filter(
-      //     (player) => !eliminatedPlayers.current.includes(player._id)
-      //   );
-      //   if (
-      //     remainingPlayers.some((player) => player._id === spyData.current._id)
-      //   ) {
-      //     setIsShowDialogResult(true);
-      //     console.log("Gián điệp chiến thắng");
-      //     // Show result dialog for spy winning
-      //     setResultDialog({
-      //       text: "Gián điệp chiến thắng!",
-      //       identify: "gián điệp",
-      //     });
-      //   }
-      // } else {
-      //   setIsShowDialogResult(true);
-      //   console.log("Kết quả");
-      // }
     }
   };
 
@@ -151,6 +122,57 @@ const SpyScreen = () => {
     spySocket.emit("ready", roomInfo._id);
   };
 
+  const handleEliminated = (data) => {
+    eliminatedPlayers.current = data;
+      console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
+      if (eliminatedPlayers.current.length > 0 && numberOfUser.current.length > 0) {
+        eliminatedPlayer.current =
+          eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
+
+        console.log("Id người bị loại " + eliminatedPlayer.current);
+        console.log("Người bị loại là " + spyData.current._id);
+        console.log("Số người chơi bị loại " + eliminatedPlayers.current.length + " người chơi trong phòng " + numberOfUser.current.length);
+        if (spyData.current._id === eliminatedPlayer.current) {
+          setIsShowDialogResult(true);
+          console.log("Gián điệp đã bị loại, thường dân chiến thắng");
+          // Show result dialog for winning
+          setResultDialog({
+            text: "Thường dân chiến thắng!",
+            identify: "thường dân",
+          });
+          setIsStart(false);
+        } else if (
+          numberOfUser.current.length - eliminatedPlayers.current.length ===
+          2
+        ) {
+          console.log("Number player in room now is 2")
+          let remainingPlayers = [];
+          for(let i = 0; i < numberOfUser.current.length; i++){
+            if(!eliminatedPlayers.current.includes(numberOfUser.current[i]._id)){
+              remainingPlayers.push(numberOfUser.current[i]);
+            }
+          }
+          console.log("remainingPlayer: " + remainingPlayers);
+          if (
+            remainingPlayers.some(
+              (player) => player._id === spyData.current._id
+            )
+          ) {
+            setIsShowDialogResult(true);
+            console.log("Gián điệp chiến thắng");
+            // Show result dialog for spy winning
+            setResultDialog({
+              text: "Gián điệp chiến thắng!",
+              identify: "gián điệp",
+            });
+            setIsStart(false);
+          }
+        } else {
+          setIsShowDialogResult(true);
+          console.log("Kết quả");
+        }
+      }
+  };
   useEffect(() => {
     spySocket.emit("join", roomInfo._id);
 
@@ -163,28 +185,38 @@ const SpyScreen = () => {
       }
     });
 
-    spySocket.on("startGame", () => {
-      setIsStart(true);
-    });
-
     spySocket.on("SpyPlayer", (data) => {
       if (data === spySocket.id) {
         console.log(data + " và " + spySocket.id);
         spySocket.emit("SpyData", userInfo);
       }
     });
+
     spySocket.on("SpyData", (data) => {
-      console.log(data)
+      console.log(data);
       spyData.current = data;
+    });
+
+    spySocket.on("startGame", () => {
+      setIsStart(true);
     });
 
     spySocket.on("assignKeyword", (data) => {
       setKeyword(data.keyword);
     });
 
+    spySocket.on("eliminated", handleEliminated);
+
     return () => {
       leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
       spySocket.emit("leave", roomInfo._id);
+
+      spySocket.off("message");
+      spySocket.off("SpyPlayer");
+      spySocket.off("SpyData");
+      spySocket.off("startGame");
+      spySocket.off("eliminated");
+      spySocket.off("assignKeyword");
     };
   }, []);
 
@@ -221,6 +253,7 @@ const SpyScreen = () => {
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
+      numberOfUser.current = users;
     };
 
     setMessageHistory([]);
@@ -229,51 +262,6 @@ const SpyScreen = () => {
 
     spySocket.on("voteUpdate", (data) => {
       voteResult.current = data;
-    });
-
-    spySocket.on("eliminated", (data) => {
-      eliminatedPlayers.current = data;
-      console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
-      if (eliminatedPlayers.current.length > 0) {
-        eliminatedPlayer.current =
-          eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
-
-        console.log("Id người bị loại " + eliminatedPlayer.current);
-        console.log("Người bị loại là " + spyData.current.name);
-
-        if (spyData.current._id === eliminatedPlayer.current) {
-          setIsShowDialogResult(true);
-          console.log("Gián điệp đã bị loại, thường dân chiến thắng");
-          // Show result dialog for winning
-          setResultDialog({
-            text: "Thường dân chiến thắng!",
-            identify: "thường dân",
-          });
-        } else if (
-          usersInRoom.length - eliminatedPlayers.current.length ===
-          2
-        ) {
-          const remainingPlayers = usersInRoom.filter(
-            (player) => !eliminatedPlayers.current.includes(player._id)
-          );
-          if (
-            remainingPlayers.some(
-              (player) => player._id === spyData.current._id
-            )
-          ) {
-            setIsShowDialogResult(true);
-            console.log("Gián điệp chiến thắng");
-            // Show result dialog for spy winning
-            setResultDialog({
-              text: "Gián điệp chiến thắng!",
-              identify: "gián điệp",
-            });
-          }
-        } else {
-          setIsShowDialogResult(true);
-          console.log("Kết quả");
-        }
-      }
     });
 
     getAllUsers();
@@ -285,7 +273,14 @@ const SpyScreen = () => {
     spySocket.on("leave", (room) => {
       setTimeout(async () => getAllUsers(), 500);
     });
-  }, []);
+
+    return () => {
+      spySocket.off("voteUpdate");
+      spySocket.off("getChatHistory");
+      spySocket.off("join");
+      spySocket.off("leave");
+    };
+  }, [roomInfo._id]);
 
   const sendMessage = () => {
     if (eliminatedPlayers.current.includes(userInfo._id)) {
@@ -331,10 +326,6 @@ const SpyScreen = () => {
         spySocket.emit("message", newMessage);
         setMessage("");
       }
-      // setMessageHistory((prevMessageHistory) => [
-      //   ...prevMessageHistory,
-      //   newMessage,
-      // ]);
     }
   };
 
@@ -470,7 +461,7 @@ const SpyScreen = () => {
           <ResultDialog
             name={spyData.current.name}
             identify={resultDialog.identify}
-            isVisible={IsShowDialogResult}
+            isVisible={resultDialog.isVisible}
             onClose={() => setIsShowDialogResult(false)}
             text={resultDialog.text}
             duration={3}

@@ -39,6 +39,7 @@ const spyGameSocketSetup = (server) => {
           socket.on("users", (data) => {
             data.forEach((user) => {
               if (message.senderId === user._id) {
+                descriptionMessages[room][user._id] = "";
                 descriptionMessages[room][user._id] = message.content;
               }
             });
@@ -128,6 +129,7 @@ const spyGameSocketSetup = (server) => {
       voted++;
       if(voted === amoutVoter){
         io.to(room).emit("voteUpdate", votes[room]);
+        votes[room] = {};
         voted = 0;
       }
     };
