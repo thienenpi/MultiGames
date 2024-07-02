@@ -33,7 +33,7 @@ const spyGameSocketSetup = (server) => {
           chatHistory[room] = [];
         }
         if (message.isDescMessage) {
-          if(!descriptionMessages[room]){
+          if (!descriptionMessages[room]) {
             descriptionMessages[room] = {};
           }
           socket.on("users", (data) => {
@@ -90,10 +90,10 @@ const spyGameSocketSetup = (server) => {
 
       io.to(room).emit("SpyPlayer", randomUser);
 
-      socket.on("SpyData", (userInfo)=>{
+      socket.on("SpyData", (userInfo) => {
         console.log(userInfo);
         io.to(room).emit("SpyData", userInfo);
-      })
+      });
       // Gửi từ khóa đến người dùng
       clients.forEach((userId) => {
         const assignedKeyword =
@@ -127,7 +127,7 @@ const spyGameSocketSetup = (server) => {
         votes[room][votee]++;
       }
       voted++;
-      if(voted === amoutVoter){
+      if (voted === amoutVoter) {
         io.to(room).emit("voteUpdate", votes[room]);
         votes[room] = {};
         voted = 0;
@@ -137,18 +137,21 @@ const spyGameSocketSetup = (server) => {
     console.log("A user connected");
 
     const handleVotingResult = (data) => {
-      const {voteFinalResult, room} = data; 
+      const { voteFinalResult, room } = data;
 
-      const highestVotedPlayer = Object.entries(voteFinalResult).reduce((acc, [key, value]) => {
-        return value > acc.value ? { id: key, value: value } : acc;
-      }, { id: null, value: -Infinity });
-      
-        if (!eliminated[room]) {
-          eliminated[room] = [];
-        }
-        if(!eliminated[room].includes(highestVotedPlayer.id)){
-          eliminated[room].push(highestVotedPlayer.id);
-        }
+      const highestVotedPlayer = Object.entries(voteFinalResult).reduce(
+        (acc, [key, value]) => {
+          return value > acc.value ? { id: key, value: value } : acc;
+        },
+        { id: null, value: -Infinity }
+      );
+
+      if (!eliminated[room]) {
+        eliminated[room] = [];
+      }
+      if (!eliminated[room].includes(highestVotedPlayer.id)) {
+        eliminated[room].push(highestVotedPlayer.id);
+      }
 
       io.to(room).emit("eliminated", eliminated[room]);
     };
@@ -176,6 +179,10 @@ const spyGameSocketSetup = (server) => {
       console.log(`A user leaved from ${room}`);
       socket.to(room).emit("leave", room);
 
+      if (rooms[room] === undefined) {
+        return;
+      }
+      
       const index = rooms[room].indexOf(socket);
 
       if (index !== -1) {
@@ -185,7 +192,7 @@ const spyGameSocketSetup = (server) => {
         delete rooms[room];
         delete chatHistory[room];
         delete votes[room];
-        delete eliminated[room]
+        delete eliminated[room];
         delete descriptionMessages[room];
       }
     });

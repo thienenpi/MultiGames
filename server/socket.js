@@ -59,6 +59,10 @@ const socketSetup = (server) => {
 
       socket.to(room).emit("leave", { userId: userId });
 
+      if (rooms[room] === undefined) {
+        return;
+      }
+
       const index = rooms[room].indexOf(socket);
 
       if (index !== -1) {
