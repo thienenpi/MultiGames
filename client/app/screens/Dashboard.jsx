@@ -4,7 +4,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
-import { ProfileRow, GameCard, MyCarousel, RankingDialog } from "../components";
+import {
+  ProfileRow,
+  GameCard,
+  MyCarousel,
+  RankingDialog,
+  FriendsDialog,
+} from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
 import { useState } from "react";
@@ -13,6 +19,7 @@ const Dashboard = () => {
   const { userInfo, fetchUserInfo } = useContext(AuthContext);
   const navigation = useNavigation();
   const [isShowRanking, setIsShowRanking] = useState(false);
+  const [isShowFriends, setIsShowFriends] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -61,16 +68,32 @@ const Dashboard = () => {
           <Text style={styles.text}>Ranking</Text>
         </TouchableOpacity>
 
-        {isShowRanking && <RankingDialog isShow={isShowRanking} onChangeShow={setIsShowRanking} />}
+        {isShowRanking && (
+          <RankingDialog
+            isShow={isShowRanking}
+            onChangeShow={setIsShowRanking}
+          />
+        )}
 
         <TouchableOpacity style={styles.item}>
           <Ionicons name="add-circle-outline" size={34} color="red" />
           <Text style={styles.text}>Invitations</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => setIsShowFriends((prev) => !prev)}
+        >
           <Ionicons name="people-sharp" size={34} color="purple" />
           <Text style={styles.text}>Friends</Text>
         </TouchableOpacity>
+
+        {isShowFriends && (
+          <FriendsDialog
+            isShow={isShowFriends}
+            onChangeShow={setIsShowFriends}
+          ></FriendsDialog>
+        )}
       </View>
 
       <Image

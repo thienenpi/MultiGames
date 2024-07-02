@@ -29,6 +29,7 @@ import GameScoreController from "./systems/scoringSystem/gameScoreController";
 import InviteDialog from "./drawing/InviteDialog";
 import InvitationDialog from "./InvitationDialog";
 import RankingDialog from "./dashboard/RankingDialog";
+import FriendsDialog from "./dashboard/FriendsDialog";
 
 export {
   CustomButton,
@@ -61,5 +62,6 @@ export {
   // MyCarousel,
   InviteDialog,
   InvitationDialog,
-  RankingDialog
+  RankingDialog,
+  FriendsDialog,
 };

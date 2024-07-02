@@ -118,11 +118,11 @@ const styles = StyleSheet.create({
     width: "40%",
     backgroundColor: backgroundColor,
     padding: 10,
+    margin: 10,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    position: "absolute",
-    bottom: 20,
+
   }),
 
   btnLabel: {
