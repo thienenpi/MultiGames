@@ -1,36 +1,69 @@
 import { StyleSheet } from "react-native";
+import { COLORS } from "../../constants";
+
 const styles = StyleSheet.create({
-    playerCotainer: {
-        height: '25%',
-        width: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-    },
-    playerAvatar: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: 'white',
-        backgroundColor: '#11568E',
-        borderRadius: 50,
-        padding: 10,
-        resizeMode: 'cover'
-    },
-    playerName: {
-        color: 'white',
-        fontSize: 15,
-    },
-    statusIndicator: {
-        position: "absolute",
-        zIndex: 1,
-        top: 0,
-        right: 0,
-        width: 12,
-        height: 12,
-        backgroundColor: "orange",
-        borderRadius: 50,
-        borderColor: 'white',
-        borderWidth: 1,
-    },
+  player: {
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  statusDot: (isReady) => ({
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: isReady ? COLORS.green : COLORS.orange,
+    borderWidth: 1,
+    borderColor: 'white',
+  }),
+  descChat: {
+    position: "absolute",
+    top: 0,
+    padding: 5,
+    left: "120%",
+    height: 50,
+    width: "200%",
+    borderRadius: 10,
+    borderTopLeftRadius: 0,
+    backgroundColor: "white",
+
+  },
+  voteCount: {
+    zIndex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "85%",
+    height: "100%",
+    borderRadius: 50,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  eliminated:{
+    zIndex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "85%",
+    height: "100%",
+    borderRadius: 50,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  eliminatedText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: COLORS.white,
+  },
 });
+
 export default styles;
