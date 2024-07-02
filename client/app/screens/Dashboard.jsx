@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
-import { ProfileRow, GameCard, MyCarousel } from "../components";
+import { ProfileRow, GameCard } from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
 
@@ -47,8 +47,6 @@ const Dashboard = () => {
         eventIcon="star-outline"
         eventText="Events"
       />
-
-      {/* <MyCarousel /> */}
 
       <View style={styles.containerTask}>
         <TouchableOpacity style={styles.item}>
