@@ -8,6 +8,9 @@ import {
   Modal,
   Pressable,
   Animated,
+  Alert,
+  Platform,
+  ToastAndroid,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
@@ -33,6 +36,7 @@ import {
 import { getRoomGuests, isRoomFull, getUserById, getKeyWords } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
 import { leaveRoom } from "../services";
+import * as MediaLibrary from "expo-media-library";
 
 const GuessingWord = () => {
   const route = useRoute();
@@ -97,11 +101,9 @@ const GuessingWord = () => {
     setIsClear((prev) => !prev);
   };
 
-  const handleButtonPress = () => {
-    captureAndSaveImage().then(async () => {
-      await hanldeDialog();
-      // save image to camera roll
-    });
+  const handleButtonPress = async () => {
+    await captureAndSaveImage({ saveImage: true });
+    // setShowDownloadImageDialog(true);
   };
 
   const handleSendImage = () => {};
@@ -111,10 +113,6 @@ const GuessingWord = () => {
   const handleReady = () => {
     setIsReady(true);
     socket.emit("ready", roomInfo._id);
-  };
-
-  const hanldeDialog = async () => {
-    setShowDownloadImageDialog(true);
   };
 
   const closeAllModal = () => {
@@ -143,12 +141,41 @@ const GuessingWord = () => {
     }
   };
 
-  const captureAndSaveImage = async () => {
+  const captureAndSaveImage = async ({ saveImage }) => {
+    const requestMediaLibraryPermissions = async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "This app needs access to your photo library to save photos."
+        );
+      }
+    };
+
     try {
       setShowOptions(false);
       capturedImage.current = await viewShotRef.current.capture();
+
+      if (saveImage) {
+        await requestMediaLibraryPermissions();
+
+        await MediaLibrary.createAssetAsync(capturedImage.current);
+        if (Platform.OS === "ios") {
+          Alert.alert(
+            "Image Saved",
+            "Your image has been saved to the camera roll."
+          );
+        } else {
+          ToastAndroid.show("Image saved to gallery", ToastAndroid.SHORT);
+        }
+      }
+      setShowDownloadImageDialog(true);
     } catch (error) {
-      console.error("Error capturing image:", error);
+      //   console.error("Error capturing image:", error);
+      //   Alert.alert(
+      //     "Error",
+      //     "There was an error capturing and saving the image."
+      //   );
     }
   };
 
@@ -231,7 +258,7 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
-      captureAndSaveImage().then(() => {
+      captureAndSaveImage({ saveImage: false }).then(() => {
         setShowEndTurnResultDialog(true);
         countCorrectGuess.current =
           gameScoreController.getCountCorrectGuesses();
@@ -462,20 +489,18 @@ const GuessingWord = () => {
           onRequestClose={closeAllModal}
         >
           <Pressable style={styles.overlay} onPress={closeAllModal} />
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              {capturedImage.current && (
-                <Image
-                  source={{ uri: capturedImage.current }}
-                  style={{
-                    flex: 1,
-                    resizeMode: "fill",
-                    height: "100%",
-                    width: "100%",
-                  }}
-                />
-              )}
-            </View>
+          <View style={styles.modalView}>
+            {capturedImage.current && (
+              <Image
+                source={{ uri: capturedImage.current }}
+                style={{
+                  flex: 1,
+                  resizeMode: "fill",
+                  height: "100%",
+                  width: "100%",
+                }}
+              />
+            )}
           </View>
         </Modal>
       )}

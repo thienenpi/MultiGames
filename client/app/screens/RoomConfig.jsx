@@ -95,7 +95,7 @@ const RoomConfig = () => {
 
           <HorizontalItem
             title={"Số lượng người chơi"}
-            desc={usersInRoom.length}
+            desc={roomInfo.capacity}
             iconRight={"chevron-forward-outline"}
           ></HorizontalItem>
         </View>
