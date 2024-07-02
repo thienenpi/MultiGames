@@ -25,7 +25,6 @@ import AddFriendDialog from "./drawing/AddFriendDialog";
 import UserCardView from "./drawing/UserCardView";
 import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
 import DrawingScoreController from "./systems/scoringSystem/drawingScoreController";
-// import MyCarousel from "./MyCarousel";
 import InviteDialog from "./drawing/InviteDialog";
 import InvitationDialog from "./InvitationDialog";
 import RankingDialog from "./dashboard/RankingDialog";
@@ -69,7 +68,6 @@ export {
   Player,
   GameTimer,
   NotificationDialog,
-  // MyCarousel,
   InviteDialog,
   InvitationDialog,
   RankingDialog,
