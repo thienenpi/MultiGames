@@ -25,6 +25,18 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
           "isAccessMediaLocationEnabled": true
         }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
+        }
       ]
     ],
     "assetBundlePatterns": ["**/*"],
@@ -35,11 +47,15 @@
       "infoPlist": {
         "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera.",
         "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to your Microphone.",
-        "NSPhotoLibraryUsageDescription": "We need access to your photo library"
+        "NSPhotoLibraryUsageDescription": "We need access to your photo library",
+        "NSFaceIDUsageDescription": "Allow $(PRODUCT_NAME) to use Face ID."
       },
       "splash": {
         "image": "./assets/splash.png",
         "resizeMode": "cover"
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
