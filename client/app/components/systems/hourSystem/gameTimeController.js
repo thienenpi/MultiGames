@@ -110,7 +110,7 @@ class GameTimeController {
         } else if (this.status === SPY_GAME_STATUS.VOTE) {
             this.status = SPY_GAME_STATUS.RESULT;
         } else if (this.status === SPY_GAME_STATUS.RESULT) {
-            this.status = SPY_GAME_STATUS.WORD_VIEW;
+            this.status = SPY_GAME_STATUS.DESCRIPTION;
         }
     }
 

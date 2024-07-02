@@ -136,6 +136,37 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  votingContainer: {
+    position: "absolute",
+    bottom: 100,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+  },
+  voteTimer: {
+    fontSize: 20,
+    color: "white",
+    marginBottom: 10,
+  },
+  voteButton: {
+    backgroundColor: "#6B91FF",
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+    width: 200,
+    alignItems: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalText: {
+    fontSize: 18,
+    color: "white",
+    marginBottom: 20,
+  },
 });
 
 export default styles;

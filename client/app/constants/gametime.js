@@ -8,8 +8,8 @@ const GENERAL_GAME_TIME = {
 // Spy Game Time
 const SPY_GAME_TIME = {
     WORD_VIEW_TIME: 5, // Thời gian xem từ trong 5 giây
-    DESCRIPTION_TIME: 20, // Thời gian mô tả trong 40 giây
-    VOTE_TIME: 15, // Thời gian vote trong 15 giây
+    DESCRIPTION_TIME: 30, // Thời gian mô tả trong 40 giây
+    VOTE_TIME: 30, // Thời gian vote trong 15 giây
     RESULT_TIME: GENERAL_GAME_TIME.RESULT_TIME, // Thời gian hiển thị kết quả trong 20 giây
 };
 
