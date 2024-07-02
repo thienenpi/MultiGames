@@ -17,7 +17,8 @@ import {
   updateRoom,
   deleteRoom,
   isRoomFull,
-  getRoomGuests
+  getRoomGuests,
+  getRoomHistoryGuests,
 } from "./RoomApi";
 
 import { getMessages, sendMessage, markMessagesAsSeen } from "./MessageApi";
@@ -44,6 +45,7 @@ export {
   deleteRoom,
   isRoomFull,
   getRoomGuests,
+  getRoomHistoryGuests,
 
   // MessageApi
   getMessages,
@@ -51,5 +53,5 @@ export {
   markMessagesAsSeen,
 
   // KeywordApi
-  getKeyWords
+  getKeyWords,
 };

@@ -1,16 +1,26 @@
-import { getRoomGuests, updateRoom, getActiveRoom } from "../api";
+import {
+  getRoomGuests,
+  updateRoom,
+  getActiveRoom,
+  getRoomHistoryGuests,
+} from "../api";
 
 const joinRoom = async ({ roomId, userId }) => {
   try {
-    const users = await getRoomGuests({ id: roomId });
+    const guests = await getRoomGuests({ id: roomId });
+    var history_guests = await getRoomHistoryGuests({ id: roomId });
 
-    if (users.data.includes(userId)) {
+    if (guests.data.includes(userId)) {
       return;
     }
 
+    if (!history_guests.data.includes(userId)) {
+        history_guests.data.push(userId);
+    }
+
     const data = {
-      list_guest: [...users.data, userId],
-      history_guest: [...users.data, userId],
+      list_guest: [...guests.data, userId],
+      history_guest: history_guests.data,
     };
 
     const res = await updateRoom({ id: roomId, data: data });
@@ -26,7 +36,7 @@ const leaveRoom = async ({ roomId, userId }) => {
 
     const data = {
       list_guest: users.data.filter((guest) => guest !== userId),
-    //   history_guest: users.data.filter((guest) => guest !== userId),
+      //   history_guest: users.data.filter((guest) => guest !== userId),
     };
 
     const res = await updateRoom({ id: roomId, data: data });
@@ -35,8 +45,8 @@ const leaveRoom = async ({ roomId, userId }) => {
     throw error;
   }
 };
-const accessRoom = async ({data: data}) => {
-  const res = await getActiveRoom({data: data});
+const accessRoom = async ({ data: data }) => {
+  const res = await getActiveRoom({ data: data });
   const roomInfo = res.data;
 
   // if roomInfo is empty, navigate to create room

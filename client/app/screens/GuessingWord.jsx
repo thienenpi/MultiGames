@@ -195,7 +195,7 @@ const GuessingWord = () => {
     if (playerInfo.current._id === undefined) {
       playerInfo.current = usersInRoom[playerIndex];
       gameScoreController.setDrawPlayer(playerInfo.current._id);
-    //   console.log(playerIndex + " - " + playerInfo.current._id);
+      //   console.log(playerIndex + " - " + playerInfo.current._id);
     }
 
     return playerInfo.current._id === userInfo._id;
@@ -310,13 +310,19 @@ const GuessingWord = () => {
       const res = await getRoomGuests({ id: roomInfo._id });
       const users = res.data;
 
+      const uniqueUserIds = new Set(); // Initialize a Set to track unique user IDs
+
       for (let userId of users) {
         const res = await getUserById({ id: userId });
 
         if (res.status === 200) {
           const user = res.data;
 
-          setUsersInRoom((prevUsers) => [...prevUsers, user]);
+          if (!uniqueUserIds.has(user._id)) {
+            // Check if user ID is not in the Set
+            setUsersInRoom((prevUsers) => [...prevUsers, user]);
+            uniqueUserIds.add(user._id); // Add user ID to the Set
+          }
         }
       }
     };
@@ -328,12 +334,12 @@ const GuessingWord = () => {
     getAllUsers();
 
     socket.on("join", (room) => {
-      setTimeout(async () => getAllUsers(), 500);
+      setTimeout(async () => getAllUsers(), 1000);
     });
 
     socket.on("leave", ({ userId }) => {
       if (!playerInfo.current._id) {
-        setTimeout(async () => getAllUsers(), 500);
+        setTimeout(async () => getAllUsers(), 1000);
       } else {
         setUsersOutRoom((prevUsers) => [...prevUsers, userId]);
         numUsersOut.current++;
