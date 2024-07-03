@@ -230,13 +230,15 @@ const GuessingWord = () => {
   };
 
   const updatePlayerIndex = () => {
-    if (playerIndex >= usersInRoom.length - 1) {
-      return;
-    }
-
     do {
+      if (playerIndex >= usersInRoom.length - 1) {
+        return;
+      }
+
       playerIndex++;
-      console.log(playerIndex);
+    //   console.log(playerIndex);
+    //   console.log(usersInRoom[playerIndex]._id);
+    //   console.log(usersOutRoom.current);
     } while (usersOutRoom.current.includes(usersInRoom[playerIndex]._id));
   };
 
@@ -266,8 +268,7 @@ const GuessingWord = () => {
           gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
-        // console.log(numUsersOut.current)
-        if (playerIndex === usersInRoom.length - 1) {
+        if (playerIndex + usersOutRoom.current.length >= usersInRoom.length - 1) {
           setIsStart(false);
           setTimeout(() => {
             setShowEndTurnResultDialog(false);

@@ -1,12 +1,20 @@
 import { View } from "react-native";
-import React from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import styles from "./styles/profile.style";
 import { Account, AppBar, OptionRow, Recommendation } from "../components";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from "../context/AuthContext";
 
 const Profile = () => {
   const navigation = useNavigation();
+  const { fetchUserInfo, userInfo } = useContext(AuthContext);
+
+    useFocusEffect(
+      useCallback(() => {
+        fetchUserInfo(userInfo._id);
+      }, [])
+    );
 
   return (
     <View style={styles.container}>

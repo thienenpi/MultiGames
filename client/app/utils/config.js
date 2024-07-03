@@ -1,22 +1,16 @@
 import io from "socket.io-client";
 
-// const BASE_URL = "https://multigames.azurewebsites.net/api";
-const BASE_URL = "http://192.168.1.3:3000/api";
+const BASE_URL = "https://multigames.azurewebsites.net/api";
+// const BASE_URL = "http://192.168.18.238:3000/api";
 
-const socket = io(
-  BASE_URL.slice(0, -4),
-  {
-    path: "/api/whiteBoard/",
-    autoConnect: false,
-  },
-);
+const socket = io(BASE_URL.slice(0, -4), {
+  path: "/api/whiteBoard/",
+  autoConnect: false,
+});
 
-const spySocket = io(
-  BASE_URL.slice(0, -4),
-  {
-    path: "/api/spyGame/",
-    autoConnect: false,
-  },
-);
+const spySocket = io(BASE_URL.slice(0, -4), {
+  path: "/api/spyGame/",
+  autoConnect: false,
+});
 
 export { BASE_URL, socket, spySocket };

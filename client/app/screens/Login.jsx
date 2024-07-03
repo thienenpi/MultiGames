@@ -78,15 +78,15 @@ const Login = () => {
       cancelLabel: "Cancel",
     });
 
-    // const result = await LocalAuthentication.authenticateAsync()
-
     console.log(result);
 
     if (result.success) {
-      handleSubmit({
-        email: credentials.email,
-        password: credentials.password,
-      });
+      setTimeout(() => {
+        handleSubmit({
+          email: credentials.email,
+          password: credentials.password,
+        });
+      }, 1000);
     } else {
       if (result.error === "not_enrolled") {
         Alert.alert(

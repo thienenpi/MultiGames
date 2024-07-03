@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MultiGames",
-    "slug": "MultiGames",
+    "name": "Game Zone",
+    "slug": "Game Zone",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
