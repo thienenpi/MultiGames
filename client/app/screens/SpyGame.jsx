@@ -22,6 +22,7 @@ import {
   NotificationDialog,
   Player,
   ResultDialog,
+  SpyScoreController,
 } from "../components";
 import { socket, spySocket } from "../utils/config";
 import { getRoomGuests, getUserById, isRoomFull } from "../api";
@@ -59,6 +60,7 @@ const SpyScreen = () => {
   const [keyword, setKeyword] = useState(null);
   const eliminatedPlayerData = useRef({});
   const [idUserVoted, setIdUserVoted] = useState("");
+  const remainingPlayers = useRef([]);
   const [resultDialog, setResultDialog] = useState({
     isVisible: false,
     text: "",
@@ -70,6 +72,9 @@ const SpyScreen = () => {
   gameTimeController.setModeSpy();
 
   const [timer, setTimer] = useState(gameTimeController.getTime());
+
+  // Set game score
+  const spyScoreController = useRef(new SpyScoreController()).current;
 
   const checkEliminated = (id) => {
     if (eliminatedPlayers.current) {
@@ -104,10 +109,7 @@ const SpyScreen = () => {
   };
 
   const handleGamingTimelines = () => {
-    if (
-      gameTimeController.getStatus() === SPY_GAME_STATUS.WORD_VIEW &&
-      checkRoomFull()
-    ) {
+    if (gameTimeController.getStatus() === SPY_GAME_STATUS.WORD_VIEW) {
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.DESCRIPTION) {
       voteResult.current = {};
@@ -152,6 +154,7 @@ const SpyScreen = () => {
   };
 
   const handleEliminated = async (data) => {
+    remainingPlayers.current = [];
     eliminatedPlayers.current = data;
     console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
     if (
@@ -169,6 +172,7 @@ const SpyScreen = () => {
           " người chơi trong phòng " +
           numberOfUser.current.length
       );
+
       if (spyData.current._id === eliminatedPlayer.current) {
         setIsShowDialogResult(true);
         console.log("Gián điệp đã bị loại, thường dân chiến thắng");
@@ -177,27 +181,42 @@ const SpyScreen = () => {
           text: "Thường dân chiến thắng!",
           identify: "thường dân",
         });
+        for (let i = 0; i < numberOfUser.current.length; i++) {
+          if (!eliminatedPlayers.current.includes(numberOfUser.current[i])) {
+            remainingPlayers.current.push(numberOfUser.current[i]);
+          }
+        }
+        spyScoreController.updateMoneyForPlayers(
+          remainingPlayers.current,
+          "civ_win"
+        );
         setIsStart(false);
       } else if (
         numberOfUser.current.length - eliminatedPlayers.current.length ===
         2
       ) {
         console.log("Number player in room now is 2");
-        let remainingPlayers = [];
         for (let i = 0; i < numberOfUser.current.length; i++) {
           if (!eliminatedPlayers.current.includes(numberOfUser.current[i])) {
-            remainingPlayers.push(numberOfUser.current[i]);
+            remainingPlayers.current.push(numberOfUser.current[i]);
           }
         }
-        console.log("remainingPlayer: " + remainingPlayers);
-        if (remainingPlayers.some((player) => player === spyData.current._id)) {
+        console.log("remainingPlayer: " + remainingPlayers.current);
+        if (
+          remainingPlayers.current.some(
+            (player) => player === spyData.current._id
+          )
+        ) {
           setIsShowDialogResult(true);
           console.log("Gián điệp chiến thắng");
-          // Show result dialog for spy winning
           setResultDialog({
             text: "Gián điệp chiến thắng!",
             identify: "gián điệp",
           });
+          spyScoreController.updateMoneyForPlayers(
+            [spyData.current._id],
+            "spy_win"
+          );
           setIsStart(false);
         }
       } else {
@@ -259,6 +278,11 @@ const SpyScreen = () => {
   useEffect(() => {
     if (!isStart) return;
     setShowKeyWordModal(true);
+
+    usersInRoom.forEach((user) => {
+      spyScoreController.addPlayer(user);
+    });
+
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         if (prevTimer <= 0) {
