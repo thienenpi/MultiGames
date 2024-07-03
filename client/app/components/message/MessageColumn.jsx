@@ -1,11 +1,8 @@
-import { View, StyleSheet, ScrollView, FlatList, Text } from "react-native";
+import { View, StyleSheet, FlatList, Text } from "react-native";
 import React from "react";
 import MessageCardView from "./MessageCardView";
 import { COLORS, SIZES } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
-// const renderItem = ({ item }) => (
-//   <MessageCardView item={item}></MessageCardView>
-// );
 
 const MessageColumn = ({ items }) => {
   const navigation = useNavigation();
@@ -17,6 +14,7 @@ const MessageColumn = ({ items }) => {
   const renderItem = ({ item }) => (
     <MessageCardView item={item} onPress={() => handlePress(item)} />
   );
+
   return (
     <View style={styles.container}>
       {!items.length ? (
@@ -46,5 +44,6 @@ const styles = StyleSheet.create({
   notiText: {
     color: COLORS.text,
     fontFamily: "sfProBold",
+    alignSelf: "center",
   },
 });

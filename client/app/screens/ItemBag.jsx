@@ -188,7 +188,7 @@ const ItemBag = () => {
               onPress={handleUseItem}
             >
               <Text style={styles.textStyle}>
-                {isItemUsed === true ? "Đang dùng" : "Sử dụng"}
+                {isItemUsed === true ? "In used" : "Use"}
               </Text>
             </TouchableOpacity>
           </View>

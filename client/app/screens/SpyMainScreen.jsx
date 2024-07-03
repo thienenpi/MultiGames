@@ -1,6 +1,13 @@
 import React, { useContext } from "react";
 import styles from "./styles/spyMain.style";
-import { View, Text, ImageBackground, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  Pressable,
+  Alert,
+} from "react-native";
 import { COLORS } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";
 import GameHeader from "../components/spyGame/GameHeader";
@@ -15,15 +22,22 @@ const SpyMainScreen = () => {
   const handleAccessRoom = async () => {
     const data = {
       gameMode: "Ai Là Gián Điệp - Chế độ giọng nói",
-    }
-    var roomInfo = await accessRoom({data: data});
+    };
+    var roomInfo = await accessRoom({ data: data });
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
-    await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+    const res = await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+    if (res.status === "playing") {
+      Alert.alert("Cannot join", "Room is playing.");
+      return;
+    }
+
     navigation.navigate("Spy Game", { roomInfo: roomInfo });
-  }
+  };
   return (
     <View style={{ flexDirection: "column" }}>
       <ImageBackground
@@ -34,9 +48,7 @@ const SpyMainScreen = () => {
         <View style={styles.gameOptionContainer("#FCBE4F")}>
           <Text style={styles.gameText}> Ai Là Gián Điệp</Text>
           <View style={styles.gameTypeContainer}>
-            <Pressable
-              onPress={handleAccessRoom}
-            >
+            <Pressable onPress={handleAccessRoom}>
               <GameType
                 backgroundColor={COLORS.lightOrange}
                 textColor={COLORS.orange}
@@ -44,10 +56,7 @@ const SpyMainScreen = () => {
                 gametypeName={"Chế độ giọng nói"}
               ></GameType>
             </Pressable>
-            <Pressable
-              onPress={handleAccessRoom}
-            >
-
+            <Pressable onPress={handleAccessRoom}>
               <GameType
                 backgroundColor={COLORS.lightOrange}
                 textColor={COLORS.orange}
@@ -60,8 +69,7 @@ const SpyMainScreen = () => {
         <View style={styles.gameOptionContainer("#2CADFE")}>
           <Text style={styles.gameText}> Gián điệp không lời</Text>
           <View style={styles.gameTypeContainer}>
-            <Pressable
-              onPress={handleAccessRoom}>
+            <Pressable onPress={handleAccessRoom}>
               <GameType
                 backgroundColor={COLORS.brightBlue}
                 textColor={COLORS.darkBlue}
@@ -69,9 +77,7 @@ const SpyMainScreen = () => {
                 gametypeName={"Chế độ giọng nói"}
               ></GameType>
             </Pressable>
-            <Pressable
-              onPress={handleAccessRoom}
-            >
+            <Pressable onPress={handleAccessRoom}>
               <GameType
                 backgroundColor={COLORS.brightBlue}
                 textColor={COLORS.darkBlue}

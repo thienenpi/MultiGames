@@ -14,7 +14,7 @@ const RoomHistory = () => {
   async function fetchRoomsGuest() {
     try {
       const id = userInfo._id;
-      const res = await getRoomsGuest({id});
+      const res = await getRoomsGuest({ id: id });
       if (res.status === 200) {
         setRoomHistoryData(res.data);
       }
@@ -30,7 +30,7 @@ const RoomHistory = () => {
   return (
     <View style={styles.container}>
       <AppBar
-        title='Room History'
+        title="Room History"
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
 

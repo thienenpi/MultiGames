@@ -4,13 +4,26 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./styles/dashboard.style";
-import { ProfileRow, GameCard, MyCarousel } from "../components";
+import {
+  ProfileRow,
+  GameCard,
+  RankingDialog,
+  FriendsDialog,
+} from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
+import { useState } from "react";
 
 const Dashboard = () => {
   const { userInfo, fetchUserInfo } = useContext(AuthContext);
   const navigation = useNavigation();
+  const [isShowRanking, setIsShowRanking] = useState(false);
+  const [isShowFriends, setIsShowFriends] = useState(false);
+
+  const GAME_MODE = {
+    DRAW: "Bạn Vẽ Tôi Đoán",
+    SPY: "Ai Là Gián Điệp - Chế độ văn bản",
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -18,18 +31,34 @@ const Dashboard = () => {
     }, [])
   );
 
-  const handleAccessRoom = async () => {
+  const handleAccessRoom = async (mode) => {
     const data = {
-      gameMode: "Bạn Vẽ Tôi Đoán",
+      gameMode: mode,
     };
+
     var roomInfo = await accessRoom({ data: data });
+
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
 
-    await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
-    navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    const res = await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+    if (res.status === "playing") {
+      Alert.alert("Cannot join", "Room is playing.");
+      return;
+    }
+    // navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    // await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+    if (mode === "Bạn Vẽ Tôi Đoán") {
+      navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    }
+
+    if (mode === "Ai Là Gián Điệp - Chế độ văn bản") {
+      navigation.navigate("Spy Game", { roomInfo: roomInfo });
+    }
   };
 
   useEffect(() => {
@@ -48,24 +77,48 @@ const Dashboard = () => {
         eventText="Events"
       />
 
-      {/* <MyCarousel /> */}
-
       <View style={styles.containerTask}>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => setIsShowRanking((prev) => !prev)}
+        >
           <Ionicons name="stats-chart" size={34} color="blue" />
           <Text style={styles.text}>Ranking</Text>
         </TouchableOpacity>
+
+        {isShowRanking && (
+          <RankingDialog
+            isShow={isShowRanking}
+            onChangeShow={setIsShowRanking}
+          />
+        )}
+
         <TouchableOpacity style={styles.item}>
           <Ionicons name="add-circle-outline" size={34} color="red" />
           <Text style={styles.text}>Invitations</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => setIsShowFriends((prev) => !prev)}
+        >
           <Ionicons name="people-sharp" size={34} color="purple" />
           <Text style={styles.text}>Friends</Text>
         </TouchableOpacity>
+
+        {isShowFriends && (
+          <FriendsDialog
+            isShow={isShowFriends}
+            onChangeShow={setIsShowFriends}
+          ></FriendsDialog>
+        )}
       </View>
 
-      <Image source={require("../../assets/slide1.jpg")} style={{ height: 250, width: '100%' }} resizeMode="cover" />
+      <Image
+        source={require("../../assets/slide1.jpg")}
+        style={{ height: 250, width: "100%" }}
+        resizeMode="cover"
+      />
 
       <View style={styles.containerInfo}>
         <View style={styles.row}>
@@ -99,7 +152,7 @@ const Dashboard = () => {
           </Text>
           <TouchableOpacity
             style={[styles.button, { borderRadius: 6, paddingVertical: 2 }]}
-            onPress={handleAccessRoom}
+            onPress={() => handleAccessRoom(GAME_MODE.DRAW)}
           >
             <Ionicons
               name="pencil-outline"
@@ -111,7 +164,7 @@ const Dashboard = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity onPress={handleAccessRoom}>
+      <TouchableOpacity onPress={() => handleAccessRoom(GAME_MODE.DRAW)}>
         <GameCard
           colorDark="rgba(0,180,0,0.8)"
           colorLight="rgba(0,180,0,0.5)"
@@ -119,7 +172,7 @@ const Dashboard = () => {
           text="Guess My Drawing"
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Spy Main")}>
+      <TouchableOpacity onPress={() => handleAccessRoom(GAME_MODE.SPY)}>
         <GameCard
           colorDark="rgba(0,0,180,0.8)"
           colorLight="rgba(0,0,180,0.5)"

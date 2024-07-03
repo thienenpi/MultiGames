@@ -17,11 +17,11 @@ const RoomCreate = () => {
   const [capacitySpy, setCapacitySpy] = useState([4, 5, 6, 7, 8]);
   const [capacityDraw, setCapacityDraw] = useState([2, 3, 4, 5, 6]);
   const buttonTitles = [
-    ["Ai Là Gián Điệp - Chế độ giọng nói", capacitySpy],
-    ["Ai Là Gián Điệp - Chế độ văn bản", capacitySpy],
-    ["Gián Điệp Không Lời - Chế đội giọng nói", capacitySpy],
-    ["Gián Điệp Không Lời - Chế đội văn bản", capacitySpy],
     ["Bạn Vẽ Tôi Đoán", capacityDraw],
+    ["Ai Là Gián Điệp - Chế độ văn bản", capacitySpy],
+    // ["Ai Là Gián Điệp - Chế độ giọng nói", capacitySpy],
+    // ["Gián Điệp Không Lời - Chế đội giọng nói", capacitySpy],
+    // ["Gián Điệp Không Lời - Chế đội văn bản", capacitySpy],
   ];
   const [lastIndex, setLastIndex] = useState(buttonTitles[selectedButton][1].length - 1);
   const [password, setPassword] = useState('');
@@ -93,7 +93,7 @@ const RoomCreate = () => {
   return (
     <View style={styles.container}>
       <AppBar
-        title="Tạo phòng"
+        title="Create room"
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
 
@@ -101,7 +101,7 @@ const RoomCreate = () => {
         backgroundColor: "white",
         paddingBottom: 10,
       }}>
-        <Text style={{ marginVertical: 8, marginHorizontal: 10 }}>Chế độ chơi</Text>
+        <Text style={{ marginVertical: 8, marginHorizontal: 10 }}>Game Mode</Text>
         <View
           style={{
             flexDirection: "row",
@@ -156,9 +156,9 @@ const RoomCreate = () => {
           backgroundColor: "white",
         }}
         onPress={() => setModalVisibleCapacity(true)}>
-        <Text>Số lượng người chơi</Text>
+        <Text>Number of players</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ marginRight: 8, color: "gray" }}>{buttonTitles[selectedButton][1][lastIndex]} người</Text>
+          <Text style={{ marginRight: 8, color: "gray" }}>{buttonTitles[selectedButton][1][lastIndex]} players</Text>
           <Ionicons name="chevron-forward" size={16} color="gray" />
         </View>
       </TouchableOpacity>
@@ -223,7 +223,7 @@ const RoomCreate = () => {
                     color: lastIndex === index ? "#4FBFFF" : "gray",
                     fontWeight: lastIndex === index ? "bold" : "normal",
                   }}
-                >{count} người chơi</Text>
+                >{count} players</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -241,7 +241,7 @@ const RoomCreate = () => {
           backgroundColor: "white",
         }}
       >
-        <Text>Mật khẩu</Text>
+        <Text>Password</Text>
         <Switch
           style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }] }}
           trackColor={{ false: "lightgray", true: "#81b0ff" }}
@@ -290,7 +290,7 @@ const RoomCreate = () => {
               borderRadius: 10,
             }}
           >
-            <Text style={{ marginBottom: 10, textAlign: 'center', fontSize: 18 }}>Nhập mật khẩu</Text>
+            <Text style={{ marginBottom: 10, textAlign: 'center', fontSize: 18 }}>Enter password</Text>
             <View style={{ justifyContent: 'space-between' }}>
               <TextInput
                 style={{
@@ -326,7 +326,7 @@ const RoomCreate = () => {
                     padding: 10,
                   }}
                 >
-                  <Text style={{ color: "#00CDF9", fontWeight: "bold" }}>Hủy</Text>
+                  <Text style={{ color: "#00CDF9", fontWeight: "bold" }}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleConfirm}
@@ -342,7 +342,7 @@ const RoomCreate = () => {
                     padding: 10,
                   }}
                 >
-                  <Text style={{ color: "white", fontWeight: "bold" }}>Xác nhận</Text>
+                  <Text style={{ color: "white", fontWeight: "bold" }}>Confirm</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -383,7 +383,7 @@ const RoomCreate = () => {
         <CustomButton
           isValid={true}
           styles={styles}
-          label={"Tạo phòng"}
+          label={"Create"}
           onPress={() => {
             handleCreateRoom();
           }}

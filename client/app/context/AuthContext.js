@@ -1,7 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { createContext, useEffect, useState } from "react";
-import { userLogin, userLogout, userRegister, getUserById, updateUserInfo } from "../api/UserApi";
+import {
+  userLogin,
+  userLogout,
+  userRegister,
+  getUserById,
+  updateUserInfo,
+} from "../api/UserApi";
 import { Alert } from "react-native";
+import * as LocalAuthentication from "expo-local-authentication";
+import * as SecureStore from "expo-secure-store";
 
 export const AuthContext = createContext();
 
@@ -9,6 +17,19 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userToken, setUserToken] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
+  const [isBiometric, setIsBiometric] = useState(false);
+  const [supportedAuthTypes, setSupportedAuthTypes] = useState([]);
+
+  const saveCredentials = async (email, password) => {
+    await SecureStore.setItemAsync("userEmail", email);
+    await SecureStore.setItemAsync("userPassword", password);
+  };
+
+  const getCredentials = async () => {
+    const email = await SecureStore.getItemAsync("userEmail");
+    const password = await SecureStore.getItemAsync("userPassword");
+    return { email, password };
+  };
 
   const register = async ({ data }) => {
     const res = await userRegister({ data: data });
@@ -62,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     const res = await userLogin({ data: data });
 
     if (res.status === 200) {
+      await saveCredentials(data.email, data.password);
       const responseData = res.data;
       let userInfo = responseData;
       let userToken = responseData.token;
@@ -116,7 +138,7 @@ export const AuthProvider = ({ children }) => {
       const res = await getUserById({ id });
       if (res.status === 200) {
         const data = res.data;
-        
+
         setUserInfo(data);
         AsyncStorage.setItem("userInfo", JSON.stringify(data));
       } else {
@@ -128,7 +150,7 @@ export const AuthProvider = ({ children }) => {
         ]);
       }
     } catch (error) {
-      console.error("Error fetching user info: ", error);
+      //   console.error("Error fetching user info: ", error);
     }
   };
 
@@ -170,12 +192,38 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
+    const checkBiometric = async () => {
+      const hasBiometric = await LocalAuthentication.hasHardwareAsync();
+      setIsBiometric(hasBiometric);
+    };
+
+    const getSupportedAuthTypes = async () => {
+      const supportedAuthTypes =
+        await LocalAuthentication.supportedAuthenticationTypesAsync();
+      setSupportedAuthTypes(supportedAuthTypes);
+    };
+
+    getSupportedAuthTypes();
+    checkBiometric();
     isLoggedIn();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ login, logout, register, fetchUserInfo, updateInfo, isLoading, userToken, userInfo, setUserInfo }}
+      value={{
+        login,
+        logout,
+        register,
+        fetchUserInfo,
+        updateInfo,
+        isLoading,
+        isBiometric,
+        supportedAuthTypes,
+        getCredentials,
+        userToken,
+        userInfo,
+        setUserInfo,
+      }}
     >
       {children}
     </AuthContext.Provider>

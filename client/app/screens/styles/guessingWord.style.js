@@ -11,18 +11,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  
   modalView: {
-    height: "48%",
-    width: "80%",
+    top: SIZES.height / 4,
+    bottom: SIZES.height / 3,
+    left: SIZES.width / 11,
+    right: SIZES.width / 11,
     backgroundColor: "white",
-    borderRadius: 10,
     alignItems: "center",
+    borderRadius: 10,
+    position: "absolute",
+    paddingHorizontal: SIZES.medium,
   },
 
   container: {

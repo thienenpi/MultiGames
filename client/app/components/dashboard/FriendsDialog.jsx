@@ -1,16 +1,50 @@
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { SIZES } from "../../constants";
-import FriendsColumn from "./FriendsColumn";
 import { AuthContext } from "../../context/AuthContext";
 import { getFriends } from "../../services";
-import { getRoomGuests } from "../../api";
+import FriendCardView from "../drawing/FriendCardView";
+import CustomButton from "../CustomButton";
 
-const InviteDialog = ({ isShow, roomInfo, onChangeShow }) => {
+const FriendsColumn = ({ friends }) => {
+  const renderItem = ({ item }) => {
+    return <FriendCardView item={item} roomId={null}></FriendCardView>;
+  };
+
+  return (
+    <FlatList
+      style={{ width: "100%" }}
+      data={friends}
+      renderItem={renderItem}
+      keyExtractor={(item) => JSON.stringify(item)}
+      contentContainerStyle={{}}
+      scrollEnabled={true}
+    ></FlatList>
+  );
+};
+
+const FriendsDialog = ({ isShow, onChangeShow }) => {
   const [show, setShow] = useState(isShow);
   const [friends, setFriends] = useState([]);
 
   const { userInfo } = useContext(AuthContext);
+
+  const fetchFriends = async () => {
+    try {
+      const friends = await getFriends({ id: userInfo._id });
+
+      setFriends(friends);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const closeModal = () => {
     onChangeShow(false);
@@ -21,22 +55,6 @@ const InviteDialog = ({ isShow, roomInfo, onChangeShow }) => {
   }, [isShow]);
 
   useEffect(() => {
-    const fetchFriends = async () => {
-      try {
-        const guests = await getRoomGuests({ id: roomInfo._id });
-        const guestIds = guests.data;
-
-        let res = await getFriends({ id: userInfo._id });
-
-        // remove friend from list
-        res = res.filter((friend) => !guestIds.includes(friend));
-        console.log(res);
-        setFriends(res);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchFriends();
   }, [userInfo]);
 
@@ -50,20 +68,25 @@ const InviteDialog = ({ isShow, roomInfo, onChangeShow }) => {
       <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
       <View style={styles.modalView}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Invite your friends</Text>
+          <Text style={styles.headerText}>Friends</Text>
         </View>
 
         <View style={styles.body}>
-          <FriendsColumn items={friends} roomId={roomInfo._id}></FriendsColumn>
-        </View>
+          <FriendsColumn friends={friends}></FriendsColumn>
 
-        {/* <View style={styles.footer}></View> */}
+          <CustomButton
+            isValid={true}
+            label={"Close"}
+            styles={styles}
+            onPress={closeModal}
+          ></CustomButton>
+        </View>
       </View>
     </Modal>
   );
 };
 
-export default InviteDialog;
+export default FriendsDialog;
 
 const styles = StyleSheet.create({
   overlay: {
@@ -125,6 +148,7 @@ const styles = StyleSheet.create({
     flex: 9,
     width: "100%",
     borderRadius: 10,
+    alignItems: "center",
   },
 
   footer: {
@@ -134,5 +158,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderTopWidth: 0.2,
+  },
+
+  btnContainer: (backgroundColor) => ({
+    width: "40%",
+    backgroundColor: backgroundColor,
+    padding: 10,
+    margin: 10,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  }),
+
+  btnLabel: {
+    color: "white",
+    fontWeight: "bold",
   },
 });

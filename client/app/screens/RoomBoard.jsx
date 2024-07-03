@@ -74,7 +74,7 @@ const RoomBoard = () => {
   return (
     <View style={styles.container}>
       <AppBar
-        title="Phòng Board"
+        title="Game Room"
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
 
@@ -95,7 +95,7 @@ const RoomBoard = () => {
           onPress={() => navigation.navigate("Room Create")}
         >
           <Ionicons name="add-circle" size={30} color="white" />
-          <Text style={styles.buttonText}>Tạo phòng</Text>
+          <Text style={styles.buttonText}>Create room</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -106,7 +106,7 @@ const RoomBoard = () => {
           onPress={showDialog}
         >
           <Ionicons name="search-circle" size={30} color="white" />
-          <Text style={styles.buttonText}>Tìm phòng</Text>
+          <Text style={styles.buttonText}>Find room</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.separator} />
@@ -123,7 +123,7 @@ const RoomBoard = () => {
             </View>
           }
           styles={styles}
-          label={"Phòng tôi đã từng chơi"}
+          label={"Room history"}
           onPress={() => {
             navigation.navigate("Room History");
           }}
@@ -138,10 +138,10 @@ const RoomBoard = () => {
       ></FlatList>
 
       <Dialog.Container visible={dialogVisible}>
-        <Dialog.Title style={{ textAlign: "center" }}>Tìm phòng</Dialog.Title>
+        <Dialog.Title style={{ textAlign: "center" }}>Find room</Dialog.Title>
         <Dialog.Input
           onChangeText={(number) => setRoomNumber(number)}
-          placeholder="Nhập Room ID"
+          placeholder="Enter Room ID"
           underlineColorAndroid="transparent"
           placeholderTextColor="#C7C7C7"
           backgroundColor="#F5F5F5"
@@ -168,7 +168,7 @@ const RoomBoard = () => {
               padding: 10,
             }}
           >
-            <Text style={{ color: "#00CDF9", fontWeight: "bold" }}>Hủy</Text>
+            <Text style={{ color: "#00CDF9", fontWeight: "bold" }}>Cancel</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -185,7 +185,7 @@ const RoomBoard = () => {
               padding: 10,
             }}
           >
-            <Text style={{ color: "white", fontWeight: "bold" }}>Xác nhận</Text>
+            <Text style={{ color: "white", fontWeight: "bold" }}>Confirm</Text>
           </TouchableOpacity>
         </View>
       </Dialog.Container>

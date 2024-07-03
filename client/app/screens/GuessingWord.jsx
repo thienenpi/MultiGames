@@ -8,6 +8,11 @@ import {
   Modal,
   Pressable,
   Animated,
+  Alert,
+  Platform,
+  ToastAndroid,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
@@ -33,6 +38,7 @@ import {
 import { getRoomGuests, isRoomFull, getUserById, getKeyWords } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
 import { leaveRoom } from "../services";
+import * as MediaLibrary from "expo-media-library";
 
 const GuessingWord = () => {
   const route = useRoute();
@@ -56,6 +62,8 @@ const GuessingWord = () => {
   const [isClear, setIsClear] = useState(false);
 
   const [usersInRoom, setUsersInRoom] = useState([]);
+  //   const [usersOutRoom, setUsersOutRoom] = useState([]);
+  const usersOutRoom = useRef([]);
   const [userToAddFriend, setUserToAddFriend] = useState(null);
 
   const [showDownloadImageDialog, setShowDownloadImageDialog] = useState(false);
@@ -69,6 +77,7 @@ const GuessingWord = () => {
   const [keywordList, setKeywordList] = useState([]);
 
   var playerIndex = 0;
+  //   const numUsersOut = useRef(0);
   const playerInfo = useRef({});
 
   const countCorrectGuess = useRef(0);
@@ -95,21 +104,16 @@ const GuessingWord = () => {
     setIsClear((prev) => !prev);
   };
 
-  const handleButtonPress = () => {
-    captureAndSaveImage().then(hanldeDialog());
+  const handleButtonPress = async () => {
+    await captureAndSaveImage({ saveImage: true });
+    // setShowDownloadImageDialog(true);
   };
 
   const handleSendImage = () => {};
 
-  const handleChooseIcon = () => {};
-
   const handleReady = () => {
     setIsReady(true);
     socket.emit("ready", roomInfo._id);
-  };
-
-  const hanldeDialog = async () => {
-    setShowDownloadImageDialog(true);
   };
 
   const closeAllModal = () => {
@@ -138,12 +142,41 @@ const GuessingWord = () => {
     }
   };
 
-  const captureAndSaveImage = async () => {
+  const captureAndSaveImage = async ({ saveImage }) => {
+    const requestMediaLibraryPermissions = async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "This app needs access to your photo library to save photos."
+        );
+      }
+    };
+
     try {
       setShowOptions(false);
       capturedImage.current = await viewShotRef.current.capture();
+
+      if (saveImage) {
+        await requestMediaLibraryPermissions();
+
+        await MediaLibrary.createAssetAsync(capturedImage.current);
+        if (Platform.OS === "ios") {
+          Alert.alert(
+            "Image Saved",
+            "Your image has been saved to the camera roll."
+          );
+        } else {
+          ToastAndroid.show("Image saved to gallery", ToastAndroid.SHORT);
+        }
+      }
+      setShowDownloadImageDialog(true);
     } catch (error) {
-      console.error("Error capturing image:", error);
+      //   console.error("Error capturing image:", error);
+      //   Alert.alert(
+      //     "Error",
+      //     "There was an error capturing and saving the image."
+      //   );
     }
   };
 
@@ -190,14 +223,23 @@ const GuessingWord = () => {
     if (playerInfo.current._id === undefined) {
       playerInfo.current = usersInRoom[playerIndex];
       gameScoreController.setDrawPlayer(playerInfo.current._id);
-      console.log(playerIndex + " - " + playerInfo.current._id);
+      //   console.log(playerIndex + " - " + playerInfo.current._id);
     }
 
     return playerInfo.current._id === userInfo._id;
   };
 
   const updatePlayerIndex = () => {
-    playerIndex = playerIndex < usersInRoom.length - 1 ? playerIndex + 1 : 0;
+    do {
+      if (playerIndex >= usersInRoom.length - 1) {
+        return;
+      }
+
+      playerIndex++;
+    //   console.log(playerIndex);
+    //   console.log(usersInRoom[playerIndex]._id);
+    //   console.log(usersOutRoom.current);
+    } while (usersOutRoom.current.includes(usersInRoom[playerIndex]._id));
   };
 
   const handleGamingTimelines = () => {
@@ -206,8 +248,9 @@ const GuessingWord = () => {
       if (checkRoomFull()) {
         updatePlayerIndex();
         playerInfo.current = usersInRoom[playerIndex];
+
         gameScoreController.setDrawPlayer(playerInfo.current._id);
-        console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
+        // console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
 
         selectedKeyword.current = {};
         if (checkYourTurn()) {
@@ -219,13 +262,13 @@ const GuessingWord = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
-      captureAndSaveImage().then(() => {
+      captureAndSaveImage({ saveImage: false }).then(() => {
         setShowEndTurnResultDialog(true);
         countCorrectGuess.current =
           gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
-        if (playerIndex === usersInRoom.length - 1) {
+        if (playerIndex + usersOutRoom.current.length >= usersInRoom.length - 1) {
           setIsStart(false);
           setTimeout(() => {
             setShowEndTurnResultDialog(false);
@@ -237,6 +280,10 @@ const GuessingWord = () => {
         }
       });
     }
+  };
+
+  const hideKeyboard = () => {
+    Keyboard.dismiss();
   };
 
   // UseEffect to join the room and get chat history
@@ -252,12 +299,12 @@ const GuessingWord = () => {
 
           if (gameScoreController.checkGuessCorrectedPlayer(data.senderId)) {
             const noti = {
-              sender: "Hệ thống",
+              sender: "System",
               content:
                 data.sender +
-                " đã đoán đúng! +" +
+                " has guessed correctly! +" +
                 gameScoreController.getAddedScoreInTurn(data.senderId) +
-                " điểm",
+                " points",
             };
 
             setMessageHistory((prevMessageHistory) => [
@@ -277,6 +324,7 @@ const GuessingWord = () => {
     // Listen when to start the game
     socket.on("startGame", () => {
       setIsStart(true);
+      setIsReady(false);
     });
 
     socket.on("selectKeyword", (keyword) => {
@@ -285,7 +333,7 @@ const GuessingWord = () => {
 
     return () => {
       leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
-      socket.emit("leave", roomInfo._id);
+      socket.emit("leave", { room: roomInfo._id, userId: userInfo._id });
     };
   }, []);
 
@@ -296,13 +344,19 @@ const GuessingWord = () => {
       const res = await getRoomGuests({ id: roomInfo._id });
       const users = res.data;
 
+      const uniqueUserIds = new Set(); // Initialize a Set to track unique user IDs
+
       for (let userId of users) {
         const res = await getUserById({ id: userId });
 
         if (res.status === 200) {
           const user = res.data;
 
-          setUsersInRoom((prevUsers) => [...prevUsers, user]);
+          if (!uniqueUserIds.has(user._id)) {
+            // Check if user ID is not in the Set
+            setUsersInRoom((prevUsers) => [...prevUsers, user]);
+            uniqueUserIds.add(user._id); // Add user ID to the Set
+          }
         }
       }
     };
@@ -314,11 +368,18 @@ const GuessingWord = () => {
     getAllUsers();
 
     socket.on("join", (room) => {
-      setTimeout(async () => getAllUsers(), 500);
+      setTimeout(async () => getAllUsers(), 1000);
     });
 
-    socket.on("leave", (room) => {
-      setTimeout(async () => getAllUsers(), 500);
+    socket.on("leave", ({ userId }) => {
+      if (!playerInfo.current._id) {
+        setTimeout(async () => getAllUsers(), 1000);
+      } else {
+        // setUsersOutRoom((prevUsers) => [...prevUsers, userId]);
+        usersOutRoom.current.push(userId);
+        // numUsersOut.current++;
+        // console.log(numUsersOut)
+      }
     });
   }, []);
 
@@ -378,296 +439,310 @@ const GuessingWord = () => {
   }, [keywordList.length, isStart]);
 
   return (
-    <View style={styles.container}>
-      {/* Show invite dialog */}
-      {showInviteDialog && (
-        <InviteDialog
-          onChangeShow={setShowInviteDialog}
-          isShow={showInviteDialog}
-          roomInfo={roomInfo}
-        ></InviteDialog>
-      )}
+    <TouchableWithoutFeedback onPress={hideKeyboard}>
+      <View style={styles.container}>
+        {/* Show invite dialog */}
+        {showInviteDialog && (
+          <InviteDialog
+            onChangeShow={setShowInviteDialog}
+            isShow={showInviteDialog}
+            roomInfo={roomInfo}
+          ></InviteDialog>
+        )}
 
-      {/* Show keyword dialog */}
-      {showKeywordDialog && (
-        <KeywordSelection
-          isShow={showKeywordDialog}
-          keywordList={keywordList}
-          onKeywordSelect={handleSelectKeyword}
-        />
-      )}
+        {/* Show keyword dialog */}
+        {showKeywordDialog && (
+          <KeywordSelection
+            isShow={showKeywordDialog}
+            keywordList={keywordList}
+            onKeywordSelect={handleSelectKeyword}
+          />
+        )}
 
-      {/* Show end turn result dialog */}
-      {showEndTurnResultDialog && (
-        <EndTurnResult
-          isShow={showEndTurnResultDialog}
-          player={playerInfo.current}
-          image={capturedImage.current}
-          keyword={selectedKeyword.current.keyword}
-          numPlayersCorrect={countCorrectGuess.current}
-        />
-      )}
+        {/* Show end turn result dialog */}
+        {showEndTurnResultDialog && (
+          <EndTurnResult
+            isShow={showEndTurnResultDialog}
+            player={playerInfo.current}
+            image={capturedImage.current}
+            keyword={selectedKeyword.current.keyword}
+            numPlayersCorrect={countCorrectGuess.current}
+          />
+        )}
 
-      {/* Show result dialog */}
-      {showEndGameResultDialog && (
-        <EndGameResult
-          items={gameScoreController.players}
-          isShow={showEndGameResultDialog}
-          keyword={"Trò chơi kết thúc"}
-        ></EndGameResult>
-      )}
+        {/* Show result dialog */}
+        {showEndGameResultDialog && (
+          <EndGameResult
+            items={gameScoreController.players}
+            isShow={showEndGameResultDialog}
+            keyword={"The game has ended"}
+          ></EndGameResult>
+        )}
 
-      {/* Show add friend dialog */}
-      {showAddFriendDialog && (
-        <AddFriendDialog
-          isShow={showAddFriendDialog}
-          onChangeShow={setShowAddFriendDialog}
-          keyword={"Add friend"}
-          user={userToAddFriend}
-        ></AddFriendDialog>
-      )}
+        {/* Show add friend dialog */}
+        {showAddFriendDialog && (
+          <AddFriendDialog
+            isShow={showAddFriendDialog}
+            onChangeShow={setShowAddFriendDialog}
+            keyword={"Add friend"}
+            user={userToAddFriend}
+          ></AddFriendDialog>
+        )}
 
-      {/* Show download image dialog */}
-      {showDownloadImageDialog && (
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={showDownloadImageDialog}
-          onRequestClose={closeAllModal}
-        >
-          <Pressable style={styles.overlay} onPress={closeAllModal} />
-          <View style={styles.centeredView}>
+        {/* Show download image dialog */}
+        {showDownloadImageDialog && (
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={showDownloadImageDialog}
+            onRequestClose={closeAllModal}
+          >
+            <Pressable style={styles.overlay} onPress={closeAllModal} />
             <View style={styles.modalView}>
-              {capturedImage && (
+              {capturedImage.current && (
                 <Image
-                  source={{ uri: capturedImage }}
-                  style={{ flex: 1, resizeMode: "center" }}
+                  source={{ uri: capturedImage.current }}
+                  style={{
+                    flex: 1,
+                    resizeMode: "fill",
+                    height: "100%",
+                    width: "100%",
+                  }}
                 />
               )}
             </View>
+          </Modal>
+        )}
+
+        {/* AppBar */}
+        <View style={styles.appBar}>
+          <Ionicons name="menu" size={30} color="white" />
+          <Text style={styles.timer}>{timer}</Text>
+          <View style={styles.roomInfoContainer}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.roomName}>{roomInfo.name}</Text>
+              {checkYourTurn() && (
+                <Text style={styles.roomName}>
+                  {" - "}
+                  {selectedKeyword.current.keyword}
+                </Text>
+              )}
+            </View>
+
+            <Text style={styles.roomId}>Room ID: {roomInfo._id}</Text>
           </View>
-        </Modal>
-      )}
-
-      {/* AppBar */}
-      <View style={styles.appBar}>
-        <Ionicons name="menu" size={30} color="white" />
-        <Text style={styles.timer}>{timer}</Text>
-        <View style={styles.roomInfoContainer}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.roomName}>{roomInfo.name}</Text>
-            {checkYourTurn() && (
-              <Text style={styles.roomName}>
-                {" - "}
-                {selectedKeyword.current.keyword}
-              </Text>
-            )}
-          </View>
-
-          <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
-        </View>
-        <Pressable
-          onPress={() =>
-            navigation.navigate("Room Config", {
-              roomInfo: roomInfo,
-              usersInRoom: usersInRoom,
-            })
-          }
-        >
-          <Ionicons
-            name="settings"
-            size={26}
-            color="white"
-            style={{ margin: 4 }}
-          />
-        </Pressable>
-      </View>
-
-      {/* Whiteboard */}
-      {isStart ? (
-        <View style={styles.whiteBoard}>
-          <ViewShot
-            ref={viewShotRef}
-            style={{
-              position: "absolute",
-              top: 60,
-              left: 0,
-              right: 0,
-              bottom: 0,
-            }}
+          <Pressable
+            onPress={() =>
+              navigation.navigate("Room Config", {
+                roomInfo: roomInfo,
+                usersInRoom: usersInRoom,
+              })
+            }
           >
-            <WhiteBoard
-              enableDrawing={checkYourTurn()}
-              roomId={roomInfo._id}
-              color={color}
-              size={size}
-              isRedo={isRedo}
-              onRedo={() => setIsRedo(false)}
-              isUndo={isUndo}
-              onUndo={() => setIsUndo(false)}
-              isClear={isClear}
-              onClearDrawing={updateIsClear}
-            ></WhiteBoard>
-            {showOptions && (
-              <Animated.View style={styles.optionBar}>
-                <DrawingOptionsBar
-                  onUpdateColor={updateColor}
-                  onUpdateSize={updateSize}
-                  color={color}
-                  size={size}
-                  option={option}
-                  toggleOptions={toggleOptions}
-                  onClearDrawing={updateIsClear}
-                />
-              </Animated.View>
-            )}
-          </ViewShot>
+            <Ionicons
+              name="settings"
+              size={26}
+              color="white"
+              style={{ margin: 4 }}
+            />
+          </Pressable>
         </View>
-      ) : (
-        <View style={styles.bannerCotainer}>
-          <Image
-            source={require("../../assets/draw_and_guess_logo.png")}
-            style={{
-              resizeMode: "contain",
-              marginTop: 110,
-              height: "55%",
-              width: "100%",
-              marginBottom: 10,
-            }}
-          />
-          <View style={styles.buttonContainers}>
-            <TouchableOpacity
-              style={styles.containerInvite}
-              onPress={() => setShowInviteDialog(true)}
-            >
-              <LinearGradient
-                colors={["#2CB4FF", "#62C7FF"]}
-                start={[0, 0]}
-                end={[1, 0]}
-                style={styles.gradientButton}
-              >
-                <Image
-                  source={require("../../assets/find_icon.png")}
-                  style={{ flex: 1, resizeMode: "center" }}
-                />
-                <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  Mời bạn
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.containerStart}
-              onPress={isReady ? () => {} : handleReady}
-            >
-              <LinearGradient
-                colors={["#AB012B", "#FF003F"]}
-                start={[0, 0]}
-                end={[1, 0]}
-                style={styles.gradientButton}
-              >
-                <Image
-                  source={
-                    isReady
-                      ? require("../../assets/image_login.png")
-                      : require("../../assets/create_icon.png")
-                  }
-                  style={{ flex: 1, resizeMode: "center" }}
-                />
-                <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  {isReady ? "Chờ người chơi khác..." : "Bắt đầu"}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
 
-      {/* Drawing options */}
-      {isStart && checkYourTurn() ? (
-        <View
-          style={[
-            styles.bottomBar,
-            {
-              borderTopColor: "lightgray",
-              borderTopWidth: 1,
-              borderTopHeight: 1,
-            },
-          ]}
-        >
-          <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => toggleOptions(1)}
+        {/* Whiteboard */}
+        {isStart ? (
+          <View style={styles.whiteBoard}>
+            <ViewShot
+              ref={viewShotRef}
+              style={{
+                position: "absolute",
+                top: 60,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
             >
-              <Ionicons
-                name={option === 1 ? "brush" : "brush-outline"}
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => toggleOptions(2)}
-            >
-              <Ionicons
-                name={option === 2 ? "color-palette" : "color-palette-outline"}
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => toggleOptions(3)}
-            >
-              <Ionicons
-                name={option === 3 ? "trash" : "trash-outline"}
-                size={24}
-                color="black"
-              />
-            </TouchableOpacity>
+              <WhiteBoard
+                enableDrawing={checkYourTurn()}
+                roomId={roomInfo._id}
+                color={color}
+                size={size}
+                isRedo={isRedo}
+                onRedo={() => setIsRedo(false)}
+                isUndo={isUndo}
+                onUndo={() => setIsUndo(false)}
+                isClear={isClear}
+                onClearDrawing={updateIsClear}
+              ></WhiteBoard>
+              {showOptions && (
+                <Animated.View style={styles.optionBar}>
+                  <DrawingOptionsBar
+                    onUpdateColor={updateColor}
+                    onUpdateSize={updateSize}
+                    color={color}
+                    size={size}
+                    option={option}
+                    toggleOptions={toggleOptions}
+                    onClearDrawing={updateIsClear}
+                  />
+                </Animated.View>
+              )}
+            </ViewShot>
           </View>
-          <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
-              <Ionicons name="download" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => setIsUndo(true)}
-            >
-              <Ionicons name="arrow-back" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.optionButton}
-              onPress={() => setIsRedo(true)}
-            >
-              <Ionicons name="arrow-forward" size={24} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ) : (
-        <View style={[styles.bottomBar, { backgroundColor: "#79c060" }]}></View>
-      )}
-      {/* Chat box */}
-      <View style={styles.chatBox}>
-        {/* Các ô chứa hình ảnh user */}
-        <View style={styles.userImagesContainer}>
-          {
-            // Hiển thị hình ảnh của các user trong phòng
-            usersInRoom.map((user) => (
+        ) : (
+          <View style={styles.bannerCotainer}>
+            <Image
+              source={require("../../assets/draw_and_guess_logo.png")}
+              style={{
+                resizeMode: "contain",
+                marginTop: 110,
+                height: "55%",
+                width: "100%",
+                marginBottom: 10,
+              }}
+            />
+            <View style={styles.buttonContainers}>
               <TouchableOpacity
-                key={user._id}
-                onPress={() => {
-                  if (user._id === userInfo._id) return;
-                  setShowAddFriendDialog(true);
-                  setUserToAddFriend(user);
-                }}
+                style={styles.containerInvite}
+                onPress={() => setShowInviteDialog(true)}
               >
-                <UserCardView user={user}></UserCardView>
+                <LinearGradient
+                  colors={["#2CB4FF", "#62C7FF"]}
+                  start={[0, 0]}
+                  end={[1, 0]}
+                  style={styles.gradientButton}
+                >
+                  <Image
+                    source={require("../../assets/find_icon.png")}
+                    style={{ flex: 1, resizeMode: "center" }}
+                  />
+                  <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
+                    Invite
+                  </Text>
+                </LinearGradient>
               </TouchableOpacity>
-            ))
-          }
-          {/* Hiển thị hình ảnh của các user trong phòng */}
-          {/* {usersInRoom.map((user, index) => (
+              <TouchableOpacity
+                style={styles.containerStart}
+                onPress={isReady ? () => {} : handleReady}
+              >
+                <LinearGradient
+                  colors={["#AB012B", "#FF003F"]}
+                  start={[0, 0]}
+                  end={[1, 0]}
+                  style={styles.gradientButton}
+                >
+                  <Image
+                    source={
+                      isReady
+                        ? require("../../assets/image_login.png")
+                        : require("../../assets/create_icon.png")
+                    }
+                    style={{ flex: 1, resizeMode: "center" }}
+                  />
+                  <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
+                    {isReady ? "Waiting others..." : "Ready"}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* Drawing options */}
+        {isStart && checkYourTurn() ? (
+          <View
+            style={[
+              styles.bottomBar,
+              {
+                borderTopColor: "lightgray",
+                borderTopWidth: 1,
+                borderTopHeight: 1,
+              },
+            ]}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => toggleOptions(1)}
+              >
+                <Ionicons
+                  name={option === 1 ? "brush" : "brush-outline"}
+                  size={24}
+                  color="black"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => toggleOptions(2)}
+              >
+                <Ionicons
+                  name={
+                    option === 2 ? "color-palette" : "color-palette-outline"
+                  }
+                  size={24}
+                  color="black"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => toggleOptions(3)}
+              >
+                <Ionicons
+                  name={option === 3 ? "trash" : "trash-outline"}
+                  size={24}
+                  color="black"
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={handleButtonPress}
+              >
+                <Ionicons name="download" size={24} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => setIsUndo(true)}
+              >
+                <Ionicons name="arrow-back" size={24} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => setIsRedo(true)}
+              >
+                <Ionicons name="arrow-forward" size={24} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <View
+            style={[styles.bottomBar, { backgroundColor: "#79c060" }]}
+          ></View>
+        )}
+        {/* Chat box */}
+        <View style={styles.chatBox}>
+          {/* Các ô chứa hình ảnh user */}
+          <View style={styles.userImagesContainer}>
+            {
+              // Hiển thị hình ảnh của các user trong phòng
+              usersInRoom.map((user) => (
+                <TouchableOpacity
+                  key={user._id}
+                  onPress={() => {
+                    if (user._id === userInfo._id) return;
+                    setShowAddFriendDialog(true);
+                    setUserToAddFriend(user);
+                  }}
+                >
+                  <UserCardView
+                    user={user}
+                    isOut={usersOutRoom.current.includes(user._id)}
+                  ></UserCardView>
+                </TouchableOpacity>
+              ))
+            }
+            {/* Hiển thị hình ảnh của các user trong phòng */}
+            {/* {usersInRoom.map((user, index) => (
             <Image
               key={user._id}
               source={{ uri: user.avatarUrl }}
@@ -677,36 +752,40 @@ const GuessingWord = () => {
               ]}
             />
           ))} */}
-        </View>
+          </View>
 
-        {/* Khung chứa các câu trả lời */}
-        <ChatHistory message={messageHistory} />
-        <View style={styles.inputContainer}>
-          {/* Icon button gửi ảnh */}
-          <TouchableOpacity onPress={handleSendImage} style={styles.iconButton}>
-            <Image
-              source={require("../../assets/send_image.png")}
-              style={styles.icon}
+          {/* Khung chứa các câu trả lời */}
+          <ChatHistory message={messageHistory} />
+          <View style={styles.inputContainer}>
+            {/* Icon button gửi ảnh */}
+            <TouchableOpacity
+              onPress={handleSendImage}
+              style={styles.iconButton}
+            >
+              <Image
+                source={require("../../assets/send_image.png")}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            {/* TextInput */}
+            <TextInput
+              style={styles.input}
+              value={message}
+              onChangeText={(text) => setMessage(text)}
+              placeholder="Type your answer..."
+              placeholderTextColor="#888"
             />
-          </TouchableOpacity>
-          {/* TextInput */}
-          <TextInput
-            style={styles.input}
-            value={message}
-            onChangeText={(text) => setMessage(text)}
-            placeholder="Nhập câu trả lời..."
-            placeholderTextColor="#888"
-          />
-          {/* Icon button chọn bộ icon */}
-          <TouchableOpacity onPress={sendMessage} style={styles.iconButton}>
-            <Image
-              source={require("../../assets/send.png")}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
+            {/* Icon button chọn bộ icon */}
+            <TouchableOpacity onPress={sendMessage} style={styles.iconButton}>
+              <Image
+                source={require("../../assets/send.png")}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

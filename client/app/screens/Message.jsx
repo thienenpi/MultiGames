@@ -18,6 +18,7 @@ const Message = () => {
     handleLoadFriend();
     handleLoadAcpectFriendRequest();
   }, []);
+
   const handleLoadFriend = () => {
     console.log(userInfo.friends);
     setFriendList([]);
@@ -50,6 +51,7 @@ const Message = () => {
       console.error("Failed to send friend request: ", error);
     }
   };
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>

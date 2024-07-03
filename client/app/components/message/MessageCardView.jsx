@@ -12,16 +12,19 @@ import { getUnreadMessagesCount } from "../../api/MessageApi";
 import { socket } from "../../utils/config";
 
 const MessageCardView = ({ item, onPress }) => {
-  const [unReadNumber, setUnreadNumver] = useState(0);
+  const [unReadNumber, setUnreadNumber] = useState(0);
   const [newestMessage, setNewestMessage] = useState("");
   const { userInfo } = useContext(AuthContext);
+
   const getUnreadNumBer = async () => {
     const res = await getUnreadMessagesCount({
       userId: userInfo._id,
       friendId: item._id,
     });
-    setUnreadNumver(res.data.unreadCount);
+
+    setUnreadNumber(res.data);
   };
+
   const handleNewestMessage = () => {
     socket.on("notification", (newMessage) => {
       if (newMessage.senderId === item._id) {
@@ -33,6 +36,7 @@ const MessageCardView = ({ item, onPress }) => {
     handleNewestMessage();
     getUnreadNumBer();
   }, [newestMessage]);
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
