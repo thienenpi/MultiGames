@@ -34,7 +34,7 @@ import MyCarousel from "./MyCarousel";
 import InviteDialog from "./drawing/InviteDialog";
 import InvitationDialog from "./InvitationDialog";
 import ResultDialog from "./spyGame/ResultDialog";
-
+import EndRoundDialog from "./spyGame/EndRoundDialog";
 export {
   CustomButton,
   CustomDatePicker,
@@ -71,5 +71,6 @@ export {
   InviteDialog,
   InvitationDialog,
   ResultDialog,
+  EndRoundDialog,
   // MyCarousel,
 };

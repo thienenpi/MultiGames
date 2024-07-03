@@ -9,13 +9,12 @@ import {
   Image,
 } from "react-native";
 import { COLORS, SIZES } from "../../constants";
-const ResultDialog = ({
+const EndRoundDialog = ({
   avatar,
   isVisible,
   onClose,
   duration,
   name,
-  identify,
 }) => {
   const [show, setShow] = useState(isVisible);
 
@@ -34,10 +33,9 @@ const ResultDialog = ({
     <Modal animationType="fade" transparent={true} visible={show}>
       <Pressable style={styles.overlay} onPress={onClose} />
       <View style={styles.modalView}>
-        <Text style={styles.gameTile}>Game result!</Text>
+        <Text style={styles.gameTile}>Roud result!</Text>
         <Image source={{ uri: avatar }} style={styles.avatar} />
-        <Text style={styles.title}>Player {name} is the spy.</Text>
-        <Text style={styles.desc}> Congratulate {identify} on winning!</Text>
+        <Text style={styles.word}>Player {name} is eliminated.</Text>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
@@ -46,7 +44,7 @@ const ResultDialog = ({
   );
 };
 
-export default ResultDialog;
+export default EndRoundDialog;
 
 const styles = StyleSheet.create({
   overlay: {
@@ -59,8 +57,8 @@ const styles = StyleSheet.create({
   },
 
   modalView: {
-    top: SIZES.height / 3.5,
-    bottom: SIZES.height / 3.5,
+    top: SIZES.height / 3,
+    bottom: SIZES.height / 3,
     left: SIZES.width / 20,
     right: SIZES.width / 20,
     backgroundColor: "white",
@@ -82,7 +80,7 @@ const styles = StyleSheet.create({
     width: 70,
     borderRadius: 35,
     borderWidth: 1,
-    borderColor: COLORS.blue,
+    borderColor: COLORS.darkBlue,
   },
 
   gameTile: {
@@ -97,10 +95,7 @@ const styles = StyleSheet.create({
     color: "green",
     marginBottom: 20,
   },
-  desc: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
+
   closeButton: {
     backgroundColor: "lightgreen",
     paddingVertical: 10,

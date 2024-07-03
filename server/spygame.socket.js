@@ -39,8 +39,7 @@ const spyGameSocketSetup = (server) => {
           socket.on("users", (data) => {
             data.forEach((user) => {
               if (message.senderId === user._id) {
-                descriptionMessages[room][user._id] = "";
-                descriptionMessages[room][user._id] = message.content;
+                  descriptionMessages[room][user._id] = message.content;
               }
             });
             io.to(room).emit("descriptionMessage", descriptionMessages[room]);
@@ -51,7 +50,10 @@ const spyGameSocketSetup = (server) => {
         }
       });
     };
-
+    socket.on("Reset", (room)=>{
+      delete descriptionMessages[room];
+      delete votes[room];
+    })
     const readyHandler = (room) => {
       if (!rooms[room]["noReady"]) {
         rooms[room]["noReady"] = 0;
@@ -76,7 +78,7 @@ const spyGameSocketSetup = (server) => {
         return;
       }
     };
-
+    
     const startGameHandler = async (room) => {
       console.log(`Game started in room ${room}`);
 
@@ -104,7 +106,25 @@ const spyGameSocketSetup = (server) => {
     };
 
     const selectRandomKeywords = (keywords, count) => {
-      const shuffled = [...keywords].sort(() => 0.5 - Math.random());
+      if (!keywords.length) return [];
+    
+      // Group keywords by category
+      const keywordsByCategory = keywords.reduce((acc, keyword) => {
+        if (!acc[keyword.category]) {
+          acc[keyword.category] = [];
+        }
+        acc[keyword.category].push(keyword);
+        return acc;
+      }, {});
+    
+      const categories = Object.keys(keywordsByCategory);
+    
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    
+      const filteredKeywords = keywordsByCategory[randomCategory];
+    
+      const shuffled = [...filteredKeywords].sort(() => 0.5 - Math.random());
+    
       return shuffled.slice(0, count);
     };
 

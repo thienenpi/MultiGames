@@ -15,13 +15,15 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   ChatHistory,
+  EndRoundDialog,
   GameTimeController,
+  InviteDialog,
   KeyWordDialog,
   NotificationDialog,
   Player,
   ResultDialog,
 } from "../components";
-import { spySocket } from "../utils/config";
+import { socket, spySocket } from "../utils/config";
 import { getRoomGuests, getUserById, isRoomFull } from "../api";
 import { leaveRoom } from "../services";
 import { AuthContext } from "../context/AuthContext";
@@ -41,6 +43,9 @@ const SpyScreen = () => {
   const [isShowVote, setisShowVote] = useState(false);
   const [showKeyWordModal, setShowKeyWordModal] = useState(false);
   const [showVoteDialog, setShowVoteDialog] = useState(false);
+  const [isShowDialogRoundEnd, setIsShowDialogRoundEnd] = useState(false);
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+
   const spyData = useRef({});
 
   const [messageHistory, setMessageHistory] = useState([]);
@@ -52,6 +57,8 @@ const SpyScreen = () => {
   const numberOfUser = useRef([]);
   const [message, setMessage] = useState("");
   const [keyword, setKeyword] = useState(null);
+  const eliminatedPlayerData = useRef({});
+  const [idUserVoted, setIdUserVoted] = useState("");
   const [resultDialog, setResultDialog] = useState({
     isVisible: false,
     text: "",
@@ -70,12 +77,25 @@ const SpyScreen = () => {
     }
   };
   const confirmVote = async (selectedId) => {
-    spySocket.emit("vote", {
-      voter: userInfo._id,
-      votee: selectedId,
-      room: roomInfo._id,
-      amoutVoter: usersInRoom.length - eliminatedPlayers.current.length,
-    });
+    if (isStart) {
+      if (idUserVoted === "" && selectedId !== userInfo._id) {
+        setIdUserVoted(selectedId);
+        spySocket.emit("vote", {
+          voter: userInfo._id,
+          votee: selectedId,
+          room: roomInfo._id,
+          amoutVoter: usersInRoom.length - eliminatedPlayers.current.length,
+        });
+      } else {
+        setMessageHistory((pervMessages) => [
+          ...pervMessages,
+          {
+            sender: "Thông báo",
+            content: "Lỗi bỏ phiếu",
+          },
+        ]);
+      }
+    }
   };
 
   const checkRoomFull = async () => {
@@ -90,6 +110,7 @@ const SpyScreen = () => {
     ) {
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.DESCRIPTION) {
+      voteResult.current = {};
       setisShowVote(false);
       setIsDesrTime(true);
       const notification = {
@@ -107,13 +128,21 @@ const SpyScreen = () => {
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.RESULT) {
       setIsShowDes(false);
-      setDescriptionMessage([]);
       setisShowVote(true);
-
-      spySocket.emit("votingResult", {
-        room: roomInfo._id,
-        voteFinalResult: voteResult.current,
-      });
+      setDescriptionMessage([]);
+      if (voteResult.current) {
+        spySocket.emit("votingResult", {
+          room: roomInfo._id,
+          voteFinalResult: voteResult.current,
+        });
+      } else {
+        const notification = {
+          sender: "Sytem",
+          content: "No one get elimited last round",
+        };
+        setMessageHistory((pervMessages) => [...pervMessages, notification]);
+      }
+      setIdUserVoted("");
     }
   };
 
@@ -122,56 +151,63 @@ const SpyScreen = () => {
     spySocket.emit("ready", roomInfo._id);
   };
 
-  const handleEliminated = (data) => {
+  const handleEliminated = async (data) => {
     eliminatedPlayers.current = data;
-      console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
-      if (eliminatedPlayers.current.length > 0 && numberOfUser.current.length > 0) {
-        eliminatedPlayer.current =
-          eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
+    console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
+    if (
+      eliminatedPlayers.current.length > 0 &&
+      numberOfUser.current.length > 0
+    ) {
+      eliminatedPlayer.current =
+        eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
 
-        console.log("Id người bị loại " + eliminatedPlayer.current);
-        console.log("Người bị loại là " + spyData.current._id);
-        console.log("Số người chơi bị loại " + eliminatedPlayers.current.length + " người chơi trong phòng " + numberOfUser.current.length);
-        if (spyData.current._id === eliminatedPlayer.current) {
+      console.log("Id người bị loại " + eliminatedPlayer.current);
+      console.log("Người bị loại là " + spyData.current._id);
+      console.log(
+        "Số người chơi bị loại " +
+          eliminatedPlayers.current.length +
+          " người chơi trong phòng " +
+          numberOfUser.current.length
+      );
+      if (spyData.current._id === eliminatedPlayer.current) {
+        setIsShowDialogResult(true);
+        console.log("Gián điệp đã bị loại, thường dân chiến thắng");
+        // Show result dialog for winning
+        setResultDialog({
+          text: "Thường dân chiến thắng!",
+          identify: "thường dân",
+        });
+        setIsStart(false);
+      } else if (
+        numberOfUser.current.length - eliminatedPlayers.current.length ===
+        2
+      ) {
+        console.log("Number player in room now is 2");
+        let remainingPlayers = [];
+        for (let i = 0; i < numberOfUser.current.length; i++) {
+          if (!eliminatedPlayers.current.includes(numberOfUser.current[i])) {
+            remainingPlayers.push(numberOfUser.current[i]);
+          }
+        }
+        console.log("remainingPlayer: " + remainingPlayers);
+        if (remainingPlayers.some((player) => player === spyData.current._id)) {
           setIsShowDialogResult(true);
-          console.log("Gián điệp đã bị loại, thường dân chiến thắng");
-          // Show result dialog for winning
+          console.log("Gián điệp chiến thắng");
+          // Show result dialog for spy winning
           setResultDialog({
-            text: "Thường dân chiến thắng!",
-            identify: "thường dân",
+            text: "Gián điệp chiến thắng!",
+            identify: "gián điệp",
           });
           setIsStart(false);
-        } else if (
-          numberOfUser.current.length - eliminatedPlayers.current.length ===
-          2
-        ) {
-          console.log("Number player in room now is 2")
-          let remainingPlayers = [];
-          for(let i = 0; i < numberOfUser.current.length; i++){
-            if(!eliminatedPlayers.current.includes(numberOfUser.current[i])){
-              remainingPlayers.push(numberOfUser.current[i]);
-            }
-          }
-          console.log("remainingPlayer: " + remainingPlayers);
-          if (
-            remainingPlayers.some(
-              (player) => player === spyData.current._id
-            )
-          ) {
-            setIsShowDialogResult(true);
-            console.log("Gián điệp chiến thắng");
-            // Show result dialog for spy winning
-            setResultDialog({
-              text: "Gián điệp chiến thắng!",
-              identify: "gián điệp",
-            });
-            setIsStart(false);
-          }
-        } else {
-          setIsShowDialogResult(true);
-          console.log("Kết quả");
         }
+      } else {
+        const res = await getUserById(eliminatedPlayer.current);
+        eliminatedPlayerData.current = res.data;
+        setIsShowDialogRoundEnd(true);
+        socket.emit("Reset", roomInfo._id);
+        console.log("Kết quả");
       }
+    }
   };
   useEffect(() => {
     spySocket.emit("join", roomInfo._id);
@@ -335,6 +371,13 @@ const SpyScreen = () => {
         source={require("../../assets/background_spygame_image.png")}
         style={styles.background}
       >
+        {showInviteDialog && (
+          <InviteDialog
+            onChangeShow={setShowInviteDialog}
+            isShow={showInviteDialog}
+            roomInfo={roomInfo}
+          ></InviteDialog>
+        )}
         <View style={styles.headerCotainer}>
           <View style={{ gap: 10 }}>
             <Pressable>
@@ -347,13 +390,20 @@ const SpyScreen = () => {
           </View>
           <View style={styles.roomBanner}>
             <Text style={{ fontSize: 22, fontWeight: "bold", color: "white" }}>
-              Số phòng {roomInfo.name}
+              Room ID {roomInfo.name}
             </Text>
             <View style={styles.roomName}>
               <Text style={{ fontSize: 14, color: "white" }}>
-                Phòng {roomInfo._id}
+                Room {roomInfo._id}
               </Text>
             </View>
+            {keyword && (
+              <Text
+                style={{ fontSize: 14, fontWeight: "bold", color: "white" }}
+              >
+                Keyword: {keyword.keyword}
+              </Text>
+            )}
           </View>
           <Pressable onPress={() => navigation.navigate("Room Config")}>
             <Image
@@ -370,11 +420,12 @@ const SpyScreen = () => {
                 avatar={player.avatarUrl}
                 id={player._id}
                 confirmVote={confirmVote}
-                name={player._id === userInfo._id ? "Tôi" : player.name}
+                name={player._id === userInfo._id ? "Me" : player.name}
                 isReady={isReady && userInfo._id === player._id}
                 description={descriptionMessage[player._id]}
                 isShowDes={isShowDes}
                 isShowVote={isShowVote}
+                isBeVoted={idUserVoted === player._id}
                 voteCount={isShowVote && voteResult.current[player._id]}
                 isEliminated={checkEliminated(player._id)}
               />
@@ -401,22 +452,25 @@ const SpyScreen = () => {
                   end={[1, 0]}
                   style={styles.gradientButton}
                 >
-                  <Text style={{ color: "white", fontSize: 18 }}>
-                    Sẵng sàng
-                  </Text>
+                  <Text style={{ color: "white", fontSize: 18 }}>Ready</Text>
                 </LinearGradient>
               </TouchableOpacity>
             )}
             <View style={{ height: 20 }}></View>
             {!isStart && (
-              <TouchableOpacity style={styles.containerStart}>
+              <TouchableOpacity
+                style={styles.containerStart}
+                onPress={() => setShowInviteDialog(true)}
+              >
                 <LinearGradient
-                  colors={["#F3D14F", "#FA972B"]}
+                  colors={["#FA972B", "#F3D14F"]}
                   start={[0, 0]}
                   end={[1, 0]}
                   style={styles.gradientButton}
                 >
-                  <Text style={{ color: "white", fontSize: 18 }}>Bắt đầu</Text>
+                  <Text style={{ color: "white", fontSize: 18 }}>
+                    Invite Friend
+                  </Text>
                 </LinearGradient>
               </TouchableOpacity>
             )}
@@ -459,11 +513,21 @@ const SpyScreen = () => {
         )}
         {IsShowDialogResult && (
           <ResultDialog
+            avatar={spyData.current.avatarUrl}
             name={spyData.current.name}
             identify={resultDialog.identify}
             isVisible={resultDialog.isVisible}
             onClose={() => setIsShowDialogResult(false)}
             text={resultDialog.text}
+            duration={3}
+          />
+        )}
+        {isShowDialogRoundEnd && (
+          <EndRoundDialog
+            avatar={eliminatedPlayerData.current.avatarUrl}
+            name={eliminatedPlayerData.current.name}
+            isVisible={isShowDialogRoundEnd}
+            onClose={() => setIsShowDialogRoundEnd(false)}
             duration={3}
           />
         )}
