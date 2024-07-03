@@ -20,9 +20,9 @@ const AppBar = ({
         styles.header,
         { paddingTop: Platform.OS === "android" ? 40 : 60 },
       ]}
-      colors={COLORS.blueGradient}
+      colors={[COLORS.lightBlue, COLORS.lightBlue + "40", COLORS.lightBlue + "80"]}
       start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 1 }}
     >
       <View style={styles.headerContent}>
         {showLeftIcon && (

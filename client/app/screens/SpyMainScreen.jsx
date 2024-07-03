@@ -31,8 +31,8 @@ const SpyMainScreen = () => {
 
     const res = await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
 
-    if (res.status === "playing") {
-      Alert.alert("Cannot join", "Room is playing.");
+    if (res && res.status === "playing") {
+      Alert.alert("Can not join", "The game has started.");
       return;
     }
 

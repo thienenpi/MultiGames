@@ -36,8 +36,8 @@ const InvitationDialog = ({ inviteRoom, visible, onChangeVisible }) => {
       const res = await joinRoom({ roomId: inviteRoom, userId: userInfo._id });
       onChangeVisible();
 
-      if (res.status === "playing") {
-        Alert.alert("Error", "Room is playing");
+      if (res && res.status === "playing") {
+        Alert.alert("Can not join", "The game has started");
         return;
       }
       
