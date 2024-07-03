@@ -49,7 +49,7 @@ import ApiManager from "./ApiManager";
 
 const getUnreadMessagesCount = async ({ userId, friendId }) => {
   try {
-    const url = `/message/unread-count/${userId}/${friendId}`;
+    const url = `/messages/unread-count/${userId}/${friendId}`;
     const config = {
       method: "GET",
       headers: {
@@ -67,8 +67,31 @@ const getUnreadMessagesCount = async ({ userId, friendId }) => {
     }
   }
 };
+
+const readAllMessages = async ({ userId, friendId }) => {
+  try {
+    const url = `/messages/read-all/${userId}/${friendId}`;
+    const config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
 export {
   // getMessages,
   // sendMessage,
   getUnreadMessagesCount,
+  readAllMessages,
 };
