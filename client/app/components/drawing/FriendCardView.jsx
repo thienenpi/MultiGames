@@ -62,7 +62,7 @@ const FriendCardView = ({ item, roomId }) => {
                 isValid={true}
               ></CustomButton>
             ) : (
-              <Text>Pending...</Text>
+              <Text>Pending</Text>
             )}
           </View>
         ) : (

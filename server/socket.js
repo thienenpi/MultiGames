@@ -1,6 +1,7 @@
 const socketIo = require("socket.io");
 const Message = require("./models/Message");
 const User = require("./models/Users");
+const Room = require("./models/Rooms");
 
 // Store clients per room
 const rooms = {};
@@ -72,10 +73,11 @@ const socketSetup = (server) => {
       if (rooms[room].length === 0) {
         delete rooms[room];
         delete chatHistory[room];
+        await Room.findByIdAndUpdate(room, { status: "active" });
       }
     };
 
-    const readyHandler = (room) => {
+    const readyHandler = async (room) => {
       if (!rooms[room]["noReady"]) {
         rooms[room]["noReady"] = 0;
       }
@@ -87,6 +89,7 @@ const socketSetup = (server) => {
 
       if (rooms[room]["noReady"] === rooms[room].length) {
         socket.emit("startGame");
+        await Room.findByIdAndUpdate(room, { status: "playing" });
         socket.to(room).emit("startGame");
       }
     };

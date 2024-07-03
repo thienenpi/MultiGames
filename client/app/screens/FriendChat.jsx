@@ -5,7 +5,6 @@ import {
   TextInput,
   FlatList,
   StyleSheet,
-  Button,
   Image,
   TouchableOpacity,
 } from "react-native";
@@ -66,7 +65,7 @@ const FriendChat = () => {
         >
           <Text style={styles.messageContent}>{item.message}</Text>
         </View>
-        {isLastMessage && isSeen && <Text style={styles.seenText}>Đã xem</Text>}
+        {isLastMessage && isSeen && <Text style={styles.seenText}>Seen</Text>}
       </View>
     );
   };
@@ -94,7 +93,7 @@ const FriendChat = () => {
         <Image source={{ uri: item.avatarUrl }} style={styles.profileImage} />
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>{item.name}</Text>
-          <Text style={styles.status}>Đang hoạt động</Text>
+          <Text style={styles.status}>Online</Text>
         </View>
       </View>
       <FlatList
@@ -112,7 +111,7 @@ const FriendChat = () => {
           style={styles.input}
           value={newMessage}
           onChangeText={setNewMessage}
-          placeholder="Nhắn tin"
+          placeholder="Type your message..."
           onSubmitEditing={handleSendMessage}
         />
         <TouchableOpacity onPress={handleSendMessage} style={styles.iconButton}>

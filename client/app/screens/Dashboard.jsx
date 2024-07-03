@@ -31,13 +31,20 @@ const Dashboard = () => {
     const data = {
       gameMode: "Bạn Vẽ Tôi Đoán",
     };
+
     var roomInfo = await accessRoom({ data: data });
+    
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
 
-    await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+    const res = await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+    if (res.status === "playing") {
+      Alert.alert("Cannot join", "Room is playing.");
+      return;
+    }
     navigation.navigate("Guessing Word", { roomInfo: roomInfo });
   };
 

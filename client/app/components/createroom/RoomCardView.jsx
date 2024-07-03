@@ -25,7 +25,7 @@ const RoomCardView = ({ item }) => {
 
           <View style={styles.roomState}>
             <Text style={styles.waiting}>
-              Đang chờ {item.currentPlayers}/{item.maxPlayers}
+              Waiting {item.currentPlayers}/{item.maxPlayers}
             </Text>
 
             <View style={styles.gameType}>

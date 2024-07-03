@@ -3,19 +3,25 @@ import {
   updateRoom,
   getActiveRoom,
   getRoomHistoryGuests,
+  getRoom,
 } from "../api";
 
 const joinRoom = async ({ roomId, userId }) => {
   try {
     const guests = await getRoomGuests({ id: roomId });
     var history_guests = await getRoomHistoryGuests({ id: roomId });
+    const roomInfo = await getRoom({ id: roomId });
+
+    if (roomInfo.data.status === "playing") {
+      return { status: "playing" };
+    }
 
     if (guests.data.includes(userId)) {
       return;
     }
 
     if (!history_guests.data.includes(userId)) {
-        history_guests.data.push(userId);
+      history_guests.data.push(userId);
     }
 
     const data = {

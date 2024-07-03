@@ -33,8 +33,14 @@ const InvitationDialog = ({ inviteRoom, visible, onChangeVisible }) => {
       var userInfo = await AsyncStorage.getItem("userInfo");
       userInfo = JSON.parse(userInfo);
 
-      await joinRoom({ roomId: inviteRoom, userId: userInfo._id });
+      const res = await joinRoom({ roomId: inviteRoom, userId: userInfo._id });
       onChangeVisible();
+
+      if (res.status === "playing") {
+        Alert.alert("Error", "Room is playing");
+        return;
+      }
+      
       navigation.navigate("Guessing Word", { roomInfo: roomInfo });
     } catch (error) {
       console.error(error);

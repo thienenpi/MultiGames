@@ -237,6 +237,7 @@ const Login = () => {
             flexDirection: "row",
             marginTop: 20,
             width: "65%",
+            alignItems: "center",
             justifyContent: "space-between",
           }}
         >
