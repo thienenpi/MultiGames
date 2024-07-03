@@ -7,7 +7,6 @@ import styles from "./styles/dashboard.style";
 import {
   ProfileRow,
   GameCard,
-  MyCarousel,
   RankingDialog,
   FriendsDialog,
 } from "../components";
@@ -21,19 +20,24 @@ const Dashboard = () => {
   const [isShowRanking, setIsShowRanking] = useState(false);
   const [isShowFriends, setIsShowFriends] = useState(false);
 
+  const GAME_MODE = {
+    DRAW: "Bạn Vẽ Tôi Đoán",
+    SPY: "Ai Là Gián Điệp - Chế độ văn bản",
+  };
+
   useFocusEffect(
     useCallback(() => {
       fetchUserInfo(userInfo._id);
     }, [])
   );
 
-  const handleAccessRoom = async () => {
+  const handleAccessRoom = async (mode) => {
     const data = {
-      gameMode: "Bạn Vẽ Tôi Đoán",
+      gameMode: mode,
     };
 
     var roomInfo = await accessRoom({ data: data });
-    
+
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
@@ -45,7 +49,16 @@ const Dashboard = () => {
       Alert.alert("Cannot join", "Room is playing.");
       return;
     }
-    navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    // navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    // await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+    if (mode === "Bạn Vẽ Tôi Đoán") {
+      navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    }
+
+    if (mode === "Ai Là Gián Điệp - Chế độ văn bản") {
+      navigation.navigate("Spy Game", { roomInfo: roomInfo });
+    }
   };
 
   useEffect(() => {
@@ -63,8 +76,6 @@ const Dashboard = () => {
         eventIcon="star-outline"
         eventText="Events"
       />
-
-      {/* <MyCarousel /> */}
 
       <View style={styles.containerTask}>
         <TouchableOpacity
@@ -141,7 +152,7 @@ const Dashboard = () => {
           </Text>
           <TouchableOpacity
             style={[styles.button, { borderRadius: 6, paddingVertical: 2 }]}
-            onPress={handleAccessRoom}
+            onPress={() => handleAccessRoom(GAME_MODE.DRAW)}
           >
             <Ionicons
               name="pencil-outline"
@@ -153,7 +164,7 @@ const Dashboard = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity onPress={handleAccessRoom}>
+      <TouchableOpacity onPress={() => handleAccessRoom(GAME_MODE.DRAW)}>
         <GameCard
           colorDark="rgba(0,180,0,0.8)"
           colorLight="rgba(0,180,0,0.5)"
@@ -161,7 +172,7 @@ const Dashboard = () => {
           text="Guess My Drawing"
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Spy Main")}>
+      <TouchableOpacity onPress={() => handleAccessRoom(GAME_MODE.SPY)}>
         <GameCard
           colorDark="rgba(0,0,180,0.8)"
           colorLight="rgba(0,0,180,0.5)"

@@ -30,7 +30,7 @@ const OTPVerified = () => {
 
   return (
     <View style={styles.container}>
-      <AppBar title="Nhập mã OTP" onPressLeftIcon={() => navigation.goBack()} />
+      <AppBar title="Enter OTP" onPressLeftIcon={() => navigation.goBack()} />
       <View style={styles.inputContainer}>
         {Array(4)
           .fill(0)
@@ -48,7 +48,7 @@ const OTPVerified = () => {
       </View>
       <View>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Gửi mã OTP</Text>
+          <Text style={styles.buttonText}>Send OTP</Text>
         </TouchableOpacity>
       </View>
     </View>
