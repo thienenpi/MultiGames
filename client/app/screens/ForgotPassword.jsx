@@ -14,9 +14,6 @@ import { COLORS } from "../constants";
 import { InputField } from "../components";
 import { Ionicons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
-// import auth from "@react-native-firebase/app";
-// import auth from "@react-native-firebase/auth";
-// import { auth } from "firebase";
 import { useNavigation } from "@react-navigation/native";
 
 const ForgotPassword = () => {
@@ -113,7 +110,6 @@ const ForgotPassword = () => {
           ></CustomButton>
         </LinearGradient>
       </View>
-
     </LinearGradient>
   );
 };

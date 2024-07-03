@@ -13,6 +13,7 @@ import {
   ToastAndroid,
   Keyboard,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
@@ -236,9 +237,9 @@ const GuessingWord = () => {
       }
 
       playerIndex++;
-    //   console.log(playerIndex);
-    //   console.log(usersInRoom[playerIndex]._id);
-    //   console.log(usersOutRoom.current);
+      //   console.log(playerIndex);
+      //   console.log(usersInRoom[playerIndex]._id);
+      //   console.log(usersOutRoom.current);
     } while (usersOutRoom.current.includes(usersInRoom[playerIndex]._id));
   };
 
@@ -268,7 +269,10 @@ const GuessingWord = () => {
           gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
-        if (playerIndex + usersOutRoom.current.length >= usersInRoom.length - 1) {
+        if (
+          playerIndex + usersOutRoom.current.length >=
+          usersInRoom.length - 1
+        ) {
           setIsStart(false);
           setTimeout(() => {
             setShowEndTurnResultDialog(false);
@@ -767,6 +771,7 @@ const GuessingWord = () => {
                 style={styles.icon}
               />
             </TouchableOpacity>
+
             {/* TextInput */}
             <TextInput
               style={styles.input}
@@ -775,6 +780,7 @@ const GuessingWord = () => {
               placeholder="Type your answer..."
               placeholderTextColor="#888"
             />
+
             {/* Icon button chọn bộ icon */}
             <TouchableOpacity onPress={sendMessage} style={styles.iconButton}>
               <Image

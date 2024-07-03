@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
@@ -49,8 +49,6 @@ const Dashboard = () => {
       Alert.alert("Cannot join", "Room is playing.");
       return;
     }
-    // navigation.navigate("Guessing Word", { roomInfo: roomInfo });
-    // await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
 
     if (mode === "Bạn Vẽ Tôi Đoán") {
       navigation.navigate("Guessing Word", { roomInfo: roomInfo });
@@ -68,7 +66,7 @@ const Dashboard = () => {
   }, [userInfo]);
 
   return (
-    <View>
+    <ScrollView>
       <ProfileRow
         avatarSource={userInfo.avatarUrl}
         name={userInfo.name}
@@ -113,13 +111,11 @@ const Dashboard = () => {
           ></FriendsDialog>
         )}
       </View>
-
       <Image
         source={require("../../assets/slide1.jpg")}
         style={{ height: 250, width: "100%" }}
         resizeMode="cover"
       />
-
       <View style={styles.containerInfo}>
         <View style={styles.row}>
           <Text style={{ fontSize: 30, fontWeight: "600" }}>Let's Play</Text>
@@ -180,7 +176,7 @@ const Dashboard = () => {
           text="Who's the Spy?"
         />
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 

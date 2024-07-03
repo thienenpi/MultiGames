@@ -13,10 +13,11 @@ import {
   RoomHistory,
   RoomConfig,
   RoomCreate,
-  FriendChat
+  FriendChat,
 } from "../screens";
 
 const Stack = createNativeStackNavigator();
+
 const AppStack = () => {
   return (
     <Stack.Navigator>

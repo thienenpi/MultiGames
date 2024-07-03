@@ -1,6 +1,12 @@
 import React, { useContext, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { ActivityIndicator, Alert, Modal, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Modal,
+  View,
+  ScrollView,
+} from "react-native";
 import styles from "./styles/editProfile.style";
 import { HorizontalItem, AppBar, CustomButton } from "../components";
 import ActionSheet from "react-native-actions-sheet";
@@ -121,79 +127,81 @@ const EditProfile = () => {
 
       <View style={styles.separator} />
 
-      <HorizontalItem
-        title="Avatar"
-        isAvt={true}
-        iconRight="chevron-forward"
-        isCenter={false}
-        onPress={() => actionSheetRef.current?.setModalVisible(true)}
-      />
+      <ScrollView>
+        <HorizontalItem
+          title="Avatar"
+          isAvt={true}
+          iconRight="chevron-forward"
+          isCenter={false}
+          onPress={() => actionSheetRef.current?.setModalVisible(true)}
+        />
 
-      <HorizontalItem
-        title="Nickname"
-        desc={userInfo.name}
-        iconRight="chevron-forward"
-        isCenter={false}
-        onPress={() => {}}
-      />
+        <HorizontalItem
+          title="Nickname"
+          desc={userInfo.name}
+          iconRight="chevron-forward"
+          isCenter={false}
+          onPress={() => {}}
+        />
 
-      <HorizontalItem
-        title="User ID"
-        isIconDesc={userInfo._id !== "" ? false : true}
-        iconDesc="alert-circle"
-        colorIconDesc="red"
-        desc={userInfo._id !== "" ? userInfo._id : "Not set"}
-        colorDesc={userInfo._id !== "" ? "black" : "red"}
-        iconRight="chevron-forward"
-        isCenter={false}
-        onPress={() => {}}
-      />
+        <HorizontalItem
+          title="User ID"
+          isIconDesc={userInfo._id !== "" ? false : true}
+          iconDesc="alert-circle"
+          colorIconDesc="red"
+          desc={userInfo._id !== "" ? userInfo._id : "Not set"}
+          colorDesc={userInfo._id !== "" ? "black" : "red"}
+          iconRight="chevron-forward"
+          isCenter={false}
+          onPress={() => {}}
+        />
 
-      <HorizontalItem
-        title="QR Code Contact Card"
-        iconRight="qr-code-sharp"
-        isCenter={false}
-        onPress={() => {}}
-      />
+        <HorizontalItem
+          title="QR Code Contact Card"
+          iconRight="qr-code-sharp"
+          isCenter={false}
+          onPress={() => {}}
+        />
 
-      <View style={styles.separator} />
+        <View style={styles.separator} />
 
-      <HorizontalItem
-        title="Gender"
-        desc="Male"
-        iconRight="chevron-forward"
-        isCenter={false}
-        onPress={() => {}}
-      />
+        <HorizontalItem
+          title="Gender"
+          desc="Male"
+          iconRight="chevron-forward"
+          isCenter={false}
+          onPress={() => {}}
+        />
 
-      <HorizontalItem
-        title="Birthday"
-        isIconDesc={userInfo.birth !== null ? false : true}
-        iconDesc="alert-circle"
-        colorIconDesc="red"
-        desc={userInfo.birth !== null ? userInfo.birth : "Not set"}
-        colorDesc={userInfo.birth !== null ? "black" : "red"}
-        iconRight="chevron-forward"
-        isCenter={false}
-        onPress={() => {}}
-      />
-      <HorizontalItem
-        title="Region"
-        desc="Vietnam"
-        iconRight="chevron-forward"
-        isCenter={false}
-        onPress={() => {}}
-      />
+        <HorizontalItem
+          title="Birthday"
+          isIconDesc={userInfo.birth !== null ? false : true}
+          iconDesc="alert-circle"
+          colorIconDesc="red"
+          desc={userInfo.birth !== null ? userInfo.birth : "Not set"}
+          colorDesc={userInfo.birth !== null ? "black" : "red"}
+          iconRight="chevron-forward"
+          isCenter={false}
+          onPress={() => {}}
+        />
+        <HorizontalItem
+          title="Region"
+          desc="Vietnam"
+          iconRight="chevron-forward"
+          isCenter={false}
+          onPress={() => {}}
+        />
 
-      <HorizontalItem
-        title="Signature"
-        desc=""
-        iconRight="chevron-forward"
-        isCenter={false}
-        onPress={() => {}}
-      />
+        <HorizontalItem
+          title="Signature"
+          desc=""
+          iconRight="chevron-forward"
+          isCenter={false}
+          onPress={() => {}}
+        />
 
-      <View style={styles.separator} />
+        <View style={styles.separator} />
+      </ScrollView>
 
       <ActionSheet ref={actionSheetRef}>
         <Modal

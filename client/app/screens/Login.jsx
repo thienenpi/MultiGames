@@ -198,7 +198,7 @@ const Login = () => {
         </View>
 
         <InputField
-          icon={<Ionicons name="mail" size={24}></Ionicons>}
+          icon={<Ionicons name="mail-outline" size={24}></Ionicons>}
           styles={styles}
           label={"Email"}
           keyboardType={"email-address"}
@@ -214,7 +214,7 @@ const Login = () => {
         <View style={{ height: 20 }}></View>
 
         <InputField
-          icon={<Ionicons name="keypad" size={24}></Ionicons>}
+          icon={<Ionicons name="keypad-outline" size={24}></Ionicons>}
           styles={styles}
           label={"Password"}
           inputType={"password"}

@@ -7,12 +7,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: SIZES.width,
-    backgroundColor: COLORS.background,
   },
 
   btnContainer: () => ({
     borderRadius: SIZES.medium,
-    width: SIZES.width - SIZES.xxLarge * 4,
+    width: SIZES.width - SIZES.xxLarge * 6,
     height: SIZES.xxLarge,
     alignItems: 'center',
     justifyContent: 'center',

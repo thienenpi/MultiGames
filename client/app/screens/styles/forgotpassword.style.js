@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
 
   btnContainer: () => ({
     borderRadius: SIZES.medium,
-    width: SIZES.width - SIZES.xxLarge * 5.6,
+    width: SIZES.width - SIZES.xxLarge * 6,
     height: SIZES.xxLarge,
     alignItems: "center",
     justifyContent: "center",
