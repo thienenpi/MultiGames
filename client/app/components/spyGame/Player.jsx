@@ -1,35 +1,41 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
+import React from "react";
+import { View, Image, Text, TouchableOpacity, FlatList } from "react-native";
+import styles from "../styles/player.style";
 
-const Player = ({ id, name, onVote }) => {
-  const [showDialog, setShowDialog] = useState(false);
-
-  const handleVote = () => {
-    onVote(id);
-    setShowDialog(false);
-  };
-
+const Player = ({
+  id,
+  name,
+  avatar,
+  confirmVote,
+  isReady,
+  description,
+  isShowDes,
+  isShowVote,
+  voteCount = 0,
+  isEliminated,
+}) => {
   return (
-    <View style={styles.playerContainer}>
-      <TouchableOpacity onPress={() => setShowDialog(true)}>
-        <Text>{name}</Text>
-      </TouchableOpacity>
-      <Modal visible={showDialog} transparent>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text>Vote cho {name}</Text>
-            <TouchableOpacity onPress={handleVote} style={styles.voteButton}>
-              <Text style={{ color: "white" }}>Vote</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setShowDialog(false)}
-              style={styles.cancelButton}
-            >
-              <Text style={{ color: "white" }}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+    <View key={id} style={styles.player}>
+      <View style={styles.statusDot(isReady)} />
+      {isShowDes && (
+        <View style={styles.descChat}>
+          <Text>{description}</Text>
         </View>
-      </Modal>
+      )}
+      <TouchableOpacity onPress={() => confirmVote(id)}>
+        <Image source={{ uri: avatar }} style={styles.avatar} />
+        {isShowVote && (
+          <View style={styles.descChat}>
+            <Text>Số phiếu: {voteCount}</Text>
+          </View>
+        )}
+        {isEliminated && (
+          <View style={styles.eliminated}>
+            <Text style={styles.eliminatedText}> Loại </Text>
+          </View>
+        )}
+      </TouchableOpacity>
+      <Text style={{ color: "white", fontSize: 10 }}>{name}</Text>
     </View>
   );
 };

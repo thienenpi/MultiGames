@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import styles from "./styles/spyGame.style";
 import {
   View,
   Text,
@@ -10,29 +11,173 @@ import {
   Modal,
   StyleSheet,
   Pressable,
+  Modal,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
-import { ChatHistory } from "../components";
+import {
+  ChatHistory,
+  GameTimeController,
+  KeyWordDialog,
+  NotificationDialog,
+  Player,
+  ResultDialog,
+} from "../components";
 import { spySocket } from "../utils/config";
-import { getRoomGuests, getUserById } from "../api";
+import { getRoomGuests, getUserById, isRoomFull } from "../api";
 import { leaveRoom } from "../services";
 import { AuthContext } from "../context/AuthContext";
-import Player from "./Player";
+import GameTimer from "../components/spyGame/GameTimer";
+import { SPY_GAME_STATUS } from "../constants/gamestatus";
 
 const SpyScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { userInfo } = useContext(AuthContext);
   const { roomInfo } = route.params;
+
+  const [isStart, setIsStart] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [isDesrTime, setIsDesrTime] = useState(false);
+  const [isShowDes, setIsShowDes] = useState(false);
+  const [isShowVote, setisShowVote] = useState(false);
+  const [showKeyWordModal, setShowKeyWordModal] = useState(false);
+  const [showVoteDialog, setShowVoteDialog] = useState(false);
+  const spyData = useRef({});
+
   const [messageHistory, setMessageHistory] = useState([]);
   const [usersInRoom, setUsersInRoom] = useState([]);
+  const [descriptionMessage, setDescriptionMessage] = useState([]);
+  const eliminatedPlayers = useRef([]);
+  const [IsShowDialogResult, setIsShowDialogResult] = useState(false);
+  const voteResult = useRef({});
+  const numberOfUser = useRef([]);
   const [message, setMessage] = useState("");
-  const [isVoting, setIsVoting] = useState(false);
-  const [votes, setVotes] = useState({});
-  const [scores, setScores] = useState({});
-  const [isScoresDialogVisible, setIsScoresDialogVisible] = useState(false);
+  const [keyword, setKeyword] = useState(null);
+  const [resultDialog, setResultDialog] = useState({
+    isVisible: false,
+    text: "",
+    identify: "",
+  });
 
+  const eliminatedPlayer = useRef("");
+  const gameTimeController = new GameTimeController();
+  gameTimeController.setModeSpy();
+
+  const [timer, setTimer] = useState(gameTimeController.getTime());
+
+  const checkEliminated = (id) => {
+    if (eliminatedPlayers.current) {
+      return eliminatedPlayers.current.includes(id);
+    }
+  };
+  const confirmVote = async (selectedId) => {
+    spySocket.emit("vote", {
+      voter: userInfo._id,
+      votee: selectedId,
+      room: roomInfo._id,
+      amoutVoter: usersInRoom.length - eliminatedPlayers.current.length,
+    });
+  };
+
+  const checkRoomFull = async () => {
+    const idRoom = roomInfo._id;
+    return await isRoomFull({ id: idRoom });
+  };
+
+  const handleGamingTimelines = () => {
+    if (
+      gameTimeController.getStatus() === SPY_GAME_STATUS.WORD_VIEW &&
+      checkRoomFull()
+    ) {
+    }
+    if (gameTimeController.getStatus() === SPY_GAME_STATUS.DESCRIPTION) {
+      setisShowVote(false);
+      setIsDesrTime(true);
+      const notification = {
+        sender: "Hệ thống",
+        content: "Hãy nhập miêu tả có liên quan về từ khóa",
+      };
+      setMessageHistory((pervMessages) => [...pervMessages, notification]);
+    }
+    if (gameTimeController.getStatus() === SPY_GAME_STATUS.VOTE) {
+      setIsDesrTime(false);
+      setIsShowDes(true);
+      setShowVoteDialog(true);
+      spySocket.emit("users", usersInRoom);
+      console.log("Phần Voting");
+    }
+    if (gameTimeController.getStatus() === SPY_GAME_STATUS.RESULT) {
+      setIsShowDes(false);
+      setDescriptionMessage([]);
+      setisShowVote(true);
+
+      spySocket.emit("votingResult", {
+        room: roomInfo._id,
+        voteFinalResult: voteResult.current,
+      });
+    }
+  };
+
+  const handleReady = () => {
+    setIsReady(true);
+    spySocket.emit("ready", roomInfo._id);
+  };
+
+  const handleEliminated = (data) => {
+    eliminatedPlayers.current = data;
+    console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
+    if (
+      eliminatedPlayers.current.length > 0 &&
+      numberOfUser.current.length > 0
+    ) {
+      eliminatedPlayer.current =
+        eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
+
+      console.log("Id người bị loại " + eliminatedPlayer.current);
+      console.log("Người bị loại là " + spyData.current._id);
+      console.log(
+        "Số người chơi bị loại " +
+          eliminatedPlayers.current.length +
+          " người chơi trong phòng " +
+          numberOfUser.current.length
+      );
+      if (spyData.current._id === eliminatedPlayer.current) {
+        setIsShowDialogResult(true);
+        console.log("Gián điệp đã bị loại, thường dân chiến thắng");
+        // Show result dialog for winning
+        setResultDialog({
+          text: "Thường dân chiến thắng!",
+          identify: "thường dân",
+        });
+        setIsStart(false);
+      } else if (
+        numberOfUser.current.length - eliminatedPlayers.current.length ===
+        2
+      ) {
+        console.log("Number player in room now is 2");
+        let remainingPlayers = [];
+        for (let i = 0; i < numberOfUser.current.length; i++) {
+          if (!eliminatedPlayers.current.includes(numberOfUser.current[i])) {
+            remainingPlayers.push(numberOfUser.current[i]);
+          }
+        }
+        console.log("remainingPlayer: " + remainingPlayers);
+        if (remainingPlayers.some((player) => player === spyData.current._id)) {
+          setIsShowDialogResult(true);
+          console.log("Gián điệp chiến thắng");
+          // Show result dialog for spy winning
+          setResultDialog({
+            text: "Gián điệp chiến thắng!",
+            identify: "gián điệp",
+          });
+          setIsStart(false);
+        }
+      } else {
+        setIsShowDialogResult(true);
+        console.log("Kết quả");
+      }
+    }
+  };
   useEffect(() => {
     spySocket.emit("join", roomInfo._id);
 
@@ -45,11 +190,61 @@ const SpyScreen = () => {
       }
     });
 
+    spySocket.on("SpyPlayer", (data) => {
+      if (data === spySocket.id) {
+        console.log(data + " và " + spySocket.id);
+        spySocket.emit("SpyData", userInfo);
+      }
+    });
+
+    spySocket.on("SpyData", (data) => {
+      console.log(data);
+      spyData.current = data;
+    });
+
+    spySocket.on("startGame", () => {
+      setIsStart(true);
+    });
+
+    spySocket.on("assignKeyword", (data) => {
+      setKeyword(data.keyword);
+    });
+
+    spySocket.on("eliminated", handleEliminated);
+
     return () => {
       leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
       spySocket.emit("leave", roomInfo._id);
+
+      spySocket.off("message");
+      spySocket.off("SpyPlayer");
+      spySocket.off("SpyData");
+      spySocket.off("startGame");
+      spySocket.off("eliminated");
+      spySocket.off("assignKeyword");
     };
   }, []);
+
+  useEffect(() => {
+    if (!isStart) return;
+    setShowKeyWordModal(true);
+    const interval = setInterval(() => {
+      setTimer((prevTimer) => {
+        if (prevTimer <= 0) {
+          gameTimeController.setNextStatusAndTime();
+
+          handleGamingTimelines();
+
+          return gameTimeController.getTime();
+        }
+        gameTimeController.timeDown();
+
+        return prevTimer - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isStart]);
 
   useEffect(() => {
     const getAllUsers = async () => {
@@ -58,16 +253,21 @@ const SpyScreen = () => {
       const users = res.data;
       for (let userId of users) {
         const res = await getUserById({ id: userId });
-
         if (res.status === 200) {
           const user = res.data;
           setUsersInRoom((prevUsers) => [...prevUsers, user]);
         }
       }
+      numberOfUser.current = users;
     };
 
     setMessageHistory([]);
+
     spySocket.emit("getChatHistory", roomInfo._id);
+
+    spySocket.on("voteUpdate", (data) => {
+      voteResult.current = data;
+    });
 
     getAllUsers();
 
@@ -78,76 +278,61 @@ const SpyScreen = () => {
     spySocket.on("leave", (room) => {
       setTimeout(async () => getAllUsers(), 500);
     });
-  }, []);
+
+    return () => {
+      spySocket.off("voteUpdate");
+      spySocket.off("getChatHistory");
+      spySocket.off("join");
+      spySocket.off("leave");
+    };
+  }, [roomInfo._id]);
 
   const sendMessage = () => {
-    if (message.trim() !== "") {
-      let newMessage = {
-        sender: userInfo.name,
-        content: message,
+    if (eliminatedPlayers.current.includes(userInfo._id)) {
+      let notification = {
+        sender: "Hệ thống",
+        content: "Bạn đã bị loại!",
       };
-      spySocket.emit("message", newMessage);
-      setMessage("");
       setMessageHistory((prevMessageHistory) => [
         ...prevMessageHistory,
-        newMessage,
+        notification,
       ]);
+      return;
     }
-  };
+    if (message.trim() !== "") {
+      if (isDesrTime === true) {
+        let notification = {
+          sender: "Hệ thống",
+          content: "Mô tả của bạn đã được gửi!",
+        };
+        let newMessage = {
+          senderId: userInfo._id,
+          sender: userInfo.name,
+          content: message,
+          isDescMessage: true,
+        };
+        spySocket.emit("message", newMessage);
 
-  const handleVote = (userId) => {
-    setVotes((prevVotes) => {
-      const newVotes = { ...prevVotes };
-      newVotes[userId] = (newVotes[userId] || 0) + 1;
-      return newVotes;
-    });
-  };
-
-  const endRound = () => {
-    setIsVoting(true);
-  };
-
-  const submitVotes = () => {
-    setIsVoting(false);
-    let maxVotes = 0;
-    let eliminatedUser = null;
-    for (let userId in votes) {
-      if (votes[userId] > maxVotes) {
-        maxVotes = votes[userId];
-        eliminatedUser = userId;
+        spySocket.on("descriptionMessage", (messages) => {
+          setDescriptionMessage(messages);
+        });
+        setMessageHistory((prevMessageHistory) => [
+          ...prevMessageHistory,
+          notification,
+        ]);
+        setMessage("");
+      } else {
+        let newMessage = {
+          senderId: userInfo._id,
+          sender: userInfo.name,
+          content: message,
+          isDescMessage: false,
+        };
+        spySocket.emit("message", newMessage);
+        setMessage("");
       }
     }
-
-    const newScores = { ...scores };
-    if (eliminatedUser === spyUserId) {
-      // Giả sử spyUserId là ID của gián điệp
-      usersInRoom.forEach((user) => {
-        if (user._id !== spyUserId) {
-          newScores[user._id] = (newScores[user._id] || 0) + 1;
-        }
-      });
-    } else {
-      newScores[spyUserId] = (newScores[spyUserId] || 0) + usersInRoom.length;
-    }
-    setScores(newScores);
-
-    spySocket.emit("eliminate", {
-      roomId: roomInfo._id,
-      userId: eliminatedUser,
-    });
-    setVotes({});
-    showScoresDialog();
   };
-
-  const showScoresDialog = () => {
-    setIsScoresDialogVisible(true);
-  };
-
-  const hideScoresDialog = () => {
-    setIsScoresDialogVisible(false);
-  };
-
-  const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
 
   return (
     <View style={styles.container}>
@@ -156,14 +341,26 @@ const SpyScreen = () => {
         style={styles.background}
       >
         <View style={styles.headerCotainer}>
-          <Pressable>
-            <Image
-              source={require("../../assets/menu.png")}
-              style={styles.menuIcon}
-            />
-          </Pressable>
-          <Text style={styles.headerTitle}>{roomInfo.roomName}</Text>
-          <Pressable>
+          <View style={{ gap: 10 }}>
+            <Pressable>
+              <Image
+                source={require("../../assets/menu.png")}
+                style={{ width: 32, height: 32 }}
+              />
+            </Pressable>
+            <GameTimer gameTime={timer} isStart={isStart} />
+          </View>
+          <View style={styles.roomBanner}>
+            <Text style={{ fontSize: 22, fontWeight: "bold", color: "white" }}>
+              Số phòng {roomInfo.name}
+            </Text>
+            <View style={styles.roomName}>
+              <Text style={{ fontSize: 14, color: "white" }}>
+                Phòng {roomInfo._id}
+              </Text>
+            </View>
+          </View>
+          <Pressable onPress={() => navigation.navigate("Room Config")}>
             <Image
               source={require("../../assets/setting.png")}
               style={styles.menuIcon}
@@ -179,156 +376,118 @@ const SpyScreen = () => {
         </LinearGradient>
 
         <View style={styles.playersContainer}>
-          {usersInRoom.map((user) => (
-            <Player user={user} key={user._id} />
-          ))}
-        </View>
+          <View style={styles.column}>
+            {usersInRoom.slice(0, 4).map((player) => (
+              <Player
+                key={player._id}
+                avatar={player.avatarUrl}
+                id={player._id}
+                confirmVote={confirmVote}
+                name={player._id === userInfo._id ? "Tôi" : player.name}
+                isReady={isReady && userInfo._id === player._id}
+                description={descriptionMessage[player._id]}
+                isShowDes={isShowDes}
+                isShowVote={isShowVote}
+                voteCount={isShowVote && voteResult.current[player._id]}
+                isEliminated={checkEliminated(player._id)}
+              />
+            ))}
+          </View>
 
-        <View style={styles.messageContainer}>
+          <View
+            style={{
+              flex: 4,
+              justifyContent: "flex-end",
+              alignItems: "center",
+              borderRadius: 50,
+              margin: 10,
+            }}
+          >
+            {!isStart && (
+              <TouchableOpacity
+                style={styles.containerReady}
+                onPress={handleReady}
+              >
+                <LinearGradient
+                  colors={["#6B91FF", "#62C7FF"]}
+                  start={[0, 0]}
+                  end={[1, 0]}
+                  style={styles.gradientButton}
+                >
+                  <Text style={{ color: "white", fontSize: 18 }}>
+                    Sẵng sàng
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
+            <View style={{ height: 20 }}></View>
+            {!isStart && (
+              <TouchableOpacity style={styles.containerStart}>
+                <LinearGradient
+                  colors={["#F3D14F", "#FA972B"]}
+                  start={[0, 0]}
+                  end={[1, 0]}
+                  style={styles.gradientButton}
+                >
+                  <Text style={{ color: "white", fontSize: 18 }}>Bắt đầu</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={styles.column}>
+            {usersInRoom.slice(4, 8).map((player) => (
+              <View key={player._id} style={styles.player}>
+                <Text style={{ color: "white" }}>{player.name}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+        {/* Chat history */}
+
+        <ChatHistory message={messageHistory} />
+        {/* Placeholder for chat messages */}
+        {/* Input box */}
+        <View style={styles.inputContainer}>
           <TextInput
-            style={styles.messageInput}
+            style={styles.input}
+            placeholder="Type a message..."
+            multiline
             value={message}
-            onChangeText={setMessage}
-            placeholder="Enter your message..."
-            placeholderTextColor="#BDBDBD"
+            onChangeText={(text) => setMessage(text)}
+            // onChangeText={...}
+            // value={...}
           />
           <Button title="Send" onPress={sendMessage} />
         </View>
-        <Button title="End Round" onPress={endRound} />
-
-        {isVoting && (
-          <Modal transparent={true} visible={isVoting}>
-            <View style={styles.modalBackground}>
-              <View style={styles.modalContainer}>
-                <Text style={styles.modalTitle}>
-                  Vote for a player to eliminate
-                </Text>
-                {usersInRoom
-                  .filter((user) => user._id !== userInfo._id)
-                  .map((player) => (
-                    <TouchableOpacity
-                      key={player._id}
-                      onPress={() => handleVote(player._id)}
-                      style={styles.voteButton}
-                    >
-                      <Text style={styles.voteButtonText}>{player.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                <Button title="Submit Votes" onPress={submitVotes} />
-              </View>
-            </View>
-          </Modal>
+        {showKeyWordModal && (
+          <KeyWordDialog
+            word={keyword.keyword}
+            isVisible={showKeyWordModal}
+            duration={timer}
+            onClose={() => setShowKeyWordModal(false)}
+          />
         )}
-
-        {isScoresDialogVisible && (
-          <Modal transparent={true} visible={isScoresDialogVisible}>
-            <View style={styles.modalBackground}>
-              <View style={styles.modalContainer}>
-                <Text style={styles.modalTitle}>Điểm số sau trò chơi</Text>
-                {sortedScores.map(([userId, score]) => {
-                  const user = usersInRoom.find((user) => user._id === userId);
-                  return (
-                    <Text key={userId} style={styles.scoreText}>
-                      {user ? user.name : "Unknown"}: {score}
-                    </Text>
-                  );
-                })}
-                <Button title="Đóng" onPress={hideScoresDialog} />
-              </View>
-            </View>
-          </Modal>
+        {showVoteDialog && (
+          <NotificationDialog
+            isVisible={showVoteDialog}
+            onClose={() => setShowVoteDialog(false)}
+            text={"Bắt đầu chọn ra gián điệp"}
+            duration={3}
+          />
+        )}
+        {IsShowDialogResult && (
+          <ResultDialog
+            name={spyData.current.name}
+            identify={resultDialog.identify}
+            isVisible={resultDialog.isVisible}
+            onClose={() => setIsShowDialogResult(false)}
+            text={resultDialog.text}
+            duration={3}
+          />
         )}
       </ImageBackground>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  background: {
-    flex: 1,
-    resizeMode: "cover",
-  },
-  headerCotainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  menuIcon: {
-    width: 24,
-    height: 24,
-  },
-  chatContainer: {
-    flex: 1,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    padding: 10,
-  },
-  playersContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    marginVertical: 10,
-  },
-  messageContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderColor: "#ddd",
-    padding: 10,
-  },
-  messageInput: {
-    flex: 1,
-    height: 40,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginRight: 10,
-    color: "#333",
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContainer: {
-    width: 300,
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 15,
-  },
-  voteButton: {
-    backgroundColor: "#ddd",
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
-    width: "100%",
-    alignItems: "center",
-  },
-  voteButtonText: {
-    fontSize: 16,
-  },
-  scoreText: {
-    fontSize: 16,
-    marginVertical: 5,
-  },
-});
 
 export default SpyScreen;

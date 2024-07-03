@@ -8,6 +8,9 @@ import {
   Modal,
   Pressable,
   Animated,
+  Alert,
+  Platform,
+  ToastAndroid,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
@@ -33,6 +36,7 @@ import {
 import { getRoomGuests, isRoomFull, getUserById, getKeyWords } from "../api";
 import { DRAWING_GAME_STATUS } from "../constants/gamestatus";
 import { leaveRoom } from "../services";
+import * as MediaLibrary from "expo-media-library";
 
 const GuessingWord = () => {
   const route = useRoute();
@@ -56,6 +60,7 @@ const GuessingWord = () => {
   const [isClear, setIsClear] = useState(false);
 
   const [usersInRoom, setUsersInRoom] = useState([]);
+  const [usersOutRoom, setUsersOutRoom] = useState([]);
   const [userToAddFriend, setUserToAddFriend] = useState(null);
 
   const [showDownloadImageDialog, setShowDownloadImageDialog] = useState(false);
@@ -69,6 +74,7 @@ const GuessingWord = () => {
   const [keywordList, setKeywordList] = useState([]);
 
   var playerIndex = 0;
+  const numUsersOut = useRef(0);
   const playerInfo = useRef({});
 
   const countCorrectGuess = useRef(0);
@@ -95,8 +101,9 @@ const GuessingWord = () => {
     setIsClear((prev) => !prev);
   };
 
-  const handleButtonPress = () => {
-    captureAndSaveImage().then(hanldeDialog());
+  const handleButtonPress = async () => {
+    await captureAndSaveImage({ saveImage: true });
+    // setShowDownloadImageDialog(true);
   };
 
   const handleSendImage = () => {};
@@ -106,10 +113,6 @@ const GuessingWord = () => {
   const handleReady = () => {
     setIsReady(true);
     socket.emit("ready", roomInfo._id);
-  };
-
-  const hanldeDialog = async () => {
-    setShowDownloadImageDialog(true);
   };
 
   const closeAllModal = () => {
@@ -138,12 +141,41 @@ const GuessingWord = () => {
     }
   };
 
-  const captureAndSaveImage = async () => {
+  const captureAndSaveImage = async ({ saveImage }) => {
+    const requestMediaLibraryPermissions = async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "This app needs access to your photo library to save photos."
+        );
+      }
+    };
+
     try {
       setShowOptions(false);
       capturedImage.current = await viewShotRef.current.capture();
+
+      if (saveImage) {
+        await requestMediaLibraryPermissions();
+
+        await MediaLibrary.createAssetAsync(capturedImage.current);
+        if (Platform.OS === "ios") {
+          Alert.alert(
+            "Image Saved",
+            "Your image has been saved to the camera roll."
+          );
+        } else {
+          ToastAndroid.show("Image saved to gallery", ToastAndroid.SHORT);
+        }
+      }
+      setShowDownloadImageDialog(true);
     } catch (error) {
-      console.error("Error capturing image:", error);
+      //   console.error("Error capturing image:", error);
+      //   Alert.alert(
+      //     "Error",
+      //     "There was an error capturing and saving the image."
+      //   );
     }
   };
 
@@ -190,16 +222,31 @@ const GuessingWord = () => {
     if (playerInfo.current._id === undefined) {
       playerInfo.current = usersInRoom[playerIndex];
       gameScoreController.setDrawPlayer(playerInfo.current._id);
-      console.log(playerIndex + " - " + playerInfo.current._id);
+      //   console.log(playerIndex + " - " + playerInfo.current._id);
     }
 
     return playerInfo.current._id === userInfo._id;
   };
 
-const updatePlayerIndex = () => {
+  const updatePlayerIndex = () => {
+    do {
+      playerIndex++;
+      console.log(playerIndex);
+    } while (
+      usersOutRoom.includes(usersInRoom[playerIndex]._id) ||
+      playerIndex < usersInRoom.length - 1
+    );
+  };
+
+  const handleGamingTimelines = () => {
+    closeAllModal();
+    if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.WORD_SELECTION) {
+      if (checkRoomFull()) {
+        updatePlayerIndex();
         playerInfo.current = usersInRoom[playerIndex];
+
         gameScoreController.setDrawPlayer(playerInfo.current._id);
-        console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
+        // console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
 
         selectedKeyword.current = {};
         if (checkYourTurn()) {
@@ -211,12 +258,13 @@ const updatePlayerIndex = () => {
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
-      captureAndSaveImage().then(() => {
+      captureAndSaveImage({ saveImage: false }).then(() => {
         setShowEndTurnResultDialog(true);
         countCorrectGuess.current =
           gameScoreController.getCountCorrectGuesses();
         gameScoreController.resetTurn();
 
+        // console.log(numUsersOut.current)
         if (playerIndex === usersInRoom.length - 1) {
           setIsStart(false);
           setTimeout(() => {
@@ -243,12 +291,12 @@ const updatePlayerIndex = () => {
 
           if (gameScoreController.checkGuessCorrectedPlayer(data.senderId)) {
             const noti = {
-              sender: "Hệ thống",
+              sender: "System",
               content:
                 data.sender +
-                " đã đoán đúng! +" +
+                " has guessed correctly! +" +
                 gameScoreController.getAddedScoreInTurn(data.senderId) +
-                " điểm",
+                " points",
             };
 
             setMessageHistory((prevMessageHistory) => [
@@ -268,6 +316,7 @@ const updatePlayerIndex = () => {
     // Listen when to start the game
     socket.on("startGame", () => {
       setIsStart(true);
+      setIsReady(false);
     });
 
     socket.on("selectKeyword", (keyword) => {
@@ -276,7 +325,7 @@ const updatePlayerIndex = () => {
 
     return () => {
       leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
-      socket.emit("leave", roomInfo._id);
+      socket.emit("leave", { room: roomInfo._id, userId: userInfo._id });
     };
   }, []);
 
@@ -287,13 +336,19 @@ const updatePlayerIndex = () => {
       const res = await getRoomGuests({ id: roomInfo._id });
       const users = res.data;
 
+      const uniqueUserIds = new Set(); // Initialize a Set to track unique user IDs
+
       for (let userId of users) {
         const res = await getUserById({ id: userId });
 
         if (res.status === 200) {
           const user = res.data;
 
-          setUsersInRoom((prevUsers) => [...prevUsers, user]);
+          if (!uniqueUserIds.has(user._id)) {
+            // Check if user ID is not in the Set
+            setUsersInRoom((prevUsers) => [...prevUsers, user]);
+            uniqueUserIds.add(user._id); // Add user ID to the Set
+          }
         }
       }
     };
@@ -305,11 +360,17 @@ const updatePlayerIndex = () => {
     getAllUsers();
 
     socket.on("join", (room) => {
-      setTimeout(async () => getAllUsers(), 500);
+      setTimeout(async () => getAllUsers(), 1000);
     });
 
-    socket.on("leave", (room) => {
-      setTimeout(async () => getAllUsers(), 500);
+    socket.on("leave", ({ userId }) => {
+      if (!playerInfo.current._id) {
+        setTimeout(async () => getAllUsers(), 1000);
+      } else {
+        setUsersOutRoom((prevUsers) => [...prevUsers, userId]);
+        numUsersOut.current++;
+        // console.log(numUsersOut)
+      }
     });
   }, []);
 
@@ -404,7 +465,7 @@ const updatePlayerIndex = () => {
         <EndGameResult
           items={gameScoreController.players}
           isShow={showEndGameResultDialog}
-          keyword={"Trò chơi kết thúc"}
+          keyword={"The game has ended"}
         ></EndGameResult>
       )}
 
@@ -427,15 +488,18 @@ const updatePlayerIndex = () => {
           onRequestClose={closeAllModal}
         >
           <Pressable style={styles.overlay} onPress={closeAllModal} />
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              {capturedImage && (
-                <Image
-                  source={{ uri: capturedImage }}
-                  style={{ flex: 1, resizeMode: "center" }}
-                />
-              )}
-            </View>
+          <View style={styles.modalView}>
+            {capturedImage.current && (
+              <Image
+                source={{ uri: capturedImage.current }}
+                style={{
+                  flex: 1,
+                  resizeMode: "fill",
+                  height: "100%",
+                  width: "100%",
+                }}
+              />
+            )}
           </View>
         </Modal>
       )}
@@ -455,7 +519,7 @@ const updatePlayerIndex = () => {
             )}
           </View>
 
-          <Text style={styles.roomId}>ID Phòng: {roomInfo._id}</Text>
+          <Text style={styles.roomId}>Room ID: {roomInfo._id}</Text>
         </View>
         <Pressable
           onPress={() =>
@@ -542,7 +606,7 @@ const updatePlayerIndex = () => {
                   style={{ flex: 1, resizeMode: "center" }}
                 />
                 <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  Mời bạn
+                  Invite
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -565,7 +629,7 @@ const updatePlayerIndex = () => {
                   style={{ flex: 1, resizeMode: "center" }}
                 />
                 <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                  {isReady ? "Chờ người chơi khác..." : "Bắt đầu"}
+                  {isReady ? "Waiting others..." : "Ready"}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -618,7 +682,10 @@ const updatePlayerIndex = () => {
             </TouchableOpacity>
           </View>
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.optionButton} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.optionButton}
+              onPress={handleButtonPress}
+            >
               <Ionicons name="download" size={24} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -653,7 +720,10 @@ const updatePlayerIndex = () => {
                   setUserToAddFriend(user);
                 }}
               >
-                <UserCardView user={user}></UserCardView>
+                <UserCardView
+                  user={user}
+                  isOut={usersOutRoom.includes(user._id)}
+                ></UserCardView>
               </TouchableOpacity>
             ))
           }
@@ -685,7 +755,7 @@ const updatePlayerIndex = () => {
             style={styles.input}
             value={message}
             onChangeText={(text) => setMessage(text)}
-            placeholder="Nhập câu trả lời..."
+            placeholder="Type your answer..."
             placeholderTextColor="#888"
           />
           {/* Icon button chọn bộ icon */}

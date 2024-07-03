@@ -39,7 +39,7 @@ const KeywordSelection = ({ isShow, keywordList, onKeywordSelect }) => {
     <Modal animationType="fade" transparent={true} visible={show}>
       <Pressable style={styles.overlay} />
       <View style={styles.modalView}>
-        <Text style={styles.title}>Hãy chọn từ khóa để vẽ</Text>
+        <Text style={styles.title}>Please choose the keyword</Text>
         <FlatList
           data={randomKeyword}
           keyExtractor={(item, index) => index.toString()}

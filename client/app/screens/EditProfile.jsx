@@ -19,11 +19,8 @@ const EditProfile = () => {
   const { fetchUserInfo, userInfo, setUserInfo } = useContext(AuthContext);
 
   const requestMediaLibraryPermission = async () => {
-    const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
-
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
       Alert.alert(
         "Permission Denied",
         "Sorry, we need media library permissions to make this work!",
@@ -39,11 +36,9 @@ const EditProfile = () => {
   };
 
   const requestCameraPermission = async () => {
-    const { status } = await ImagePicker.getCameraPermissionsAsync();
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
 
     if (status !== "granted") {
-      await ImagePicker.requestCameraPermissionsAsync();
-
       Alert.alert(
         "Permission Denied",
         "Sorry, we need camera permissions to make this work!",

@@ -3,21 +3,21 @@ import { COLORS } from "../../constants";
 
 const styles = StyleSheet.create({
   chatBox: {
-    flex: 4, 
+    flex: 2, 
     backgroundColor: "white", 
-    padding: 20,
+    padding: 10,
     borderRadius: 10,
     margin: 10,
   },
 
   senderName: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     color: COLORS.primaryDark,
   },
 
   context: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "normal",
     color: COLORS.primaryLight,
   },

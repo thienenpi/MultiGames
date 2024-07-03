@@ -25,7 +25,7 @@ const EndGameResult = ({ isShow, keyword, items }) => {
 
           <CustomButton
             isValid={true}
-            label={"Thoát"}
+            label={"Leave"}
             styles={styles}
             onPress={() => navigation.navigate("Dashboard")}
           ></CustomButton>

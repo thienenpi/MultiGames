@@ -15,6 +15,8 @@ import { AuthContext } from "../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { COLORS } from "../constants";
 
 const Register = () => {
   const { register } = useContext(AuthContext);
@@ -92,7 +94,12 @@ const Register = () => {
 
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
-      <View style={styles.container}>
+      <LinearGradient
+        colors={[COLORS.lightBlue, "#fff"]}
+        style={styles.container}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
         <View
           style={{
             height: 200,
@@ -109,8 +116,7 @@ const Register = () => {
         </View>
         <InputField
           icon={<Ionicons name="person" size={24}></Ionicons>}
-          // label={'Your (user)name'}
-          label={"Nhập tên đầy đủ"}
+          label={"Enter your name"}
           styles={styles}
           value={name}
           onChangeText={(text) => {
@@ -136,7 +142,7 @@ const Register = () => {
 
         <InputField
           icon={<Ionicons name="call" size={24}></Ionicons>}
-          label={"Nhập số điện thoại"}
+          label={"Enter phone number"}
           value={phoneNumber}
           styles={styles}
           inputType={"numeric"}
@@ -150,7 +156,7 @@ const Register = () => {
 
         <InputField
           icon={<Ionicons name="keypad" size={24}></Ionicons>}
-          label={"Nhập mật khẩu"}
+          label={"Enter password"}
           value={password}
           styles={styles}
           inputType={"password"}
@@ -209,13 +215,20 @@ const Register = () => {
 
         <View style={{ height: 20 }}></View>
 
-        <CustomButton
-          label={"Đăng ký"}
-          styles={styles}
-          isValid={true}
-          onPress={handleSubmit}
-        ></CustomButton>
-      </View>
+        <LinearGradient
+          colors={COLORS.blueGradient}
+          style={styles.btnContainer()}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+        >
+          <CustomButton
+            label={"Register"}
+            styles={styles}
+            isValid={true}
+            onPress={handleSubmit}
+          ></CustomButton>
+        </LinearGradient>
+      </LinearGradient>
     </TouchableWithoutFeedback>
   );
 };

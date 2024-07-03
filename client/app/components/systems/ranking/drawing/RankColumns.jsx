@@ -17,7 +17,7 @@ const RankColumns = ({ items }) => {
         renderItem={renderItem}
         keyExtractor={(item) => JSON.stringify(item._id)}
         contentContainerStyle={{ rowGap: SIZES.medium }}
-        scrollEnabled={false}
+        scrollEnabled={true}
       ></FlatList>
     </View>
   );

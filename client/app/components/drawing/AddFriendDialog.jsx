@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, Modal, Pressable, StyleSheet, Image } from "react-native";
 import { COLORS, SIZES } from "../../constants";
 import CustomButton from "../CustomButton";
@@ -13,7 +13,6 @@ const AddFriendDialog = ({ isShow, onChangeShow, keyword, user }) => {
       setIsFriend(res);
     })
   );
-
 
   const closeModal = () => {
     onChangeShow(false);
@@ -39,12 +38,12 @@ const AddFriendDialog = ({ isShow, onChangeShow, keyword, user }) => {
 
           {isFriend ? (
             <View style={styles.frStatusContainer}>
-              <Text style={styles.frStatusText}>Bạn bè</Text>
+              <Text style={styles.frStatusText}>Friend</Text>
             </View>
           ) : (
             <CustomButton
               styles={styles}
-              label={"Kết bạn"}
+              label={"Add"}
               isValid={true}
               onPress={async () => {
                 await sendFriendRequest({

@@ -1,52 +1,77 @@
-import { StyleSheet } from 'react-native';
-import { COLORS, SIZES } from '../../constants/';
+import { StyleSheet } from "react-native";
+import { COLORS, SIZES } from "../../constants/";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     width: SIZES.width,
     backgroundColor: COLORS.background,
   },
 
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 50,
+  },
+
   btnContainer: () => ({
-    // backgroundColor: backgroundColor,
-    backgroundColor:'#00CDF9' ,
-    borderRadius: 99,
-    width: SIZES.width - SIZES.xxLarge * 4,
+    borderRadius: SIZES.medium,
+    width: SIZES.width - SIZES.xxLarge * 3.2,
     height: SIZES.xxLarge,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "start",
   }),
-  
+
   btnLabel: {
-    fontFamily: 'sfProBold',
+    fontFamily: "sfProBold",
     fontSize: SIZES.large,
-    color: 'white',
+    color: "white",
   },
 
   ipfContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     width: SIZES.width - SIZES.xxLarge * 2,
     borderRadius: SIZES.medium,
-    borderColor: COLORS.text,
-    borderWidth: 1,
     paddingVertical: SIZES.small,
     paddingHorizontal: SIZES.small,
+    backgroundColor: "white",
   },
 
   ipfTextInput: {
     flex: 1,
     paddingHorizontal: 10,
     fontSize: SIZES.medium,
-    color: COLORS.text
+    color: COLORS.text,
   },
+
+  authentication: {
+    flexDirection: "row",
+    width: SIZES.width - SIZES.xxLarge * 2,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  fingerPrint: {
+    borderWidth: 1,
+    borderRadius: SIZES.xSmall,
+    borderColor: "black",
+    padding: 2,
+  },
+
+  faceialRecognition: {
+    height: SIZES.xxLarge,
+    width: SIZES.xxLarge,
+    borderRadius: SIZES.xSmall,
+  },
+
   registerText: {
-    color: '#00BDF9',
-    
-  }
+    color: COLORS.lightBlue,
+    fontSize: SIZES.medium,
+  },
 });
 
 export default styles;

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
+  Pressable,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SIZES } from "../../../../constants";
@@ -23,9 +24,18 @@ const EndTurnResult = ({
     setShow(isShow);
   }, [isShow]);
 
+  const closeModal = () => {
+    setShow(false);
+  };
+
   return (
-    <Modal animationType="fade" transparent={true} visible={show}>
-      <View style={styles.overlay} />
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={show}
+      onRequestClose={closeModal}
+    >
+      <Pressable style={styles.overlay} onPress={closeModal}/>
       <View style={styles.modalView}>
         <View style={styles.header}>
           <View style={styles.row}>
@@ -35,9 +45,9 @@ const EndTurnResult = ({
               style={styles.playerImage}
             />
             <View style={styles.column}>
-              <Text style={styles.keywordText}>Từ khóa: {keyword}</Text>
+              <Text style={styles.keywordText}>Keyword: {keyword}</Text>
               <Text style={styles.playerGuessCorrectText}>
-                {numPlayersCorrect} người đoán đúng
+                {numPlayersCorrect} users guessed correctly
               </Text>
             </View>
           </View>
@@ -54,9 +64,7 @@ const EndTurnResult = ({
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="heart" size={25} color="red" />
           </TouchableOpacity>
-          <Text style={{ fontSize: 16, marginHorizontal: 10 }}>
-            0 yêu thích
-          </Text>
+          <Text style={{ fontSize: 16, marginHorizontal: 10 }}>0 loves</Text>
         </View>
       </View>
     </Modal>
