@@ -52,7 +52,7 @@ const RoomCardView = ({ item }) => {
     if (gameMode === "Bạn vẽ tôi đoán") {
       navigation.navigate("Guessing Word", { roomInfo: item });
     } else {
-      //   navigation.navigate("Spy", { roomInfo: item._id });
+      navigation.navigate("Spy Game", { roomInfo: item });
     }
   };
 
@@ -68,7 +68,7 @@ const RoomCardView = ({ item }) => {
         ></ImageBackground>
 
         <View style={styles.roomInfo}>
-          <Text style={styles.roomID}>Room ID: {item.name}</Text>
+          <Text style={styles.roomID}>Room: {item.name}</Text>
 
           <View style={styles.roomState}>
             <Text style={styles.waiting}>

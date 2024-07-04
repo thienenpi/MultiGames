@@ -36,7 +36,10 @@ const RankUserView = ({ item }) => {
 
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.expGain}>{item.name}</Text>
+
+        {item.score && (
+          <Text style={styles.expGain}>Final score: {item.score}</Text>
+        )}
       </View>
 
       {!isMe ? (
@@ -113,8 +116,8 @@ const styles = StyleSheet.create({
 
   expGain: {
     fontFamily: "sfPro",
-    fontSize: SIZES.small,
-    color: COLORS.text,
+    fontSize: SIZES.medium,
+    color: COLORS.green,
   },
 
   addFriend: {

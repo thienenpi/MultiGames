@@ -355,6 +355,7 @@ const GuessingWord = () => {
 
         if (res.status === 200) {
           const user = res.data;
+          user['score'] = 0;
 
           if (!uniqueUserIds.has(user._id)) {
             // Check if user ID is not in the Set
@@ -477,7 +478,8 @@ const GuessingWord = () => {
         {/* Show result dialog */}
         {showEndGameResultDialog && (
           <EndGameResult
-            items={gameScoreController.players}
+            // items={gameScoreController.players}
+            items={usersInRoom}
             isShow={showEndGameResultDialog}
             keyword={"The game has ended"}
           ></EndGameResult>

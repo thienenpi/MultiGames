@@ -3,8 +3,6 @@ const mongoose = require("mongoose");
 const http = require("http");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
-const socketSetup = require("./socket"); // Import socket setup
-const spyGameSocketSetup = require("./spygame.socket");
 const app = express();
 const port = 3000;
 const server = http.createServer(app);
@@ -15,6 +13,9 @@ const roomRouter = require("./routes/room");
 const messageRouter = require("./routes/message");
 const keywordRouter = require("./routes/keyword");
 const shopRouter = require("./routes/shop");
+
+const socketSetup = require("./socket");
+const spyGameSocketSetup = require("./spygame.socket");
 
 dotenv.config();
 mongoose
