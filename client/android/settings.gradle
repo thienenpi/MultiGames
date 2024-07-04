@@ -1,4 +1,4 @@
-rootProject.name = 'MultiGames'
+rootProject.name = 'Play Zone'
 
 dependencyResolutionManagement {
   versionCatalogs {

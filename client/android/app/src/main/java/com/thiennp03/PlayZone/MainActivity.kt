@@ -1,4 +1,4 @@
-package com.thiennp03.MultiGames
+package com.thiennp03.PlayZone
 
 import android.os.Build
 import android.os.Bundle

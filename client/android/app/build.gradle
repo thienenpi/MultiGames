@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.thiennp03.MultiGames'
+    namespace 'com.thiennp03.PlayZone'
     defaultConfig {
-        applicationId 'com.thiennp03.MultiGames'
+        applicationId 'com.thiennp03.PlayZone'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
