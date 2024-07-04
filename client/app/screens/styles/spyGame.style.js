@@ -2,12 +2,10 @@ import { StyleSheet } from "react-native";
 import { COLORS, SIZES } from "../../constants";
 import { Dimensions } from "react-native";
 
-const windowHeight = Dimensions.get("screen").height;
+const windowHeight = Dimensions.get("screen").scale;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // backgroundColor: "red",
     height: SIZES.height,
     width: SIZES.width
   },
@@ -102,7 +100,6 @@ const styles = StyleSheet.create({
   },
 
   background: {
-    marginTop: 10,
     height: SIZES.height,
     resizeMode: "contain", // or 'stretch' or 'contain'
     justifyContent: "center",

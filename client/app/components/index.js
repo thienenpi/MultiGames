@@ -25,14 +25,15 @@ import AddFriendDialog from "./drawing/AddFriendDialog";
 import UserCardView from "./drawing/UserCardView";
 import EndTurnResult from "./systems/hourSystem/drawingGame/EndTurnResult";
 import DrawingScoreController from "./systems/scoringSystem/drawingScoreController";
-import InviteDialog from "./drawing/InviteDialog";
-import InvitationDialog from "./InvitationDialog";
 import RankingDialog from "./dashboard/RankingDialog";
 import FriendsDialog from "./dashboard/FriendsDialog";
-import ResultDialog from "./spyGame/ResultDialog";
 import Player from "./spyGame/Player";
 import GameTimer from "./spyGame/GameTimer";
 import NotificationDialog from "./spyGame/NotificationDialog";
+import InviteDialog from "./drawing/InviteDialog";
+import InvitationDialog from "./InvitationDialog";
+import ResultDialog from "./spyGame/ResultDialog";
+import EndRoundDialog from "./spyGame/EndRoundDialog";
 import KeyWordDialog from "./spyGame/KeyWordDialog";
 import SpyScoreController from "./systems/scoringSystem/spyScoreController";
 
@@ -73,5 +74,7 @@ export {
   RankingDialog,
   FriendsDialog,
   ResultDialog,
+  EndRoundDialog,
+  // MyCarousel,
   SpyScoreController,
 };

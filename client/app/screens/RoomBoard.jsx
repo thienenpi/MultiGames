@@ -36,7 +36,7 @@ const RoomBoard = () => {
 
   useEffect(() => {
     if (isFocused) {
-    //   fetchRoomsOwner();
+      fetchRoomsOwner();
     }
   }, [isFocused]);
 
