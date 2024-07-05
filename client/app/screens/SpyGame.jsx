@@ -95,29 +95,26 @@ const SpyScreen = () => {
         setMessageHistory((pervMessages) => [
           ...pervMessages,
           {
-            sender: "Thông báo",
-            content: "Lỗi bỏ phiếu",
+            sender: "Notification:",
+            content: "Vote error",
           },
         ]);
       }
     }
   };
 
-  const checkRoomFull = async () => {
-    const idRoom = roomInfo._id;
-    return await isRoomFull({ id: idRoom });
-  };
-
   const handleGamingTimelines = () => {
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.WORD_VIEW) {
+      setisShowVote(false);
+      setIsDesrTime(false);
+      setIsShowDes(false);
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.DESCRIPTION) {
       voteResult.current = {};
-      setisShowVote(false);
       setIsDesrTime(true);
       const notification = {
-        sender: "Hệ thống",
-        content: "Hãy nhập miêu tả có liên quan về từ khóa",
+        sender: "Notify:",
+        content: "describe your keyword.",
       };
       setMessageHistory((pervMessages) => [...pervMessages, notification]);
     }
@@ -126,12 +123,12 @@ const SpyScreen = () => {
       setIsShowDes(true);
       setShowVoteDialog(true);
       spySocket.emit("users", usersInRoom);
-      console.log("Phần Voting");
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.RESULT) {
       setIsShowDes(false);
-      setisShowVote(true);
       setDescriptionMessage([]);
+      setisShowVote(true);
+
       if (voteResult.current) {
         spySocket.emit("votingResult", {
           room: roomInfo._id,
@@ -139,7 +136,7 @@ const SpyScreen = () => {
         });
       } else {
         const notification = {
-          sender: "Sytem",
+          sender: "Notify",
           content: "No one get elimited last round",
         };
         setMessageHistory((pervMessages) => [...pervMessages, notification]);
@@ -163,23 +160,13 @@ const SpyScreen = () => {
     ) {
       eliminatedPlayer.current =
         eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
-
-      console.log("Id người bị loại " + eliminatedPlayer.current);
-      console.log("Người bị loại là " + spyData.current._id);
-      console.log(
-        "Số người chơi bị loại " +
-          eliminatedPlayers.current.length +
-          " người chơi trong phòng " +
-          numberOfUser.current.length
-      );
-
       if (spyData.current._id === eliminatedPlayer.current) {
         setIsShowDialogResult(true);
         console.log("Gián điệp đã bị loại, thường dân chiến thắng");
         // Show result dialog for winning
         setResultDialog({
           text: "Thường dân chiến thắng!",
-          identify: "thường dân",
+          identify: "citizen",
         });
         for (let i = 0; i < numberOfUser.current.length; i++) {
           if (!eliminatedPlayers.current.includes(numberOfUser.current[i])) {
@@ -211,7 +198,7 @@ const SpyScreen = () => {
           console.log("Gián điệp chiến thắng");
           setResultDialog({
             text: "Gián điệp chiến thắng!",
-            identify: "gián điệp",
+            identify: "imposter",
           });
           spyScoreController.updateMoneyForPlayers(
             [spyData.current._id],
@@ -274,11 +261,19 @@ const SpyScreen = () => {
       spySocket.off("assignKeyword");
     };
   }, []);
-
+  const closeAllModal = () => {
+    setIsShowDes(false);
+    setIdUserVoted("");
+    setIsShowDialogResult(false);
+    setIsShowDialogRoundEnd(false);
+    setisShowVote(false);
+  }
   useEffect(() => {
-    if (!isStart) return;
+    if (!isStart) {
+      closeAllModal();
+      return;
+    }
     setShowKeyWordModal(true);
-
     usersInRoom.forEach((user) => {
       spyScoreController.addPlayer(user);
     });
@@ -286,6 +281,7 @@ const SpyScreen = () => {
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         if (prevTimer <= 0) {
+
           gameTimeController.setNextStatusAndTime();
 
           handleGamingTimelines();
@@ -345,8 +341,8 @@ const SpyScreen = () => {
   const sendMessage = () => {
     if (eliminatedPlayers.current.includes(userInfo._id)) {
       let notification = {
-        sender: "Hệ thống",
-        content: "Bạn đã bị loại!",
+        sender: "Notify",
+        content: "You have been eliminated!",
       };
       setMessageHistory((prevMessageHistory) => [
         ...prevMessageHistory,
@@ -357,8 +353,8 @@ const SpyScreen = () => {
     if (message.trim() !== "") {
       if (isDesrTime === true) {
         let notification = {
-          sender: "Hệ thống",
-          content: "Mô tả của bạn đã được gửi!",
+          sender: "Notify",
+          content: "Your describe have been sent!",
         };
         let newMessage = {
           senderId: userInfo._id,
@@ -440,6 +436,7 @@ const SpyScreen = () => {
           <View style={styles.column}>
             {usersInRoom.slice(0, 4).map((player) => (
               <Player
+                positionleft={true}
                 key={player._id}
                 avatar={player.avatarUrl}
                 id={player._id}
@@ -501,9 +498,21 @@ const SpyScreen = () => {
           </View>
           <View style={styles.column}>
             {usersInRoom.slice(4, 8).map((player) => (
-              <View key={player._id} style={styles.player}>
-                <Text style={{ color: "white" }}>{player.name}</Text>
-              </View>
+              <Player
+                positionleft={false}
+                key={player._id}
+                avatar={player.avatarUrl}
+                id={player._id}
+                confirmVote={confirmVote}
+                name={player._id === userInfo._id ? "Me" : player.name}
+                isReady={isReady && userInfo._id === player._id}
+                description={descriptionMessage[player._id]}
+                isShowDes={isShowDes}
+                isShowVote={isShowVote}
+                isBeVoted={idUserVoted === player._id}
+                voteCount={isShowVote && voteResult.current[player._id]}
+                isEliminated={checkEliminated(player._id)}
+              />
             ))}
           </View>
         </View>

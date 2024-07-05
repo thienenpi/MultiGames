@@ -83,6 +83,7 @@ const GuessingWord = () => {
 
   const countCorrectGuess = useRef(0);
 
+  const hintIntervalRef = useRef();
   // Set game time
   const gameTimeController = new GameTimeController();
   gameTimeController.setModeDrawing();
@@ -430,9 +431,34 @@ const GuessingWord = () => {
           // Affter changing status, handle the game timeline
           handleGamingTimelines();
 
+          if (
+            gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING && checkYourTurn()
+          ) {
+            const descriptionTime = gameTimeController.getTime();
+            const quarterTime = Math.floor(descriptionTime / 3);
+            let timePassed = 0;
+            let indexSuggestion = 0;
+            hintIntervalRef.current = setInterval(() => {
+              timePassed += quarterTime;
+              if (timePassed < descriptionTime && indexSuggestion < 3) {
+                let hintMessage = {
+                  senderId: "",
+                  sender: `Suggestion number ${indexSuggestion + 1}`,
+                  content: selectedKeyword.current.suggestionList[indexSuggestion],
+                  isCheckGuessCorrectness: false,
+                };
+                socket.emit("message", hintMessage);
+                indexSuggestion++;
+              } else {
+                clearInterval(hintIntervalRef.current);
+              }
+            }, quarterTime * 1000);
+          }
+
           // Update timer
           return gameTimeController.getTime();
         }
+
         gameTimeController.timeDown();
 
         return prevTimer - 1;

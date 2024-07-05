@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
   }),
-  descChat: {
+  chatLeft: {
     position: "absolute",
     top: 0,
     padding: 5,
@@ -32,7 +32,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderTopLeftRadius: 0,
     backgroundColor: "white",
-
+    alignContent: "flex-start"
+  },
+  chatRight: {
+    position: "absolute",
+    top: 0,
+    padding: 5,
+    right: "120%",
+    height: 50,
+    width: "200%",
+    borderRadius: 10,
+    borderTopRightRadius: 0,
+    backgroundColor: "white",
+    alignContent: "flex-end"
   },
   voteCount: {
     zIndex: 1,
