@@ -42,11 +42,11 @@ const Dashboard = () => {
     }
 
     await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
-    
+
     if (mode === "Bạn Vẽ Tôi Đoán") {
       navigation.navigate("Guessing Word", { roomInfo });
     }
-    
+
     if (mode === "Ai Là Gián Điệp - Chế độ văn bản") {
       navigation.navigate("Spy Game", { roomInfo });
     }
@@ -59,55 +59,53 @@ const Dashboard = () => {
   }, [userInfo]);
 
   return (
-    <View>
+    <View style={{ marginHorizontal: 8 }}>
       <ProfileRow
         avatarSource={userInfo.avatarUrl}
         name={userInfo.name}
         money={userInfo.money}
-        eventIcon="star-outline"
-        eventText="Events"
       />
 
-      <View style={styles.containerTask}>
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => setIsShowRanking((prev) => !prev)}
-        >
-          <Ionicons name="stats-chart" size={34} color="blue" />
-          <Text style={styles.text}>Ranking</Text>
-        </TouchableOpacity>
+<View style={styles.containerButton}>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => setIsShowRanking((prev) => !prev)}
+          >
+            <Image source={require("../../assets/icon_ranking.png")} style={ styles.icon } />
+            <Text style={styles.text}>Ranking</Text>
+          </TouchableOpacity>
 
-        {isShowRanking && (
-          <RankingDialog
-            isShow={isShowRanking}
-            onChangeShow={setIsShowRanking}
-          />
-        )}
+          {isShowRanking && (
+            <RankingDialog
+              isShow={isShowRanking}
+              onChangeShow={setIsShowRanking}
+            />
+          )}
 
-        <TouchableOpacity style={styles.item}>
-          <Ionicons name="add-circle-outline" size={34} color="red" />
-          <Text style={styles.text}>Invitations</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.item}>
+            <Image source={require("../../assets/icon_playgame.png")} style={ styles.icon } />
+            <Text style={styles.text}>Room Active</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => setIsShowFriends((prev) => !prev)}
-        >
-          <Ionicons name="people-sharp" size={34} color="purple" />
-          <Text style={styles.text}>Friends</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => setIsShowFriends((prev) => !prev)}
+          >
+            <Image source={require("../../assets/icon_friends.png")} style={ styles.icon } />
+            <Text style={styles.text}>Friends</Text>
+          </TouchableOpacity>
 
-        {isShowFriends && (
-          <FriendsDialog
-            isShow={isShowFriends}
-            onChangeShow={setIsShowFriends}
-          ></FriendsDialog>
-        )}
-      </View>
+          {isShowFriends && (
+            <FriendsDialog
+              isShow={isShowFriends}
+              onChangeShow={setIsShowFriends}
+            ></FriendsDialog>
+          )}
+        </View>
 
       <Image
         source={require("../../assets/slide1.jpg")}
-        style={{ height: 250, width: "100%" }}
+        style={{ height: 250, width: "95%", borderRadius: 15, justifyContent: "center", alignSelf: "center" }}
         resizeMode="cover"
       />
 

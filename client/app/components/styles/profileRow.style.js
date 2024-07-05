@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: 16,
-      paddingVertical: 12,
+      paddingTop: 12,
       marginTop: 40,
     },
     leftContainer: {
@@ -50,6 +50,8 @@ const styles = StyleSheet.create({
     },
     eventContainer: {
       alignItems: 'center',
+      height: 50,
+      width: 50,
     },
     eventText: {
       fontSize: 14,

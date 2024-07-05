@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 
 // const BASE_URL = "https://multigames.azurewebsites.net/api";
-const BASE_URL = "http://172.16.0.187:3000/api";
+const BASE_URL = "http://10.0.115.198:3000/api";
 
 const socket = io(
   BASE_URL.slice(0, -4),

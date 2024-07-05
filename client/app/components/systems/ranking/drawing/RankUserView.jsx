@@ -36,7 +36,7 @@ const RankUserView = ({ item }) => {
 
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.expGain}>{item.name}</Text>
+        <Text style={styles.expGain}>{item.money} $</Text>
       </View>
 
       {!isMe ? (
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   userInfo: {
     flex: 4,
     flexDirection: "column",
-    height: "100%",
+    height: "80%",
     justifyContent: "space-around",
   },
 
@@ -113,8 +113,16 @@ const styles = StyleSheet.create({
 
   expGain: {
     fontFamily: "sfPro",
-    fontSize: SIZES.small,
-    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: "800",
+    color: COLORS.orange,
+  },
+
+  subExpGain: {
+    fontFamily: "sfPro",
+    fontSize: 14,
+    fontWeight: "600",
+    color: COLORS.orange,
   },
 
   addFriend: {
