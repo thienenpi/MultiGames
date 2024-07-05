@@ -6,6 +6,7 @@ import { sendFriendRequest } from "../../../../api/UserApi";
 import { AuthContext } from "../../../../context/AuthContext";
 import { checkIfFriend } from "../../../../services";
 import { useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 
 const RankUserView = ({ item }) => {
   const { userInfo } = useContext(AuthContext);
@@ -47,21 +48,35 @@ const RankUserView = ({ item }) => {
       {!isMe ? (
         <View style={styles.addFriend}>
           {isFriend ? (
-            <View style={styles.frStatusContainer}>
-              <Text style={styles.frStatusText}>Friend</Text>
-            </View>
+            <LinearGradient
+              colors={COLORS.blueGradient}
+              style={styles.frStatusContainer}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
+            >
+              <View style={styles.frStatusContainer}>
+                <Text style={styles.frStatusText}>Friend</Text>
+              </View>
+            </LinearGradient>
           ) : (
-            <CustomButton
-              styles={styles}
-              label={"Add"}
-              isValid={true}
-              onPress={async () => {
-                await sendFriendRequest({
-                  senderId: userInfo._id,
-                  recipientId: user._id,
-                });
-              }}
-            ></CustomButton>
+            <LinearGradient
+              colors={COLORS.primaryGradient}
+              style={styles.btnContainer()}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
+            >
+              <CustomButton
+                styles={styles}
+                label={"Add"}
+                isValid={true}
+                onPress={async () => {
+                  await sendFriendRequest({
+                    senderId: userInfo._id,
+                    recipientId: user._id,
+                  });
+                }}
+              ></CustomButton>
+            </LinearGradient>
           )}
         </View>
       ) : (
@@ -81,7 +96,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 70,
-    backgroundColor: COLORS.white,
     borderRadius: 10,
   },
 
@@ -137,9 +151,9 @@ const styles = StyleSheet.create({
   },
 
   btnContainer: () => ({
-    backgroundColor: COLORS.button,
+    padding: 5,
+    width: "100%",
     borderRadius: 99,
-    height: "60%",
     alignItems: "center",
     justifyContent: "center",
   }),
@@ -151,9 +165,9 @@ const styles = StyleSheet.create({
   },
 
   frStatusContainer: {
-    backgroundColor: COLORS.green,
+    padding: 5,
+    width: "100%",
     borderRadius: 99,
-    height: "60%",
     alignItems: "center",
     justifyContent: "center",
   },

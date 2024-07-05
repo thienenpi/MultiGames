@@ -7,10 +7,11 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { SIZES } from "../../constants";
+import { COLORS, SIZES } from "../../constants";
 import CustomButton from "../CustomButton";
 import { getUsers } from "../../api";
 import RankUserView from "../systems/ranking/drawing/RankUserView";
+import { LinearGradient } from "expo-linear-gradient";
 
 const RankColumns = ({ users }) => {
   const renderItem = ({ item }) => <RankUserView item={item}></RankUserView>;
@@ -61,12 +62,19 @@ const RankingDialog = ({ isShow, onChangeShow }) => {
         <View style={styles.body}>
           <RankColumns users={users}></RankColumns>
 
-          <CustomButton
-            isValid={true}
-            label={"Close"}
-            styles={styles}
-            onPress={closeModal}
-          ></CustomButton>
+          <LinearGradient
+            colors={COLORS.primaryGradient}
+            style={styles.btnContainer()}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0 }}
+          >
+            <CustomButton
+              isValid={true}
+              label={"Close"}
+              styles={styles}
+              onPress={closeModal}
+            ></CustomButton>
+          </LinearGradient>
         </View>
       </View>
     </Modal>
@@ -100,6 +108,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    width: "100%",
   },
 
   headerText: {
@@ -116,13 +125,10 @@ const styles = StyleSheet.create({
 
   btnContainer: (backgroundColor) => ({
     width: "40%",
-    backgroundColor: backgroundColor,
-    padding: 10,
     margin: 10,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-
   }),
 
   btnLabel: {

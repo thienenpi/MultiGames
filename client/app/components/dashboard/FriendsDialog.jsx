@@ -7,11 +7,12 @@ import {
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { SIZES } from "../../constants";
+import { COLORS, SIZES } from "../../constants";
 import { AuthContext } from "../../context/AuthContext";
 import { getFriends } from "../../services";
 import FriendCardView from "../drawing/FriendCardView";
 import CustomButton from "../CustomButton";
+import { LinearGradient } from "expo-linear-gradient";
 
 const FriendsColumn = ({ friends }) => {
   const renderItem = ({ item }) => {
@@ -74,12 +75,19 @@ const FriendsDialog = ({ isShow, onChangeShow }) => {
         <View style={styles.body}>
           <FriendsColumn friends={friends}></FriendsColumn>
 
-          <CustomButton
-            isValid={true}
-            label={"Close"}
-            styles={styles}
-            onPress={closeModal}
-          ></CustomButton>
+          <LinearGradient
+            colors={COLORS.primaryGradient}
+            style={styles.btnContainer()}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0 }}
+          >
+            <CustomButton
+              isValid={true}
+              label={"Close"}
+              styles={styles}
+              onPress={closeModal}
+            ></CustomButton>
+          </LinearGradient>
         </View>
       </View>
     </Modal>
@@ -162,8 +170,6 @@ const styles = StyleSheet.create({
 
   btnContainer: (backgroundColor) => ({
     width: "40%",
-    backgroundColor: backgroundColor,
-    padding: 10,
     margin: 10,
     borderRadius: 10,
     alignItems: "center",

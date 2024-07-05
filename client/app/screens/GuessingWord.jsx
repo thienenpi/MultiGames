@@ -777,6 +777,7 @@ const GuessingWord = () => {
               onChangeText={(text) => setMessage(text)}
               placeholder="Type your answer..."
               placeholderTextColor="#888"
+              onSubmitEditing={sendMessage}
             />
 
             {/* Icon button chọn bộ icon */}

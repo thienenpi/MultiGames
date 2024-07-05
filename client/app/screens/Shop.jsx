@@ -15,6 +15,8 @@ import { Dimensions } from "react-native";
 import styles from "./styles/shop.style";
 import { Item, AppBar } from "../components";
 import { getAllItems } from "../api/ShopApi";
+import { LinearGradient } from "expo-linear-gradient";
+import { COLORS } from "../constants";
 
 const Shop = () => {
   const { userInfo, fetchUserInfo, updateInfo } = useContext(AuthContext);
@@ -169,14 +171,22 @@ const Shop = () => {
                 </View>
               </View>
             </View>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonBuy]}
-              onPress={handleBuyItem}
+            <LinearGradient
+              colors={
+                isBought(selectedItem._id)
+                  ? COLORS.primaryGradient
+                  : COLORS.blueGradient
+              }
+              style={styles.button}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
             >
-              <Text style={styles.textStyle}>
-                {isBought(selectedItem._id) ? "Bought" : "Buy"}
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={handleBuyItem}>
+                <Text style={styles.textStyle}>
+                  {isBought(selectedItem._id) ? "Bought" : "Buy"}
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
           </View>
         </Modal>
       )}

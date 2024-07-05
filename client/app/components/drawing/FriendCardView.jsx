@@ -4,6 +4,7 @@ import { COLORS, SIZES } from "../../constants";
 import { getUserById } from "../../api";
 import CustomButton from "../CustomButton";
 import { socket } from "../../utils/config";
+import { LinearGradient } from "expo-linear-gradient";
 
 const FriendCardView = ({ item, roomId }) => {
   const [friendInfo, setFriendInfo] = useState(null);
@@ -35,7 +36,7 @@ const FriendCardView = ({ item, roomId }) => {
 
   const handleRemoveFriend = () => {
     console.log("remove friend");
-  }
+  };
 
   return (
     friendInfo && (
@@ -55,24 +56,38 @@ const FriendCardView = ({ item, roomId }) => {
         {roomId ? (
           <View style={styles.invite}>
             {!isSentInvite ? (
-              <CustomButton
-                onPress={handleSendInvite}
-                styles={styles}
-                label={"Invite"}
-                isValid={true}
-              ></CustomButton>
+              <LinearGradient
+                colors={COLORS.greenGradient}
+                style={styles.btnContainer()}
+                start={{ x: 1, y: 1 }}
+                end={{ x: 0, y: 0 }}
+              >
+                <CustomButton
+                  onPress={handleSendInvite}
+                  styles={styles}
+                  label={"Invite"}
+                  isValid={true}
+                ></CustomButton>
+              </LinearGradient>
             ) : (
               <Text>Pending</Text>
             )}
           </View>
         ) : (
           <View style={styles.invite}>
-            <CustomButton
-              onPress={handleRemoveFriend}
-              styles={styles}
-              label={"Remove"}
-              isValid={false}
-            ></CustomButton>
+            <LinearGradient
+              colors={COLORS.blueGradient}
+              style={styles.btnContainer()}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
+            >
+              <CustomButton
+                onPress={handleRemoveFriend}
+                styles={styles}
+                label={"Remove"}
+                isValid={false}
+              ></CustomButton>
+            </LinearGradient>
           </View>
         )}
       </View>
@@ -104,7 +119,7 @@ const styles = StyleSheet.create({
   },
 
   userInfo: {
-    flex: 5,
+    flex: 4,
     flexDirection: "column",
     height: "100%",
     justifyContent: "space-around",
@@ -123,29 +138,29 @@ const styles = StyleSheet.create({
   },
 
   invite: {
-    flex: 2,
+    flex: 3,
     textAlign: "center",
     justifyContent: "center",
   },
 
   btnContainer: () => ({
-    backgroundColor: COLORS.button,
+    padding: 5,
+    width: "100%",
     borderRadius: 99,
-    height: "60%",
     alignItems: "center",
     justifyContent: "center",
   }),
 
   btnLabel: {
     fontFamily: "sfProBold",
-    fontSize: SIZES.small,
+    fontSize: SIZES.medium,
     color: "white",
   },
 
   frStatusContainer: {
-    backgroundColor: COLORS.green,
+    padding: 5,
+    width: "100%",
     borderRadius: 99,
-    height: "60%",
     alignItems: "center",
     justifyContent: "center",
   },

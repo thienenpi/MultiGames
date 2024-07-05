@@ -7,6 +7,8 @@ import { AuthContext } from "../context/AuthContext";
 import { getRoom, getRoomsOwner } from "../api/RoomApi";
 import Dialog from "react-native-dialog";
 import styles from "./styles/boardroom.style";
+import { LinearGradient } from "expo-linear-gradient";
+import { COLORS } from "../constants";
 
 const renderItem = ({ item }) => <RoomCardView item={item}></RoomCardView>;
 
@@ -87,27 +89,35 @@ const RoomBoard = () => {
           },
         ]}
       >
-        <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: "#62C7FF", flexDirection: "row" },
-          ]}
-          onPress={() => navigation.navigate("Room Create")}
+        <LinearGradient
+          colors={COLORS.blueGradient}
+          style={styles.button}
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 0 }}
         >
-          <Ionicons name="add-circle" size={30} color="white" />
-          <Text style={styles.buttonText}>Create room</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.button,
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center" }}
+            onPress={() => navigation.navigate("Room Create")}
+          >
+            <Ionicons name="add-circle" size={30} color="white" />
+            <Text style={styles.buttonText}>Create room</Text>
+          </TouchableOpacity>
+        </LinearGradient>
 
-            { backgroundColor: "#FC356E", flexDirection: "row" },
-          ]}
-          onPress={showDialog}
+        <LinearGradient
+          colors={COLORS.primaryGradient}
+          style={styles.button}
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 0 }}
         >
-          <Ionicons name="search-circle" size={30} color="white" />
-          <Text style={styles.buttonText}>Find room</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center" }}
+            onPress={showDialog}
+          >
+            <Ionicons name="search-circle" size={30} color="white" />
+            <Text style={styles.buttonText}>Find room</Text>
+          </TouchableOpacity>
+        </LinearGradient>
       </View>
       <View style={styles.separator} />
       <View style={styles.itemContainer}>

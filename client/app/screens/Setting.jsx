@@ -14,49 +14,48 @@ const Setting = () => {
       <AppBar title="Settings" onPressLeftIcon={() => navigation.goBack()} />
 
       <View style={styles.separator} />
-
       <ScrollView>
         <HorizontalItem
           title="Account Management"
-          iconRight="arrow-forward"
+          iconRight="chevron-forward"
           isCenter={false}
           onPress={() => {}}
         />
         <View style={styles.separator} />
         <HorizontalItem
           title="Message Notification"
-          iconRight="arrow-forward"
+          iconRight="chevron-forward"
           isCenter={false}
           onPress={() => {}}
         />
         <HorizontalItem
           title="Privacy"
-          iconRight="arrow-forward"
+          iconRight="chevron-forward"
           isCenter={false}
           onPress={() => {}}
         />
         <HorizontalItem
           title="General"
-          iconRight="arrow-forward"
+          iconRight="chevron-forward"
           isCenter={false}
           onPress={() => {}}
         />
         <View style={styles.separator} />
         <HorizontalItem
           title="Clear Cache"
-          iconRight="arrow-forward"
+          iconRight="chevron-forward"
           isCenter={false}
           onPress={() => {}}
         />
         <HorizontalItem
           title="Quick Repair"
-          iconRight="arrow-forward"
+          iconRight="chevron-forward"
           isCenter={false}
           onPress={() => {}}
         />
         <HorizontalItem
           title="Upload Log"
-          iconRight="arrow-forward"
+          iconRight="chevron-forward"
           isCenter={false}
           onPress={() => {}}
         />
@@ -64,7 +63,7 @@ const Setting = () => {
         <HorizontalItem
           title="About Us"
           desc="V 1.0.0"
-          iconRight="arrow-forward"
+          iconRight="chevron-forward"
           isCenter={false}
           onPress={() => {}}
         />
