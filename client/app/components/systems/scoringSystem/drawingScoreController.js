@@ -1,4 +1,4 @@
-import { DRAWING_GAME_SCORE } from "../../../constants";
+import { DRAWING_GAME_SCORE, DRAWING_GAME_MONEY } from "../../../constants";
 import ApiManager from "../../../api/ApiManager";
 
 const updateUserInfo = async ({ id, data }) => {
@@ -23,7 +23,7 @@ const updateUserInfo = async ({ id, data }) => {
   }
 };
 
-class GameScoreController {
+class DrawingScoreController {
   constructor() {
     this.players = [];
     this.drawPlayerId = "";
@@ -33,10 +33,6 @@ class GameScoreController {
 
   setDrawPlayer(drawPlayerId) {
     this.drawPlayerId = drawPlayerId;
-  }
-
-  removeDrawPlayer() {
-    this.drawPlayerId = "";
   }
 
   addPlayer(player) {
@@ -68,17 +64,17 @@ class GameScoreController {
       let index = this.guessCorrectedPlayerIds.indexOf(userId);
       switch (index) {
         case 0:
-          return DRAWING_GAME_SCORE.WIN_TOP1;
+          return DRAWING_GAME_SCORE.WIN_TOP1_SCORE;
         case 1:
-          return DRAWING_GAME_SCORE.WIN_TOP2;
+          return DRAWING_GAME_SCORE.WIN_TOP2_SCORE;
         case 2:
-          return DRAWING_GAME_SCORE.WIN_TOP3;
+          return DRAWING_GAME_SCORE.WIN_TOP3_SCORE;
         case 3:
-          return DRAWING_GAME_SCORE.WIN_TOP4;
+          return DRAWING_GAME_SCORE.WIN_TOP4_SCORE;
         case 4:
-          return DRAWING_GAME_SCORE.WIN_TOP5;
+          return DRAWING_GAME_SCORE.WIN_TOP5_SCORE;
         case 5:
-          return DRAWING_GAME_SCORE.WIN_TOP6;
+          return DRAWING_GAME_SCORE.WIN_TOP6_SCORE;
         default:
           return 0;
       }
@@ -117,22 +113,22 @@ class GameScoreController {
       if (player._id === userId) {
         switch (this.count) {
           case 1:
-            player.score += DRAWING_GAME_SCORE.WIN_TOP1;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP1_SCORE;
             break;
           case 2:
-            player.score += DRAWING_GAME_SCORE.WIN_TOP2;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP2_SCORE;
             break;
           case 3:
-            player.score += DRAWING_GAME_SCORE.WIN_TOP3;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP3_SCORE;
             break;
           case 4:
-            player.score += DRAWING_GAME_SCORE.WIN_TOP4;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP4_SCORE;
             break;
           case 5:
-            player.score += DRAWING_GAME_SCORE.WIN_TOP5;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP5_SCORE;
             break;
           case 6:
-            player.score += DRAWING_GAME_SCORE.WIN_TOP6;
+            player.score += DRAWING_GAME_SCORE.WIN_TOP6_SCORE;
             break;
           default:
             player.score += 0;
@@ -141,7 +137,7 @@ class GameScoreController {
 
         this.players.forEach((player) => {
           if (player._id === this.drawPlayerId) {
-            player.score += DRAWING_GAME_SCORE.GUESS_RIGHT;
+            player.score += DRAWING_GAME_SCORE.GUESS_RIGHT_SCORE;
           }
         });
         this.guessCorrectedPlayerIds.push(userId);
@@ -149,6 +145,7 @@ class GameScoreController {
     });
   }
 
+  // Method to display scores
   displayScores() {
     this.players.forEach((player) => {
       console.log(player.name + " - Score: " + player.score);
@@ -158,22 +155,22 @@ class GameScoreController {
   updateMoneyForPlayers() {
     // Sort players by score from highest to lowest
     this.players.sort((a, b) => b.score - a.score);
-    this.players.forEach((player, index) => {
+    this.players.forEach(async (player, index) => {
       switch (index) {
         case 0:
-          player.money += 15;
+          player.money += DRAWING_GAME_MONEY.WIN_TOP1_MONEY;
           break;
         case 1:
-          player.money += 10;
+          player.money += DRAWING_GAME_MONEY.WIN_TOP2_MONEY;
           break;
         case 2:
-          player.money += 5;
+          player.money += DRAWING_GAME_MONEY.WIN_TOP3_MONEY;
           break;
         default:
-          player.money += 0;
+          player.money += DRAWING_GAME_MONEY.DEFAULT_MONEY;
           break;
       }
-      updateUserInfo({
+      await updateUserInfo({
         id: player._id,
         data: { money: player.money },
       });
@@ -181,4 +178,4 @@ class GameScoreController {
   }
 }
 
-export default GameScoreController;
+export default DrawingScoreController;

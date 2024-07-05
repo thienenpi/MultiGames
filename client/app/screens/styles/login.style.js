@@ -72,6 +72,12 @@ const styles = StyleSheet.create({
     color: COLORS.lightBlue,
     fontSize: SIZES.medium,
   },
+
+  forgotPasswordText: {
+    color: COLORS.lightBlue,
+    fontSize: SIZES.medium,
+    textDecorationLine: "underline",
+  },
 });
 
 export default styles;

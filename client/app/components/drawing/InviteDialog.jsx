@@ -12,21 +12,6 @@ const InviteDialog = ({ isShow, roomInfo, onChangeShow }) => {
 
   const { userInfo } = useContext(AuthContext);
 
-  const fetchFriends = async () => {
-    try {
-      const guests = await getRoomGuests({ id: roomInfo._id });
-      const guestIds = guests.data;
-
-      var res = await getFriends({ id: userInfo._id });
-
-      // remove friend from list
-      res = res.filter((friend) => !guestIds.includes(friend));
-      setFriends(res);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const closeModal = () => {
     onChangeShow(false);
   };
@@ -36,6 +21,22 @@ const InviteDialog = ({ isShow, roomInfo, onChangeShow }) => {
   }, [isShow]);
 
   useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const guests = await getRoomGuests({ id: roomInfo._id });
+        const guestIds = guests.data;
+
+        let res = await getFriends({ id: userInfo._id });
+
+        // remove friend from list
+        res = res.filter((friend) => !guestIds.includes(friend));
+        console.log(res);
+        setFriends(res);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchFriends();
   }, [userInfo]);
 

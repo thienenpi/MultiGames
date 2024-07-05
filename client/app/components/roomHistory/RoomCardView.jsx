@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
+  Alert,
   ImageBackground,
   StyleSheet,
   Text,
@@ -39,7 +40,13 @@ const RoomCardView = ({ item }) => {
   };
 
   const handleJoinRoom = async () => {
-    await joinRoom({ roomId: item._id, userId: userInfo._id });
+    const res = await joinRoom({ roomId: item._id, userId: userInfo._id });
+
+    if (res && res.status === "playing") {
+      Alert.alert("Can not join", "The game has started.");
+      return;
+    }
+
     const gameMode = excuitionModeName(item.mode);
 
     if (gameMode === "Bạn vẽ tôi đoán") {
@@ -65,7 +72,7 @@ const RoomCardView = ({ item }) => {
 
           <View style={styles.roomState}>
             <Text style={styles.waiting}>
-              Đang chờ {item.list_guest.length}/{item.capacity}
+              Waiting {item.list_guest.length}/{item.capacity}
             </Text>
 
             <View style={[styles.gameType, { backgroundColor: gameTypeColor }]}>

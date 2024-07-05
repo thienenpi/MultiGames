@@ -17,11 +17,11 @@ const RoomCreate = () => {
   const [capacitySpy, setCapacitySpy] = useState([4, 5, 6, 7, 8]);
   const [capacityDraw, setCapacityDraw] = useState([2, 3, 4, 5, 6]);
   const buttonTitles = [
-    ["Ai Là Gián Điệp - Chế độ giọng nói", capacitySpy],
-    ["Ai Là Gián Điệp - Chế độ văn bản", capacitySpy],
-    ["Gián Điệp Không Lời - Chế đội giọng nói", capacitySpy],
-    ["Gián Điệp Không Lời - Chế đội văn bản", capacitySpy],
     ["Bạn Vẽ Tôi Đoán", capacityDraw],
+    ["Ai Là Gián Điệp - Chế độ văn bản", capacitySpy],
+    // ["Ai Là Gián Điệp - Chế độ giọng nói", capacitySpy],
+    // ["Gián Điệp Không Lời - Chế đội giọng nói", capacitySpy],
+    // ["Gián Điệp Không Lời - Chế đội văn bản", capacitySpy],
   ];
   const [lastIndex, setLastIndex] = useState(buttonTitles[selectedButton][1].length - 1);
   const [password, setPassword] = useState('');

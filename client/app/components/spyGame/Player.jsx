@@ -13,6 +13,7 @@ const Player = ({
   isShowVote,
   voteCount = 0,
   isEliminated,
+  isBeVoted,
 }) => {
   return (
     <View key={id} style={styles.player}>
@@ -32,6 +33,11 @@ const Player = ({
         {isEliminated && (
           <View style={styles.eliminated}>
             <Text style={styles.eliminatedText}> Loại </Text>
+          </View>
+        )}
+        {isBeVoted && (
+          <View style={styles.voted}>
+            <Text style={styles.votedText}> Đã bỏ phiếu! </Text>
           </View>
         )}
       </TouchableOpacity>

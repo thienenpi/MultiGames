@@ -1,42 +1,24 @@
-import { Text, TouchableOpacity, View, Modal, TextInput } from "react-native";
+import { Text, TouchableOpacity, View, Modal, TextInput, FlatList } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./styles/message.style";
 import { MessageColumn } from "../components";
 import { Ionicons } from "@expo/vector-icons";
-import { sendFriendRequest } from "../api/UserApi";
+import { acceptFriendRequest, sendFriendRequest } from "../api/UserApi";
 import { getUserById } from "../api/UserApi";
 import { AuthContext } from "../context/AuthContext";
-
-const items = [
-  {
-    _id: "65ed90b0f12e78c2a6456d25",
-    avatarUrl: "https://multigames.blob.core.windows.net/images/user.png",
-    unreadNumber: 2,
-    userName: "phat",
-    date: "20/10/2021",
-    message: "Hello",
-  },
-  {
-    _id: "65ed877e0da840aa5bc41fd7",
-    avatarUrl: "https://multigames.blob.core.windows.net/images/user.png",
-    unreadNumber: 0,
-    userName: "Thien03",
-    date: "20/10/2021",
-    message: "Hi",
-  },
-];
 
 const Message = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [friendId, setFriendId] = useState("");
   const { userInfo } = useContext(AuthContext);
   const [frienndList, setFriendList] = useState([]);
-
+  const [friendRequestList, setFriendRequestList] = useState([]);
+  const [friendRequestModalVisible, setFriendRequestModalVisible] = useState(false);
   useEffect(() => {
-    if (frienndList) {
-      handleLoadFriend();
-    }
+    handleLoadFriend();
+    handleLoadAcpectFriendRequest();
   }, []);
+
   const handleLoadFriend = () => {
     console.log(userInfo.friends);
     setFriendList([]);
@@ -45,7 +27,19 @@ const Message = () => {
       setFriendList((pevFriendlist) => [...pevFriendlist, res.data]);
     });
   };
-
+  const handleAcceptFriendRequest = async ({userInfoId, friendId}) => {
+    const res = await acceptFriendRequest({userId: userInfoId, friendId: friendId});
+  }
+  const handleLoadAcpectFriendRequest = () => {
+    setFriendRequestList([]);
+    userInfo.sentFriendRequests.forEach(async (id) => {
+      const res = await getUserById({ id: id });
+      setFriendRequestList((pevFriendRequestList) => [
+        ...pevFriendRequestList,
+        res.data,
+      ]);
+    });
+  };
   const handleSendFriendRequest = async () => {
     try {
       setModalVisible(false);
@@ -53,18 +47,17 @@ const Message = () => {
         senderId: userInfo._id,
         recipientId: friendId,
       });
-      // Gửi lời mời kết bạn thành công, xử lý tại đây
     } catch (error) {
-      // Xử lý lỗi nếu có
       console.error("Failed to send friend request: ", error);
     }
   };
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Message</Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setFriendRequestModalVisible(true)}>
           <Ionicons name="person-outline" style={styles.headerIcon} />
         </TouchableOpacity>
 
@@ -80,32 +73,67 @@ const Message = () => {
       </View>
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter friend's ID"
-              onChangeText={setFriendId}
-              value={friendId}
-            />
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleSendFriendRequest}
-            >
-              <Text style={styles.buttonText}>Send Friend Request</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeText}>Close</Text>
-            </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.centeredView}
+          onPress={() => setModalVisible(false)}
+        >
+          <View>
+            <View style={styles.modalView}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter friend's ID"
+                onChangeText={setFriendId}
+                value={friendId}
+              />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleSendFriendRequest}
+              >
+                <Text style={{ color: "white" }}>Add</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={friendRequestModalVisible}
+        onRequestClose={() => {
+          setFriendRequestModalVisible(!friendRequestModalVisible);
+        }}
+      >
+        <TouchableOpacity
+          style={styles.centeredView}
+          onPress={() => setFriendRequestModalVisible(false)}
+        >
+          <View>
+            <View style={styles.modalView}>
+              <FlatList
+                data={friendRequestList}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => (
+                  <View style={styles.friendRequestItem}>
+                    <Text>{item.senderName}</Text>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => handleAcceptFriendRequest({userInfoId:  userInfo._id, friendId: item._id})}
+                    >
+                      <Text style={{ color: "white" }}>Accept</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );

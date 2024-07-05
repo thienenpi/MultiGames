@@ -115,7 +115,7 @@ const Register = () => {
           />
         </View>
         <InputField
-          icon={<Ionicons name="person" size={24}></Ionicons>}
+          icon={<Ionicons name="person-outline" size={24}></Ionicons>}
           label={"Enter your name"}
           styles={styles}
           value={name}
@@ -128,7 +128,7 @@ const Register = () => {
         <View style={{ height: 20 }}></View>
 
         <InputField
-          icon={<Ionicons name="mail" size={24}></Ionicons>}
+          icon={<Ionicons name="mail-outline" size={24}></Ionicons>}
           label={"Email"}
           value={email}
           styles={styles}
@@ -141,7 +141,7 @@ const Register = () => {
         <View style={{ height: 20 }}></View>
 
         <InputField
-          icon={<Ionicons name="call" size={24}></Ionicons>}
+          icon={<Ionicons name="call-outline" size={24}></Ionicons>}
           label={"Enter phone number"}
           value={phoneNumber}
           styles={styles}
@@ -155,7 +155,7 @@ const Register = () => {
         <View style={{ height: 20 }}></View>
 
         <InputField
-          icon={<Ionicons name="keypad" size={24}></Ionicons>}
+          icon={<Ionicons name="keypad-outline" size={24}></Ionicons>}
           label={"Enter password"}
           value={password}
           styles={styles}
@@ -179,7 +179,7 @@ const Register = () => {
 
         <Pressable onPress={toggleDatapicker}>
           <View style={styles.dpContainer}>
-            <Ionicons name="calendar-number" size={24}></Ionicons>
+            <Ionicons name="calendar-number-outline" size={24}></Ionicons>
             <TextInput
               style={styles.dpLabel}
               placeholder="Your birthday"
@@ -195,39 +195,79 @@ const Register = () => {
 
         {showPicker && Platform.OS === "ios" && (
           <View
-            style={{ flexDirection: "row", justifyContent: "space-around" }}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              gap: 10,
+            }}
           >
-            <CustomButton
-              label={"Cancel"}
-              styles={styles}
-              isValid={true}
-              onPress={toggleDatapicker}
-            ></CustomButton>
+            <LinearGradient
+              colors={COLORS.blueGradient}
+              style={styles.btnContainer()}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+            >
+              <CustomButton
+                label={"Cancel"}
+                styles={styles}
+                isValid={true}
+                onPress={toggleDatapicker}
+              ></CustomButton>
+            </LinearGradient>
 
-            <CustomButton
-              label={"Confirm"}
-              styles={styles}
-              isValid={true}
-              onPress={confirmIOSDate}
-            ></CustomButton>
+            <LinearGradient
+              colors={COLORS.blueGradient}
+              style={styles.btnContainer()}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+            >
+              <CustomButton
+                label={"Confirm"}
+                styles={styles}
+                isValid={true}
+                onPress={confirmIOSDate}
+              ></CustomButton>
+            </LinearGradient>
           </View>
         )}
 
         <View style={{ height: 20 }}></View>
 
-        <LinearGradient
-          colors={COLORS.blueGradient}
-          style={styles.btnContainer()}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            gap: 10,
+          }}
         >
-          <CustomButton
-            label={"Register"}
-            styles={styles}
-            isValid={true}
-            onPress={handleSubmit}
-          ></CustomButton>
-        </LinearGradient>
+          <LinearGradient
+            colors={COLORS.blueGradient}
+            style={styles.btnContainer()}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+          >
+            <CustomButton
+              label={"Back"}
+              styles={styles}
+              isValid={true}
+              onPress={() => navigation.navigate("Login")}
+            ></CustomButton>
+          </LinearGradient>
+
+          <LinearGradient
+            colors={COLORS.blueGradient}
+            style={styles.btnContainer()}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+          >
+            <CustomButton
+              label={"Register"}
+              styles={styles}
+              isValid={true}
+              onPress={handleSubmit}
+            ></CustomButton>
+          </LinearGradient>
+        </View>
       </LinearGradient>
     </TouchableWithoutFeedback>
   );

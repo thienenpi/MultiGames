@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
@@ -7,7 +7,6 @@ import styles from "./styles/dashboard.style";
 import {
   ProfileRow,
   GameCard,
-  MyCarousel,
   RankingDialog,
   FriendsDialog,
 } from "../components";
@@ -21,24 +20,43 @@ const Dashboard = () => {
   const [isShowRanking, setIsShowRanking] = useState(false);
   const [isShowFriends, setIsShowFriends] = useState(false);
 
+  const GAME_MODE = {
+    DRAW: "Bạn Vẽ Tôi Đoán",
+    SPY: "Ai Là Gián Điệp - Chế độ văn bản",
+  };
+
   useFocusEffect(
     useCallback(() => {
       fetchUserInfo(userInfo._id);
     }, [])
   );
 
-  const handleAccessRoom = async () => {
+  const handleAccessRoom = async (mode) => {
     const data = {
-      gameMode: "Bạn Vẽ Tôi Đoán",
+      gameMode: mode,
     };
+
     var roomInfo = await accessRoom({ data: data });
+
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
 
-    await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
-    navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    const res = await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+    if (res && res.status === "playing") {
+      Alert.alert("Can not join", "The game has started.");
+      return;
+    }
+
+    if (mode === "Bạn Vẽ Tôi Đoán") {
+      navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    }
+
+    if (mode === "Ai Là Gián Điệp - Chế độ văn bản") {
+      navigation.navigate("Spy Game", { roomInfo: roomInfo });
+    }
   };
 
   useEffect(() => {
@@ -48,7 +66,7 @@ const Dashboard = () => {
   }, [userInfo]);
 
   return (
-    <View>
+    <ScrollView>
       <ProfileRow
         avatarSource={userInfo.avatarUrl}
         name={userInfo.name}
@@ -56,8 +74,6 @@ const Dashboard = () => {
         eventIcon="star-outline"
         eventText="Events"
       />
-
-      {/* <MyCarousel /> */}
 
       <View style={styles.containerTask}>
         <TouchableOpacity
@@ -95,13 +111,11 @@ const Dashboard = () => {
           ></FriendsDialog>
         )}
       </View>
-
       <Image
         source={require("../../assets/slide1.jpg")}
         style={{ height: 250, width: "100%" }}
         resizeMode="cover"
       />
-
       <View style={styles.containerInfo}>
         <View style={styles.row}>
           <Text style={{ fontSize: 30, fontWeight: "600" }}>Let's Play</Text>
@@ -134,7 +148,7 @@ const Dashboard = () => {
           </Text>
           <TouchableOpacity
             style={[styles.button, { borderRadius: 6, paddingVertical: 2 }]}
-            onPress={handleAccessRoom}
+            onPress={() => handleAccessRoom(GAME_MODE.DRAW)}
           >
             <Ionicons
               name="pencil-outline"
@@ -146,7 +160,7 @@ const Dashboard = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity onPress={handleAccessRoom}>
+      <TouchableOpacity onPress={() => handleAccessRoom(GAME_MODE.DRAW)}>
         <GameCard
           colorDark="rgba(0,180,0,0.8)"
           colorLight="rgba(0,180,0,0.5)"
@@ -154,7 +168,7 @@ const Dashboard = () => {
           text="Guess My Drawing"
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Spy Main")}>
+      <TouchableOpacity onPress={() => handleAccessRoom(GAME_MODE.SPY)}>
         <GameCard
           colorDark="rgba(0,0,180,0.8)"
           colorLight="rgba(0,0,180,0.5)"
@@ -162,7 +176,7 @@ const Dashboard = () => {
           text="Who's the Spy?"
         />
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 

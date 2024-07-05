@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginRight: 10,
   },
   statusDot: (isReady) => ({
     position: "absolute",
@@ -61,6 +60,23 @@ const styles = StyleSheet.create({
   },
   eliminatedText: {
     fontSize: 16,
+    fontWeight: "bold",
+    color: COLORS.white,
+  },
+  voted:{
+    zIndex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "85%",
+    height: "100%",
+    borderRadius: 50,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  votedText: {
+    fontSize: 12,
     fontWeight: "bold",
     color: COLORS.white,
   },

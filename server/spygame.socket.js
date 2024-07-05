@@ -33,14 +33,13 @@ const spyGameSocketSetup = (server) => {
           chatHistory[room] = [];
         }
         if (message.isDescMessage) {
-          if(!descriptionMessages[room]){
+          if (!descriptionMessages[room]) {
             descriptionMessages[room] = {};
           }
           socket.on("users", (data) => {
             data.forEach((user) => {
               if (message.senderId === user._id) {
-                descriptionMessages[room][user._id] = "";
-                descriptionMessages[room][user._id] = message.content;
+                  descriptionMessages[room][user._id] = message.content;
               }
             });
             io.to(room).emit("descriptionMessage", descriptionMessages[room]);
@@ -51,7 +50,10 @@ const spyGameSocketSetup = (server) => {
         }
       });
     };
-
+    socket.on("Reset", (room)=>{
+      delete descriptionMessages[room];
+      delete votes[room];
+    })
     const readyHandler = (room) => {
       if (!rooms[room]["noReady"]) {
         rooms[room]["noReady"] = 0;
@@ -76,7 +78,7 @@ const spyGameSocketSetup = (server) => {
         return;
       }
     };
-
+    
     const startGameHandler = async (room) => {
       console.log(`Game started in room ${room}`);
 
@@ -90,10 +92,10 @@ const spyGameSocketSetup = (server) => {
 
       io.to(room).emit("SpyPlayer", randomUser);
 
-      socket.on("SpyData", (userInfo)=>{
+      socket.on("SpyData", (userInfo) => {
         console.log(userInfo);
         io.to(room).emit("SpyData", userInfo);
-      })
+      });
       // Gửi từ khóa đến người dùng
       clients.forEach((userId) => {
         const assignedKeyword =
@@ -104,7 +106,25 @@ const spyGameSocketSetup = (server) => {
     };
 
     const selectRandomKeywords = (keywords, count) => {
-      const shuffled = [...keywords].sort(() => 0.5 - Math.random());
+      if (!keywords.length) return [];
+    
+      // Group keywords by category
+      const keywordsByCategory = keywords.reduce((acc, keyword) => {
+        if (!acc[keyword.category]) {
+          acc[keyword.category] = [];
+        }
+        acc[keyword.category].push(keyword);
+        return acc;
+      }, {});
+    
+      const categories = Object.keys(keywordsByCategory);
+    
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    
+      const filteredKeywords = keywordsByCategory[randomCategory];
+    
+      const shuffled = [...filteredKeywords].sort(() => 0.5 - Math.random());
+    
       return shuffled.slice(0, count);
     };
 
@@ -127,7 +147,7 @@ const spyGameSocketSetup = (server) => {
         votes[room][votee]++;
       }
       voted++;
-      if(voted === amoutVoter){
+      if (voted === amoutVoter) {
         io.to(room).emit("voteUpdate", votes[room]);
         votes[room] = {};
         voted = 0;
@@ -137,18 +157,21 @@ const spyGameSocketSetup = (server) => {
     console.log("A user connected");
 
     const handleVotingResult = (data) => {
-      const {voteFinalResult, room} = data; 
+      const { voteFinalResult, room } = data;
 
-      const highestVotedPlayer = Object.entries(voteFinalResult).reduce((acc, [key, value]) => {
-        return value > acc.value ? { id: key, value: value } : acc;
-      }, { id: null, value: -Infinity });
-      
-        if (!eliminated[room]) {
-          eliminated[room] = [];
-        }
-        if(!eliminated[room].includes(highestVotedPlayer.id)){
-          eliminated[room].push(highestVotedPlayer.id);
-        }
+      const highestVotedPlayer = Object.entries(voteFinalResult).reduce(
+        (acc, [key, value]) => {
+          return value > acc.value ? { id: key, value: value } : acc;
+        },
+        { id: null, value: -Infinity }
+      );
+
+      if (!eliminated[room]) {
+        eliminated[room] = [];
+      }
+      if (!eliminated[room].includes(highestVotedPlayer.id)) {
+        eliminated[room].push(highestVotedPlayer.id);
+      }
 
       io.to(room).emit("eliminated", eliminated[room]);
     };
@@ -176,6 +199,10 @@ const spyGameSocketSetup = (server) => {
       console.log(`A user leaved from ${room}`);
       socket.to(room).emit("leave", room);
 
+      if (rooms[room] === undefined) {
+        return;
+      }
+      
       const index = rooms[room].indexOf(socket);
 
       if (index !== -1) {
@@ -185,7 +212,7 @@ const spyGameSocketSetup = (server) => {
         delete rooms[room];
         delete chatHistory[room];
         delete votes[room];
-        delete eliminated[room]
+        delete eliminated[room];
         delete descriptionMessages[room];
       }
     });
