@@ -110,7 +110,7 @@ const GuessingWord = () => {
     // setShowDownloadImageDialog(true);
   };
 
-  const handleSendImage = () => {};
+  const handleSendImage = () => { };
 
   const handleReady = () => {
     setIsReady(true);
@@ -130,7 +130,6 @@ const GuessingWord = () => {
     selectedKeyword.current = keyword;
     socket.emit("selectKeyword", keyword);
     setShowKeywordDialog(false);
-    // setTimer(0);
   };
 
   const toggleOptions = (optionNumber) => {
@@ -173,11 +172,10 @@ const GuessingWord = () => {
       }
       setShowDownloadImageDialog(true);
     } catch (error) {
-      //   console.error("Error capturing image:", error);
-      //   Alert.alert(
-      //     "Error",
-      //     "There was an error capturing and saving the image."
-      //   );
+      Alert.alert(
+        "Error",
+        "There was an error capturing and saving the image."
+      );
     }
   };
 
@@ -224,7 +222,6 @@ const GuessingWord = () => {
     if (playerInfo.current._id === undefined) {
       playerInfo.current = usersInRoom[playerIndex];
       gameScoreController.setDrawPlayer(playerInfo.current._id);
-      //   console.log(playerIndex + " - " + playerInfo.current._id);
     }
 
     return playerInfo.current._id === userInfo._id;
@@ -251,7 +248,6 @@ const GuessingWord = () => {
         playerInfo.current = usersInRoom[playerIndex];
 
         gameScoreController.setDrawPlayer(playerInfo.current._id);
-        // console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
 
         selectedKeyword.current = {};
         if (checkYourTurn()) {
@@ -418,7 +414,7 @@ const GuessingWord = () => {
           if (
             Object.keys(selectedKeyword.current).length === 0 &&
             gameTimeController.getStatus() ===
-              DRAWING_GAME_STATUS.WORD_SELECTION &&
+            DRAWING_GAME_STATUS.WORD_SELECTION &&
             checkYourTurn()
           ) {
             const randomIndex = Math.floor(Math.random() * keywordList.length);

@@ -1,7 +1,4 @@
 import {
-  FlatList,
-  Image,
-  Text,
   View,
   ToastAndroid, // For Android-specific toast message
   Alert, // For iOS-specific alert message
@@ -26,12 +23,11 @@ import { COLORS } from "../constants";
 const handleCopyText = async (text) => {
   await Clipboard.setStringAsync(text);
   if (Platform.OS === "android") {
-    ToastAndroid.show(`Đã copy ${text}`, ToastAndroid.SHORT);
+    ToastAndroid.show("Copied room id to clipboard", ToastAndroid.SHORT);
   } else if (Platform.OS === "ios") {
-    Alert.alert(`Đã copy ${text}`);
+    Alert.alert("Copied room id to clipboard");
   }
 };
-
 
 const RoomConfig = () => {
   const navigation = useNavigation();
@@ -42,71 +38,70 @@ const RoomConfig = () => {
   return (
     <View style={styles.container}>
       <AppBar
-        title={"Thiết lập phòng"}
+        title={"Room Config"}
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
 
       <View style={styles.body}>
         <LinearGradient
-            colors={COLORS.blueGradient}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={styles.playersRow}
+          colors={COLORS.blueGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.playersRow}
         >
-            {usersInRoom.map((user) => (
-              <TouchableOpacity
-                key={user._id}
-                onPress={() => {
-                  if (user._id === userInfo._id) return;
-                  setShowAddFriendDialog(true);
-                  setUserToAddFriend(user);
-                }}
-              >
-                <UserCardView user={user}></UserCardView>
-              </TouchableOpacity>
-            ))}
+          {usersInRoom.map((user) => (
+            <TouchableOpacity
+              key={user._id}
+              onPress={() => {
+                if (user._id === userInfo._id) return;
+                setShowAddFriendDialog(true);
+                setUserToAddFriend(user);
+              }}
+            >
+              <UserCardView user={user}></UserCardView>
+            </TouchableOpacity>
+          ))}
         </LinearGradient>
 
         <View style={styles.settingsColumn}>
           <HorizontalItem
-            title={"ID phòng"}
+            title={"Room ID"}
             desc={roomInfo._id}
             onPress={() => handleCopyText(roomInfo._id)}
             iconRight={"copy-outline"}
           ></HorizontalItem>
 
           <HorizontalItem
-            title={"Tên phòng"}
+            title={"Room Name"}
             desc={roomInfo.name}
             iconRight={"chevron-forward-outline"}
           ></HorizontalItem>
 
           <HorizontalItem
-            title={"Số phòng"}
-            desc={"0123"}
-            iconRight={"chevron-forward-outline"}
-          ></HorizontalItem>
-
-          <HorizontalItem
-            title={"Chế độ chơi"}
+            title={"Game Mode"}
             desc={roomInfo.mode}
             iconRight={"chevron-forward-outline"}
           ></HorizontalItem>
 
           <HorizontalItem
-            title={"Số lượng người chơi"}
+            title={"Capacity"}
             desc={roomInfo.capacity}
             iconRight={"chevron-forward-outline"}
           ></HorizontalItem>
+
+          {/* <HorizontalItem
+            title={"Password"}
+            desc={roomInfo.password}
+            iconRight={"chevron-forward-outline"}
+          ></HorizontalItem> */}
         </View>
 
         <View style={styles.footer}>
           <CustomButton
-            title={"Tạo phòng"}
             onPress={() => navigation.navigate("Dashboard")}
             styles={styles}
             isValid={true}
-            label={"Thoát phòng"}
+            label={"Leave Room"}
           ></CustomButton>
         </View>
       </View>
