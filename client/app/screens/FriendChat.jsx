@@ -5,7 +5,6 @@ import {
   TextInput,
   FlatList,
   StyleSheet,
-  Button,
   Image,
   TouchableOpacity,
 } from "react-native";
@@ -13,6 +12,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import { socket } from "../utils/config";
 import { AppBar } from "../components";
+import { readAllMessages } from "../api/MessageApi";
 
 const FriendChat = () => {
   const [messages, setMessages] = useState([]);
@@ -26,8 +26,9 @@ const FriendChat = () => {
 
   useEffect(() => {
     if (userInfo && item) {
+      readAllMessages({ userId: userInfo._id, friendId: item._id });
       socket.emit("getMessages", { userId: userInfo._id, friendId: item._id });
-      
+
       socket.on("messages", (messages) => {
         setMessages(messages);
         flatListRef.current?.scrollToEnd({ animated: true });
@@ -64,7 +65,7 @@ const FriendChat = () => {
         >
           <Text style={styles.messageContent}>{item.message}</Text>
         </View>
-        {isLastMessage && isSeen && <Text style={styles.seenText}>Đã xem</Text>}
+        {isLastMessage && isSeen && <Text style={styles.seenText}>Seen</Text>}
       </View>
     );
   };
@@ -89,13 +90,10 @@ const FriendChat = () => {
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
       <View style={styles.header}>
-        <Image
-          source={{ uri: item.avatarUrl }}
-          style={styles.profileImage}
-        />
+        <Image source={{ uri: item.avatarUrl }} style={styles.profileImage} />
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>{item.name}</Text>
-          <Text style={styles.status}>Đang hoạt động</Text>
+          <Text style={styles.status}>Online</Text>
         </View>
       </View>
       <FlatList
@@ -104,22 +102,24 @@ const FriendChat = () => {
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.chatContainer}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+        onContentSizeChange={() =>
+          flatListRef.current?.scrollToEnd({ animated: true })
+        }
       />
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           value={newMessage}
           onChangeText={setNewMessage}
-          placeholder="Nhắn tin"
+          placeholder="Type your message..."
           onSubmitEditing={handleSendMessage}
         />
-         <TouchableOpacity onPress={handleSendMessage} style={styles.iconButton}>
-            <Image
-              source={require("../../assets/send.png")}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
+        <TouchableOpacity onPress={handleSendMessage} style={styles.iconButton}>
+          <Image
+            source={require("../../assets/send.png")}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

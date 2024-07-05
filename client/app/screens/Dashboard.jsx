@@ -23,7 +23,7 @@ const Dashboard = () => {
   const GAME_MODE = {
     DRAW: "Bạn Vẽ Tôi Đoán",
     SPY: "Ai Là Gián Điệp - Chế độ văn bản",
-  }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -35,20 +35,29 @@ const Dashboard = () => {
     const data = {
       gameMode: mode,
     };
+
     var roomInfo = await accessRoom({ data: data });
+
     if (!roomInfo) {
       navigation.navigate("Room Create");
       return;
     }
 
-    await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+    const res = await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
+
+    if (res.status === "playing") {
+      Alert.alert("Cannot join", "Room is playing.");
+      return;
+    }
+    // navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+    // await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
 
     if (mode === "Bạn Vẽ Tôi Đoán") {
-      navigation.navigate("Guessing Word", { roomInfo });
+      navigation.navigate("Guessing Word", { roomInfo: roomInfo });
     }
 
     if (mode === "Ai Là Gián Điệp - Chế độ văn bản") {
-      navigation.navigate("Spy Game", { roomInfo });
+      navigation.navigate("Spy Game", { roomInfo: roomInfo });
     }
   };
 
