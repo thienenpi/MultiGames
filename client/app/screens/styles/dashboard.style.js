@@ -1,21 +1,36 @@
 import { StyleSheet } from "react-native";
+import { COLORS } from "../../constants";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 
-  containerTask: {
+  containerButton: {
     flexDirection: "row",
+    width: "95%",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 32,
-    paddingVertical: 18,
+    alignSelf: "center",
+    backgroundColor: "#f8bbf5",
+    borderRadius: 20,
+    marginVertical: 20,
+    paddingHorizontal: 35,
+    paddingVertical: 14,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 6,
   },
 
   item: {
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "flex-end",
   },
 
   textTask: {
@@ -47,6 +62,17 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 12,
     color: "#333333",
+  },
+  text: {
+    fontSize: 16,
+    color: "#333333",
+    fontWeight: "600",
+    opacity: 0.9,
+  },
+  icon: {
+    width: 60,
+    height: 60,
+    marginBottom: 6,
   },
 });
 

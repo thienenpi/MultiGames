@@ -17,6 +17,8 @@ import { Item, AppBar } from "../components";
 import { getItemById } from "../api/ShopApi";
 import { AuthContext } from "../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LinearGradient } from "expo-linear-gradient";
+import { COLORS } from "../constants";
 
 const ItemBag = () => {
   const { userInfo } = useContext(AuthContext);
@@ -183,14 +185,18 @@ const ItemBag = () => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonUse]}
-              onPress={handleUseItem}
+            <LinearGradient
+              colors={isItemUsed ? COLORS.blueGradient : COLORS.primaryGradient}
+              style={styles.button}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
             >
-              <Text style={styles.textStyle}>
-                {isItemUsed === true ? "In used" : "Use"}
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={handleUseItem}>
+                <Text style={styles.textStyle}>
+                  {isItemUsed === true ? "In used" : "Use"}
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
           </View>
         </Modal>
       )}

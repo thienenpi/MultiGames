@@ -8,25 +8,25 @@ import {
 
 const joinRoom = async ({ roomId, userId }) => {
   try {
-    const guests = await getRoomGuests({ id: roomId });
-    var history_guests = await getRoomHistoryGuests({ id: roomId });
     const roomInfo = await getRoom({ id: roomId });
+    const guests = roomInfo.data.list_guest;
+    var history_guests = roomInfo.data.history_guest;
 
     if (roomInfo.data.status === "playing") {
       return { status: "playing" };
     }
 
-    if (guests.data.includes(userId)) {
+    if (guests.includes(userId)) {
       return;
     }
 
-    if (!history_guests.data.includes(userId)) {
-      history_guests.data.push(userId);
+    if (!history_guests.includes(userId)) {
+      history_guests.push(userId);
     }
 
     const data = {
-      list_guest: [...guests.data, userId],
-      history_guest: history_guests.data,
+      list_guest: [...guests, userId],
+      history_guest: history_guests,
     };
 
     const res = await updateRoom({ id: roomId, data: data });
@@ -42,7 +42,6 @@ const leaveRoom = async ({ roomId, userId }) => {
 
     const data = {
       list_guest: users.data.filter((guest) => guest !== userId),
-      //   history_guest: users.data.filter((guest) => guest !== userId),
     };
 
     const res = await updateRoom({ id: roomId, data: data });

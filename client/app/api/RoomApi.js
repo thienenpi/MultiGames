@@ -86,6 +86,27 @@ const getActiveRoom = async ({ data }) => {
   }
 };
 
+const getAllRoomsActive = async () => {
+  try {
+    const url = "/rooms/active";
+    const config = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const res = await ApiManager(url, config);
+    return res;
+  } catch (error) {
+    if (error.response) {
+      return error.response;
+    } else {
+      throw error;
+    }
+  }
+};
+
 const getRoomsOwner = async ({ id }) => {
   try {
     const url = `/rooms/ownerId=${id}`;
@@ -246,4 +267,5 @@ export {
   isRoomFull,
   getRoomGuests,
   getRoomHistoryGuests,
+  getAllRoomsActive,
 };

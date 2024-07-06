@@ -6,8 +6,9 @@ import { sendFriendRequest } from "../../../../api/UserApi";
 import { AuthContext } from "../../../../context/AuthContext";
 import { checkIfFriend } from "../../../../services";
 import { useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 
-const RankUserView = ({ item }) => {
+const RankUserView = ({ item, isInGame }) => {
   const { userInfo } = useContext(AuthContext);
   const isMe = userInfo._id === item._id;
   const [isFriend, setIsFriend] = useState(false);
@@ -36,27 +37,46 @@ const RankUserView = ({ item }) => {
 
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.expGain}>{item.name}</Text>
+
+        {isInGame === true ? (
+          <Text style={styles.expGain}>Final score: {item.score}</Text>
+        ) : (
+          <Text style={styles.expGain}>{item.money} $</Text>
+        )}
       </View>
 
       {!isMe ? (
         <View style={styles.addFriend}>
           {isFriend ? (
-            <View style={styles.frStatusContainer}>
-              <Text style={styles.frStatusText}>Friend</Text>
-            </View>
+            <LinearGradient
+              colors={COLORS.blueGradient}
+              style={styles.frStatusContainer}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
+            >
+              <View style={styles.frStatusContainer}>
+                <Text style={styles.frStatusText}>Friend</Text>
+              </View>
+            </LinearGradient>
           ) : (
-            <CustomButton
-              styles={styles}
-              label={"Add"}
-              isValid={true}
-              onPress={async () => {
-                await sendFriendRequest({
-                  senderId: userInfo._id,
-                  recipientId: user._id,
-                });
-              }}
-            ></CustomButton>
+            <LinearGradient
+              colors={COLORS.primaryGradient}
+              style={styles.btnContainer()}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
+            >
+              <CustomButton
+                styles={styles}
+                label={"Add"}
+                isValid={true}
+                onPress={async () => {
+                  await sendFriendRequest({
+                    senderId: userInfo._id,
+                    recipientId: user._id,
+                  });
+                }}
+              ></CustomButton>
+            </LinearGradient>
           )}
         </View>
       ) : (
@@ -76,21 +96,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 70,
-    backgroundColor: COLORS.white,
     borderRadius: 10,
   },
 
   rank: {
-    flex: 1,
     borderRadius: 99,
     borderWidth: 1,
-    height: "50%",
+    height: 25,
+    width: 25,
     alignItems: "center",
     justifyContent: "center",
   },
 
   avatar: {
-    flex: 3,
+    flex: 2,
     alignItems: "center",
     justifyContent: "center",
     height: 50,
@@ -101,7 +120,7 @@ const styles = StyleSheet.create({
   userInfo: {
     flex: 4,
     flexDirection: "column",
-    height: "100%",
+    height: "80%",
     justifyContent: "space-around",
   },
 
@@ -113,8 +132,16 @@ const styles = StyleSheet.create({
 
   expGain: {
     fontFamily: "sfPro",
-    fontSize: SIZES.small,
-    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: "800",
+    color: COLORS.orange,
+  },
+
+  subExpGain: {
+    fontFamily: "sfPro",
+    fontSize: 14,
+    fontWeight: "600",
+    color: COLORS.orange,
   },
 
   addFriend: {
@@ -124,30 +151,30 @@ const styles = StyleSheet.create({
   },
 
   btnContainer: () => ({
-    backgroundColor: COLORS.button,
+    padding: 5,
+    width: "100%",
     borderRadius: 99,
-    height: "60%",
     alignItems: "center",
     justifyContent: "center",
   }),
 
   btnLabel: {
     fontFamily: "sfProBold",
-    fontSize: SIZES.medium,
+    fontSize: SIZES.small,
     color: "white",
   },
 
   frStatusContainer: {
-    backgroundColor: COLORS.green,
+    padding: 5,
+    width: "100%",
     borderRadius: 99,
-    height: "60%",
     alignItems: "center",
     justifyContent: "center",
   },
 
   frStatusText: {
     fontFamily: "sfProBold",
-    fontSize: SIZES.medium,
+    fontSize: SIZES.small,
     color: "white",
   },
 });

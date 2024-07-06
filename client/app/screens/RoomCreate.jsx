@@ -1,11 +1,22 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TextInput, TouchableOpacity, Modal, Switch, Pressable, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  Switch,
+  Pressable,
+  Alert,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AppBar, CustomButton } from "../components";
 import { Ionicons } from "@expo/vector-icons";
 import { AuthContext } from "../context/AuthContext";
 import { createRoom } from "../api/RoomApi";
 import styles from "./styles/createroom.style";
+import { LinearGradient } from "expo-linear-gradient";
+import { COLORS } from "../constants";
 
 const RoomCreate = () => {
   const navigation = useNavigation();
@@ -23,12 +34,15 @@ const RoomCreate = () => {
     // ["Gián Điệp Không Lời - Chế đội giọng nói", capacitySpy],
     // ["Gián Điệp Không Lời - Chế đội văn bản", capacitySpy],
   ];
-  const [lastIndex, setLastIndex] = useState(buttonTitles[selectedButton][1].length - 1);
-  const [password, setPassword] = useState('');
+  const [lastIndex, setLastIndex] = useState(
+    buttonTitles[selectedButton][1].length - 1
+  );
+  const [password, setPassword] = useState("");
 
   function generateRoomId() {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = "";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const charactersLength = characters.length;
     for (let i = 0; i < 10; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -41,54 +55,53 @@ const RoomCreate = () => {
       const data = {
         name: generateRoomId(),
         isPassword: isPassword,
-        password: password === '' ? "null" : password,
+        password: password === "" ? "null" : password,
         mode: buttonTitles[selectedButton][0],
         capacity: buttonTitles[selectedButton][1][lastIndex],
         list_guest: [],
         history_guest: [],
         owner: userInfo._id,
         chatGame: "null",
-        status: "active"
-      }
+        status: "active",
+      };
 
       console.log(data);
 
       const res = await createRoom({ data: data });
 
       if (res.status === 200) {
-        Alert.alert('Room created successfully');
+        Alert.alert("Room created successfully");
         navigation.goBack();
       } else {
-        Alert.alert('Failed to create room');
+        Alert.alert("Failed to create room");
       }
     } catch {
-      Alert.alert('An error occurred while creating the room');
+      Alert.alert("An error occurred while creating the room");
     }
-  }
+  };
 
   const handleCancel = () => {
     setModalVisiblePassword(false);
-  }
+  };
 
   const handleConfirm = () => {
-    setIsPassword(true)
+    setIsPassword(true);
     setModalVisiblePassword(false);
-  }
+  };
 
   const handlePasswordChange = (text) => {
     // Kiểm tra nếu text không phải là ký tự delete hoặc là chuỗi rỗng
-    if (text === '' || text[text.length - 1] === '\u0008') {
+    if (text === "" || text[text.length - 1] === "\u0008") {
       setPassword(text); // Giữ nguyên chuỗi nếu là ký tự delete hoặc chuỗi rỗng
     } else {
       // Loại bỏ các ký tự không phải là số
-      const cleanedText = text.replace(/[^0-9]/g, '');
+      const cleanedText = text.replace(/[^0-9]/g, "");
       // Giới hạn độ dài của chuỗi nhập vào thành 4 ký tự
       const truncatedText = cleanedText.slice(0, 4);
       // Cập nhật giá trị của password
       setPassword(truncatedText);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -97,11 +110,15 @@ const RoomCreate = () => {
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
 
-      <View style={{
-        backgroundColor: "white",
-        paddingBottom: 10,
-      }}>
-        <Text style={{ marginVertical: 8, marginHorizontal: 10 }}>Game Mode</Text>
+      <View
+        style={{
+          backgroundColor: "white",
+          paddingBottom: 10,
+        }}
+      >
+        <Text style={{ marginVertical: 8, marginHorizontal: 10 }}>
+          Game Mode
+        </Text>
         <View
           style={{
             flexDirection: "row",
@@ -140,7 +157,6 @@ const RoomCreate = () => {
               </Text>
             </TouchableOpacity>
           ))}
-
         </View>
       </View>
 
@@ -155,10 +171,13 @@ const RoomCreate = () => {
           padding: 10,
           backgroundColor: "white",
         }}
-        onPress={() => setModalVisibleCapacity(true)}>
+        onPress={() => setModalVisibleCapacity(true)}
+      >
         <Text>Number of players</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ marginRight: 8, color: "gray" }}>{buttonTitles[selectedButton][1][lastIndex]} players</Text>
+          <Text style={{ marginRight: 8, color: "gray" }}>
+            {buttonTitles[selectedButton][1][lastIndex]} players
+          </Text>
           <Ionicons name="chevron-forward" size={16} color="gray" />
         </View>
       </TouchableOpacity>
@@ -184,11 +203,9 @@ const RoomCreate = () => {
             right: 0,
             backgroundColor: "rgba(0,0,0,0.5)",
             position: "absolute",
-
           }}
           onPress={() => setModalVisibleCapacity(false)}
-        >
-        </Pressable>
+        ></Pressable>
         <View style={styles.centeredView}>
           <View
             style={{
@@ -223,7 +240,9 @@ const RoomCreate = () => {
                     color: lastIndex === index ? "#4FBFFF" : "gray",
                     fontWeight: lastIndex === index ? "bold" : "normal",
                   }}
-                >{count} players</Text>
+                >
+                  {count} players
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -249,7 +268,7 @@ const RoomCreate = () => {
           onValueChange={() => {
             if (!isPassword) setModalVisiblePassword(!isPassword);
             else {
-              setPassword('');
+              setPassword("");
               setIsPassword(!isPassword);
             }
           }}
@@ -279,8 +298,7 @@ const RoomCreate = () => {
             backgroundColor: "rgba(0,0,0,0.5)",
             position: "absolute",
           }}
-        >
-        </View>
+        ></View>
         <View style={styles.centeredView}>
           <View
             style={{
@@ -290,8 +308,12 @@ const RoomCreate = () => {
               borderRadius: 10,
             }}
           >
-            <Text style={{ marginBottom: 10, textAlign: 'center', fontSize: 18 }}>Enter password</Text>
-            <View style={{ justifyContent: 'space-between' }}>
+            <Text
+              style={{ marginBottom: 10, textAlign: "center", fontSize: 18 }}
+            >
+              Enter password
+            </Text>
+            <View style={{ justifyContent: "space-between" }}>
               <TextInput
                 style={{
                   height: 40,
@@ -307,11 +329,13 @@ const RoomCreate = () => {
                 maxLength={4} // Giới hạn độ dài của TextInput
               />
 
-              <View style={{
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                marginTop: 10,
-              }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  marginTop: 10,
+                }}
+              >
                 <TouchableOpacity
                   onPress={handleCancel}
                   style={{
@@ -326,7 +350,9 @@ const RoomCreate = () => {
                     padding: 10,
                   }}
                 >
-                  <Text style={{ color: "#00CDF9", fontWeight: "bold" }}>Cancel</Text>
+                  <Text style={{ color: "#00CDF9", fontWeight: "bold" }}>
+                    Cancel
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleConfirm}
@@ -342,7 +368,9 @@ const RoomCreate = () => {
                     padding: 10,
                   }}
                 >
-                  <Text style={{ color: "white", fontWeight: "bold" }}>Confirm</Text>
+                  <Text style={{ color: "white", fontWeight: "bold" }}>
+                    Confirm
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -352,7 +380,7 @@ const RoomCreate = () => {
 
       <View style={styles.separator} />
 
-      {isPassword &&
+      {isPassword && (
         <TouchableOpacity
           onPress={() => setModalVisiblePassword(true)}
           style={{
@@ -370,7 +398,7 @@ const RoomCreate = () => {
             <Ionicons name="chevron-forward" size={16} color="gray" />
           </View>
         </TouchableOpacity>
-      }
+      )}
 
       <View
         style={{
@@ -380,14 +408,21 @@ const RoomCreate = () => {
           marginBottom: 30,
         }}
       >
-        <CustomButton
-          isValid={true}
-          styles={styles}
-          label={"Create"}
-          onPress={() => {
-            handleCreateRoom();
-          }}
-        />
+        <LinearGradient
+          colors={COLORS.primaryGradient}
+          style={styles.btnContainer()}
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 0 }}
+        >
+          <CustomButton
+            isValid={true}
+            styles={styles}
+            label={"Create"}
+            onPress={() => {
+              handleCreateRoom();
+            }}
+          />
+        </LinearGradient>
       </View>
     </View>
   );

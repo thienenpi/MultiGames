@@ -3,7 +3,7 @@ import React from "react";
 import RankUserView from "./RankUserView";
 import { SIZES } from "../../../../constants";
 
-const renderItem = ({ item }) => <RankUserView item={item}></RankUserView>;
+const renderItem = ({ item }) => <RankUserView isInGame={true} item={item}></RankUserView>;
 
 const RankColumns = ({ items }) => {
   const rankedItems = items

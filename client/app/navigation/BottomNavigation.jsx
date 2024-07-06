@@ -38,7 +38,7 @@ const BottomNavigation = () => {
               <Ionicons
                 name="game-controller-outline"
                 size={24}
-                color={focused ? COLORS.lightBlue : COLORS.text}
+                color={focused ? COLORS.primaryDark : COLORS.text}
               />
             );
           },
@@ -57,7 +57,7 @@ const BottomNavigation = () => {
               <Feather
                 name="shopping-bag"
                 size={24}
-                color={focused ? COLORS.lightBlue : COLORS.text}
+                color={focused ? COLORS.primaryDark : COLORS.text}
               />
             );
           },
@@ -76,7 +76,7 @@ const BottomNavigation = () => {
               <Ionicons
                 name="chatbubble-ellipses-outline"
                 size={24}
-                color={focused ? COLORS.lightBlue : COLORS.text}
+                color={focused ? COLORS.primaryDark : COLORS.text}
               ></Ionicons>
             );
           },
@@ -93,7 +93,7 @@ const BottomNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <Ionicons
-                color={focused ? COLORS.lightBlue : COLORS.text}
+                color={focused ? COLORS.primaryDark : COLORS.text}
                 name="person-circle-outline"
                 size={24}
               ></Ionicons>
@@ -114,6 +114,6 @@ const styles = StyleSheet.create({
   tabBarLabel: (focused) => ({
     fontSize: SIZES.medium,
     fontFamily: "sfProBold",
-    color: focused ? COLORS.lightBlue : COLORS.text,
+    color: focused ? COLORS.primaryDark : COLORS.text,
   }),
 });

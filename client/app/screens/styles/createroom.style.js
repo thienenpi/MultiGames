@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   btnContainer: (backgroundColor) => ({
-    backgroundColor: backgroundColor,
+    // backgroundColor: backgroundColor,
     borderRadius: 99,
     width: SIZES.width - SIZES.xxLarge * 2,
     height: SIZES.xxLarge,

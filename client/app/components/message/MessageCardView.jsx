@@ -84,11 +84,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: SIZES.xxLarge * 2,
     padding: SIZES.medium,
-    // create border around the message card
     borderWidth: 0.2,
-    borderColor: COLORS.text,
+    borderColor: COLORS.primaryDark,
     borderRadius: SIZES.small,
     marginHorizontal: SIZES.medium,
+    backgroundColor: 'white'
   },
 
   avatar: {

@@ -83,6 +83,7 @@ const GuessingWord = () => {
 
   const countCorrectGuess = useRef(0);
 
+  const hintIntervalRef = useRef();
   // Set game time
   const gameTimeController = new GameTimeController();
   gameTimeController.setModeDrawing();
@@ -110,7 +111,7 @@ const GuessingWord = () => {
     // setShowDownloadImageDialog(true);
   };
 
-  const handleSendImage = () => {};
+  const handleSendImage = () => { };
 
   const handleReady = () => {
     setIsReady(true);
@@ -130,7 +131,6 @@ const GuessingWord = () => {
     selectedKeyword.current = keyword;
     socket.emit("selectKeyword", keyword);
     setShowKeywordDialog(false);
-    // setTimer(0);
   };
 
   const toggleOptions = (optionNumber) => {
@@ -173,11 +173,10 @@ const GuessingWord = () => {
       }
       setShowDownloadImageDialog(true);
     } catch (error) {
-      //   console.error("Error capturing image:", error);
-      //   Alert.alert(
-      //     "Error",
-      //     "There was an error capturing and saving the image."
-      //   );
+      Alert.alert(
+        "Error",
+        "There was an error capturing and saving the image."
+      );
     }
   };
 
@@ -224,7 +223,6 @@ const GuessingWord = () => {
     if (playerInfo.current._id === undefined) {
       playerInfo.current = usersInRoom[playerIndex];
       gameScoreController.setDrawPlayer(playerInfo.current._id);
-      //   console.log(playerIndex + " - " + playerInfo.current._id);
     }
 
     return playerInfo.current._id === userInfo._id;
@@ -251,15 +249,14 @@ const GuessingWord = () => {
         playerInfo.current = usersInRoom[playerIndex];
 
         gameScoreController.setDrawPlayer(playerInfo.current._id);
-        // console.log("DrawerId: " + playerIndex + " " + playerInfo.current._id);
 
         selectedKeyword.current = {};
         if (checkYourTurn()) {
           setShowKeywordDialog(true);
         }
         setIsClear(true);
-      }},
-    
+      }
+    }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
@@ -283,7 +280,8 @@ const GuessingWord = () => {
           socket.off();
         }
       });
-    };
+    }
+  };
 
   const hideKeyboard = () => {
     Keyboard.dismiss();
@@ -354,6 +352,7 @@ const GuessingWord = () => {
 
         if (res.status === 200) {
           const user = res.data;
+          user['score'] = 0;
 
           if (!uniqueUserIds.has(user._id)) {
             // Check if user ID is not in the Set
@@ -416,7 +415,7 @@ const GuessingWord = () => {
           if (
             Object.keys(selectedKeyword.current).length === 0 &&
             gameTimeController.getStatus() ===
-              DRAWING_GAME_STATUS.WORD_SELECTION &&
+            DRAWING_GAME_STATUS.WORD_SELECTION &&
             checkYourTurn()
           ) {
             const randomIndex = Math.floor(Math.random() * keywordList.length);
@@ -429,9 +428,34 @@ const GuessingWord = () => {
           // Affter changing status, handle the game timeline
           handleGamingTimelines();
 
+          if (
+            gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING && checkYourTurn()
+          ) {
+            const descriptionTime = gameTimeController.getTime();
+            const quarterTime = Math.floor(descriptionTime / 3);
+            let timePassed = 0;
+            let indexSuggestion = 0;
+            hintIntervalRef.current = setInterval(() => {
+              timePassed += quarterTime;
+              if (timePassed < descriptionTime && indexSuggestion < 3) {
+                let hintMessage = {
+                  senderId: "",
+                  sender: `Suggestion number ${indexSuggestion + 1}`,
+                  content: selectedKeyword.current.suggestionList[indexSuggestion],
+                  isCheckGuessCorrectness: false,
+                };
+                socket.emit("message", hintMessage);
+                indexSuggestion++;
+              } else {
+                clearInterval(hintIntervalRef.current);
+              }
+            }, quarterTime * 1000);
+          }
+
           // Update timer
           return gameTimeController.getTime();
         }
+
         gameTimeController.timeDown();
 
         return prevTimer - 1;
@@ -476,7 +500,8 @@ const GuessingWord = () => {
         {/* Show result dialog */}
         {showEndGameResultDialog && (
           <EndGameResult
-            items={gameScoreController.players}
+            // items={gameScoreController.players}
+            items={usersInRoom}
             isShow={showEndGameResultDialog}
             keyword={"The game has ended"}
           ></EndGameResult>
@@ -778,6 +803,7 @@ const GuessingWord = () => {
               onChangeText={(text) => setMessage(text)}
               placeholder="Type your answer..."
               placeholderTextColor="#888"
+              onSubmitEditing={sendMessage}
             />
 
             {/* Icon button chọn bộ icon */}
@@ -792,5 +818,6 @@ const GuessingWord = () => {
       </View>
     </TouchableWithoutFeedback>
   );
+};
 
 export default GuessingWord;

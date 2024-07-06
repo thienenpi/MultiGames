@@ -37,45 +37,21 @@ export const AuthProvider = ({ children }) => {
     if (res.status === 200) {
       const responseData = res.data;
       let userInfo = responseData;
-      let userToken = responseData.token;
       let userPhone = responseData.phone;
       userInfo.phone = userPhone;
 
       setIsLoading(true);
-      setUserInfo(userInfo);
-      setUserToken(userToken);
-
-      AsyncStorage.setItem("userInfo", JSON.stringify(userInfo)).catch(
-        (error) => {
-          console.error("Error storing user info: ", error);
-        }
-      );
-
-      AsyncStorage.setItem("userToken", JSON.stringify(userToken)).catch(
-        (error) => {
-          console.error("Error storing user token: ", error);
-        }
-      );
-
-      // AsyncStorage.setItem("userPhone", JSON.stringify(userPhone));
-      // auth()
-      //   .signInWithPhoneNumber(userPhone)
-      //   .then((confirmResult) => {
-      //     // Save the confirmation result to use in the OTP verification step
-      //     AsyncStorage.setItem("confirmResult", JSON.stringify(confirmResult));
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //   });
 
       setIsLoading(false);
+      return true
     } else {
-      Alert.alert(res.data, "Please try again", [
+      Alert.alert("Please try again", res.data, [
         {
           text: "Try again",
-          style: "cancel",
+          style: "Cancel",
         },
       ]);
+      return false
     }
   };
 

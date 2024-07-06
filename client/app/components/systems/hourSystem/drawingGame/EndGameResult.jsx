@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Modal, StyleSheet } from "react-native";
-import { SIZES } from "../../../../constants";
+import { COLORS, SIZES } from "../../../../constants";
 import RankColumns from "../../ranking/drawing/RankColumns";
 import CustomButton from "../../../CustomButton";
 import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 
 const EndGameResult = ({ isShow, keyword, items }) => {
   const navigation = useNavigation();
@@ -23,12 +24,25 @@ const EndGameResult = ({ isShow, keyword, items }) => {
         <View style={styles.body}>
           <RankColumns items={items}></RankColumns>
 
-          <CustomButton
-            isValid={true}
-            label={"Leave"}
-            styles={styles}
-            onPress={() => navigation.navigate("Dashboard")}
-          ></CustomButton>
+          <LinearGradient
+            colors={COLORS.blueGradient}
+            style={{
+              flexDirection: "row",
+              width: "30%",
+              borderRadius: 10,
+              position: "absolute",
+              bottom: 10,
+            }}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0 }}
+          >
+            <CustomButton
+              isValid={true}
+              label={"Leave"}
+              styles={styles}
+              onPress={() => navigation.navigate("Dashboard")}
+            ></CustomButton>
+          </LinearGradient>
         </View>
       </View>
     </Modal>
@@ -77,14 +91,12 @@ const styles = StyleSheet.create({
   },
 
   btnContainer: (backgroundColor) => ({
-    width: "40%",
-    backgroundColor: backgroundColor,
-    padding: 10,
+    width: "100%",
+    flex: 1,
     borderRadius: 10,
+    padding: 10,
     alignItems: "center",
     justifyContent: "center",
-    position: "absolute",
-    bottom: 20,
   }),
 
   btnLabel: {

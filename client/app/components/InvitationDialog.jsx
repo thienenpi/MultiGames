@@ -40,8 +40,13 @@ const InvitationDialog = ({ inviteRoom, visible, onChangeVisible }) => {
         Alert.alert("Can not join", "The game has started");
         return;
       }
-      
-      navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+
+    //   console.log(roomInfo.mode)
+      if (roomInfo.mode.toLowerCase().includes("vẽ")) {
+        navigation.navigate("Guessing Word", { roomInfo: roomInfo });
+      } else {
+        navigation.navigate("Spy Game", { roomInfo: roomInfo });
+      }
     } catch (error) {
       console.error(error);
     }

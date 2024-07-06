@@ -107,10 +107,10 @@ const Login = () => {
     return (
       <View style={styles.authentication}>
         <LinearGradient
-          colors={COLORS.blueGradient}
+          colors={COLORS.primaryGradient}
           style={styles.btnContainer()}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 0 }}
         >
           <CustomButton
             styles={styles}
@@ -165,10 +165,10 @@ const Login = () => {
   const renderNoBiometric = () => {
     return (
       <LinearGradient
-        colors={COLORS.blueGradient}
+        colors={COLORS.primaryGradient}
         style={styles.btnContainer()}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
+        start={{ x: 1, y: 1 }}
+        end={{ x: 0, y: 0 }}
       >
         <CustomButton
           styles={styles}
@@ -185,7 +185,7 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
       <LinearGradient
-        colors={[COLORS.lightBlue, "#fff"]}
+        colors={[COLORS.primaryDark, "#fff"]}
         style={styles.container}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}

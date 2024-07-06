@@ -6,23 +6,28 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
-import { AuthContext } from "../../context/AuthContext";
-import { getFriends } from "../../services";
-import FriendCardView from "../drawing/FriendCardView";
+import RoomCardView from "../roomHistory/RoomCardView";
 import CustomButton from "../CustomButton";
+import { getAllRoomsActive } from "../../api/index";
 import { LinearGradient } from "expo-linear-gradient";
 
-const FriendsColumn = ({ friends }) => {
+const RoomActiveColumn = ({ rooms, onItemPress }) => {
   const renderItem = ({ item }) => {
-    return <FriendCardView item={item} roomId={null}></FriendCardView>;
+    return (
+      <RoomCardView
+        onItemPress={onItemPress}
+        item={item}
+        isShowRoomsActive={true}
+      ></RoomCardView>
+    );
   };
 
   return (
     <FlatList
       style={{ width: "100%" }}
-      data={friends}
+      data={rooms}
       renderItem={renderItem}
       keyExtractor={(item) => JSON.stringify(item)}
       contentContainerStyle={{}}
@@ -31,20 +36,18 @@ const FriendsColumn = ({ friends }) => {
   );
 };
 
-const FriendsDialog = ({ isShow, onChangeShow }) => {
+const RoomActiveDialog = ({ isShow, onChangeShow }) => {
   const [show, setShow] = useState(isShow);
-  const [friends, setFriends] = useState([]);
+  const [rooms, setRooms] = useState([]);
 
-  const { userInfo } = useContext(AuthContext);
-
-  const fetchFriends = async () => {
+  const fetchRoomsActive = async () => {
     try {
-      const friends = await getFriends({ id: userInfo._id });
-
-      console.log(friends);
-      setFriends(friends);
+      const res = await getAllRoomsActive();
+      if (res.status === 200) {
+        setRooms(res.data);
+      }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -57,8 +60,8 @@ const FriendsDialog = ({ isShow, onChangeShow }) => {
   }, [isShow]);
 
   useEffect(() => {
-    fetchFriends();
-  }, [userInfo]);
+    fetchRoomsActive();
+  }, []);
 
   return (
     <Modal
@@ -70,11 +73,14 @@ const FriendsDialog = ({ isShow, onChangeShow }) => {
       <Pressable style={styles.overlay} onPress={closeModal}></Pressable>
       <View style={styles.modalView}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Friends</Text>
+          <Text style={styles.headerText}>Activity Rooms</Text>
         </View>
 
         <View style={styles.body}>
-          <FriendsColumn friends={friends}></FriendsColumn>
+          <RoomActiveColumn
+            rooms={rooms}
+            onItemPress={() => onChangeShow(false)}
+          ></RoomActiveColumn>
 
           <LinearGradient
             colors={COLORS.primaryGradient}
@@ -102,7 +108,7 @@ const FriendsDialog = ({ isShow, onChangeShow }) => {
   );
 };
 
-export default FriendsDialog;
+export default RoomActiveDialog;
 
 const styles = StyleSheet.create({
   overlay: {

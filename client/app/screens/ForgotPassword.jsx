@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
   Image,
-  TouchableOpacity,
 } from "react-native";
 import styles from "./styles/forgotpassword.style";
 import { LinearGradient } from "expo-linear-gradient";
@@ -55,7 +50,7 @@ const ForgotPassword = () => {
   // };
   return (
     <LinearGradient
-      colors={[COLORS.lightBlue, "#fff"]}
+      colors={[COLORS.primaryDark, "#fff"]}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -84,10 +79,10 @@ const ForgotPassword = () => {
 
       <View style={{ flexDirection: "row", gap: 10 }}>
         <LinearGradient
-          colors={COLORS.blueGradient}
+          colors={COLORS.primaryGradient}
           style={styles.btnContainer()}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 0 }}
         >
           <CustomButton
             styles={styles}
@@ -97,10 +92,10 @@ const ForgotPassword = () => {
           ></CustomButton>
         </LinearGradient>
         <LinearGradient
-          colors={COLORS.blueGradient}
+          colors={COLORS.primaryGradient}
           style={styles.btnContainer()}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 0 }}
         >
           <CustomButton
             styles={styles}

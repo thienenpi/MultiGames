@@ -30,8 +30,9 @@ const ProfileRow = ({ avatarSource, money, name, eventIcon, eventText }) => {
       </View>
       <Pressable style={styles.rightContainer} onPress={handleEventPress}>
         <View style={styles.eventContainer}>
-          <Ionicons name={eventIcon} size={26} color="pink" />
-          <Text style={styles.eventText}>{eventText}</Text>
+          <Image source={require("../../assets/icon_game.png")} style={styles.eventContainer} />
+          {/* <Ionicons name={eventIcon} size={26} color="pink" /> */}
+          {/* <Text style={styles.eventText}>{eventText}</Text> */}
         </View>
       </Pressable>
     </View>

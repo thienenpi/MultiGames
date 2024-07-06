@@ -20,7 +20,7 @@ const AppBar = ({
         styles.header,
         { paddingTop: Platform.OS === "android" ? 40 : 60 },
       ]}
-      colors={[COLORS.lightBlue, COLORS.lightBlue + "40", COLORS.lightBlue + "80"]}
+      colors={[COLORS.primaryDark, COLORS.primaryLight]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >

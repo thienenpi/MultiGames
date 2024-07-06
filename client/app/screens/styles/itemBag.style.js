@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 8,
     elevation: 2,
-    width: "80%",
+    width: "60%",
+    margin: 10
   },
   
   buttonUse: {

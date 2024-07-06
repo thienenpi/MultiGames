@@ -1,5 +1,12 @@
 import React, { useContext, useCallback, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image, ScrollView, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
@@ -9,6 +16,7 @@ import {
   GameCard,
   RankingDialog,
   FriendsDialog,
+  RoomActiveDialog,
 } from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
@@ -19,6 +27,7 @@ const Dashboard = () => {
   const navigation = useNavigation();
   const [isShowRanking, setIsShowRanking] = useState(false);
   const [isShowFriends, setIsShowFriends] = useState(false);
+  const [isShowRoomActive, setIsShowRoomActive] = useState(false);
 
   const GAME_MODE = {
     DRAW: "Bạn Vẽ Tôi Đoán",
@@ -66,21 +75,22 @@ const Dashboard = () => {
   }, [userInfo]);
 
   return (
-    <ScrollView>
+    <ScrollView style={{ marginHorizontal: 8 }}>
       <ProfileRow
         avatarSource={userInfo.avatarUrl}
         name={userInfo.name}
         money={userInfo.money}
-        eventIcon="star-outline"
-        eventText="Events"
       />
 
-      <View style={styles.containerTask}>
+      <View style={styles.containerButton}>
         <TouchableOpacity
           style={styles.item}
           onPress={() => setIsShowRanking((prev) => !prev)}
         >
-          <Ionicons name="stats-chart" size={34} color="blue" />
+          <Image
+            source={require("../../assets/icon_ranking.png")}
+            style={styles.icon}
+          />
           <Text style={styles.text}>Ranking</Text>
         </TouchableOpacity>
 
@@ -91,16 +101,32 @@ const Dashboard = () => {
           />
         )}
 
-        <TouchableOpacity style={styles.item}>
-          <Ionicons name="add-circle-outline" size={34} color="red" />
-          <Text style={styles.text}>Invitations</Text>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => setIsShowRoomActive((prev) => !prev)}
+        >
+          <Image
+            source={require("../../assets/icon_playgame.png")}
+            style={styles.icon}
+          />
+          <Text style={styles.text}>Active Rooms</Text>
         </TouchableOpacity>
+
+        {isShowRoomActive && (
+          <RoomActiveDialog
+            isShow={isShowRoomActive}
+            onChangeShow={setIsShowRoomActive}
+          />
+        )}
 
         <TouchableOpacity
           style={styles.item}
           onPress={() => setIsShowFriends((prev) => !prev)}
         >
-          <Ionicons name="people-sharp" size={34} color="purple" />
+          <Image
+            source={require("../../assets/icon_friends.png")}
+            style={styles.icon}
+          />
           <Text style={styles.text}>Friends</Text>
         </TouchableOpacity>
 
@@ -113,7 +139,13 @@ const Dashboard = () => {
       </View>
       <Image
         source={require("../../assets/slide1.jpg")}
-        style={{ height: 250, width: "100%" }}
+        style={{
+          height: 250,
+          width: "95%",
+          borderRadius: 15,
+          justifyContent: "center",
+          alignSelf: "center",
+        }}
         resizeMode="cover"
       />
       <View style={styles.containerInfo}>

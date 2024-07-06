@@ -22,7 +22,7 @@ function excuitionModeName(mode) {
   }
 }
 
-const RoomCardView = ({ item }) => {
+const RoomCardView = ({ onItemPress, item, isShowRoomsActive }) => {
   const [gameTypeColor, setGameTypeColor] = useState(COLORS.background);
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -51,13 +51,20 @@ const RoomCardView = ({ item }) => {
 
     if (gameMode === "Bạn vẽ tôi đoán") {
       navigation.navigate("Guessing Word", { roomInfo: item });
-    } else {
-      //   navigation.navigate("Spy", { roomInfo: item._id });
+    }
+    if (gameMode === "Truy Tìm Gián điệp") {
+      navigation.navigate("Spy Game", { roomInfo: item });
     }
   };
 
   return (
-    <TouchableOpacity onPress={handleJoinRoom}>
+    <TouchableOpacity
+      onPress={() => {
+        handleJoinRoom().then(() => {
+          onItemPress();
+        });
+      }}
+    >
       <View style={styles.container}>
         <ImageBackground
           source={{
@@ -68,7 +75,13 @@ const RoomCardView = ({ item }) => {
         ></ImageBackground>
 
         <View style={styles.roomInfo}>
-          <Text style={styles.roomID}>Room ID: {item.name}</Text>
+          {isShowRoomsActive ? (
+            <Text style={[styles.roomID, { fontSize: 14, width: 90 }]}>
+              ID: {item.name}
+            </Text>
+          ) : (
+            <Text style={styles.roomID}>ID: {item.name}</Text>
+          )}
 
           <View style={styles.roomState}>
             <Text style={styles.waiting}>
@@ -92,7 +105,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: SIZES.xxLarge * 2,
-    width: SIZES.width,
     padding: SIZES.medium,
     borderBottomWidth: 0.5,
     borderColor: COLORS.text,

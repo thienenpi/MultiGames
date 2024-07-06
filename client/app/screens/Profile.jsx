@@ -19,6 +19,7 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <AppBar
+        title={"Profile"}
         showLeftIcon={false}
         onPressLeftIcon={() => navigation.goBack()}
       ></AppBar>
@@ -51,7 +52,7 @@ const Profile = () => {
             ></OptionRow>
 
             <OptionRow
-              onPress={() => {}}
+              onPress={() => navigation.navigate("Item Bag")}
               iconLeft={
                 <Ionicons name="briefcase-outline" size={24}></Ionicons>
               }

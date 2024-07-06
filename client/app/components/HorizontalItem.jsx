@@ -30,7 +30,7 @@ const HorizontalItem = ({
             {isIconDesc && (
               <Ionicons
                 name={iconDesc}
-                size={16}
+                size={24}
                 style={[styles.icon, { color: colorIconDesc, marginRight: 4 }]}
               />
             )}

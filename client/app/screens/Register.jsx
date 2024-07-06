@@ -55,8 +55,9 @@ const Register = () => {
         status: "a",
       };
 
-      register({ data: data });
-      navigation.navigate("Login");
+      if (register({ data: data }) === true) {
+        navigation.navigate("Login");
+      }
     } else {
       console.log("Invalid birthday");
     }
@@ -77,13 +78,14 @@ const Register = () => {
   const checkBirthValid = () => {
     const today = new Date();
     const birthDate = new Date(dateOfBirth);
+    console.log(birthDate);
 
     if (today.getFullYear() < birthDate.getFullYear()) {
       return false;
     } else if (today.getMonth() < birthDate.getMonth()) {
       return false;
     } else {
-      return today.getDate() >= birthDate.getDate();
+      return true;
     }
   };
 
@@ -95,7 +97,7 @@ const Register = () => {
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
       <LinearGradient
-        colors={[COLORS.lightBlue, "#fff"]}
+        colors={[COLORS.primaryDark, "#fff"]}
         style={styles.container}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -202,10 +204,10 @@ const Register = () => {
             }}
           >
             <LinearGradient
-              colors={COLORS.blueGradient}
+              colors={COLORS.primaryGradient}
               style={styles.btnContainer()}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
             >
               <CustomButton
                 label={"Cancel"}
@@ -216,10 +218,10 @@ const Register = () => {
             </LinearGradient>
 
             <LinearGradient
-              colors={COLORS.blueGradient}
+              colors={COLORS.primaryGradient}
               style={styles.btnContainer()}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
+              start={{ x: 1, y: 1 }}
+              end={{ x: 0, y: 0 }}
             >
               <CustomButton
                 label={"Confirm"}
@@ -241,10 +243,10 @@ const Register = () => {
           }}
         >
           <LinearGradient
-            colors={COLORS.blueGradient}
+            colors={COLORS.primaryGradient}
             style={styles.btnContainer()}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0 }}
           >
             <CustomButton
               label={"Back"}
@@ -255,10 +257,10 @@ const Register = () => {
           </LinearGradient>
 
           <LinearGradient
-            colors={COLORS.blueGradient}
+            colors={COLORS.primaryGradient}
             style={styles.btnContainer()}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0 }}
           >
             <CustomButton
               label={"Register"}
