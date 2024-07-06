@@ -9,6 +9,7 @@ import {
   GameCard,
   RankingDialog,
   FriendsDialog,
+  RoomActiveDialog,
 } from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const navigation = useNavigation();
   const [isShowRanking, setIsShowRanking] = useState(false);
   const [isShowFriends, setIsShowFriends] = useState(false);
+  const [isShowRoomActive, setIsShowRoomActive] = useState(false);
 
   const GAME_MODE = {
     DRAW: "Bạn Vẽ Tôi Đoán",
@@ -49,8 +51,6 @@ const Dashboard = () => {
       Alert.alert("Cannot join", "Room is playing.");
       return;
     }
-    // navigation.navigate("Guessing Word", { roomInfo: roomInfo });
-    // await joinRoom({ roomId: roomInfo._id, userId: userInfo._id });
 
     if (mode === "Bạn Vẽ Tôi Đoán") {
       navigation.navigate("Guessing Word", { roomInfo: roomInfo });
@@ -91,10 +91,25 @@ const Dashboard = () => {
             />
           )}
 
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity 
+            style={styles.item}
+            onPress={() => setIsShowRoomActive((prev) => !prev)}
+          >
             <Image source={require("../../assets/icon_playgame.png")} style={ styles.icon } />
-            <Text style={styles.text}>Room Active</Text>
+            <Text style={styles.text}>Activity Rooms</Text>
           </TouchableOpacity>
+
+          {isShowRoomActive && (
+            <RoomActiveDialog
+              isShow={isShowRoomActive}
+              onChangeShow={setIsShowRoomActive}
+            />
+          )}
+
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => navigation.navigate("Room Active")}
+          ></TouchableOpacity>
 
           <TouchableOpacity
             style={styles.item}

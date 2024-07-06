@@ -35,6 +35,7 @@ import GameTimer from "./spyGame/GameTimer";
 import NotificationDialog from "./spyGame/NotificationDialog";
 import KeyWordDialog from "./spyGame/KeyWordDialog";
 import SpyScoreController from "./systems/scoringSystem/spyScoreController";
+import RoomActiveDialog from "./dashboard/RoomActiveDialog";
 
 export {
   CustomButton,
@@ -74,4 +75,5 @@ export {
   FriendsDialog,
   ResultDialog,
   SpyScoreController,
+  RoomActiveDialog,
 };

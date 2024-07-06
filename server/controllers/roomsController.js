@@ -48,6 +48,15 @@ const getActiveRoom = async (req, res) => {
   }
 };
 
+const getAllRoomsActive = async (req, res) => {
+  try {
+    const rooms = await Room.find({ status: "active" });
+    res.status(200).json(rooms);
+  } catch (error) {
+    res.status(500).json("Failed to retrieve all rooms active", error);
+  }
+};
+
 const getRoomsOwner = async (req, res) => {
   try {
     const rooms = await Room.find({ owner: req.params.id });
@@ -137,4 +146,5 @@ module.exports = {
   isRoomFull,
   getRoomGuests,
   getRoomHistoryGuests,
+  getAllRoomsActive,
 };
