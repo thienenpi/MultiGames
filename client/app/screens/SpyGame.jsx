@@ -128,7 +128,6 @@ const SpyScreen = () => {
       setIsShowDes(false);
       setDescriptionMessage([]);
       setisShowVote(true);
-
       if (voteResult.current) {
         spySocket.emit("votingResult", {
           room: roomInfo._id,
@@ -153,13 +152,11 @@ const SpyScreen = () => {
   const handleEliminated = async (data) => {
     remainingPlayers.current = [];
     eliminatedPlayers.current = data;
-    console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
-    if (
-      eliminatedPlayers.current.length > 0 &&
-      numberOfUser.current.length > 0
-    ) {
-      eliminatedPlayer.current =
-        eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
+    eliminatedPlayer.current =
+      eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
+
+    if (eliminatedPlayers.current.length > 0) {
+      console.log("eliminatedPlayer.current", eliminatedPlayer.current);
       if (spyData.current._id === eliminatedPlayer.current) {
         setIsShowDialogResult(true);
         console.log("Gián điệp đã bị loại, thường dân chiến thắng");
@@ -207,11 +204,13 @@ const SpyScreen = () => {
           setIsStart(false);
         }
       } else {
-        const res = await getUserById(eliminatedPlayer.current);
-        eliminatedPlayerData.current = res.data;
-        setIsShowDialogRoundEnd(true);
-        socket.emit("Reset", roomInfo._id);
-        console.log("Kết quả");
+        if (eliminatedPlayer.current !== undefined) {
+          const res = await getUserById({ id: eliminatedPlayer.current });
+          eliminatedPlayerData.current = res.data;
+          setIsShowDialogRoundEnd(true);
+          socket.emit("Reset", roomInfo._id);
+          console.log("Kết quả");
+        }
       }
     }
   };
@@ -243,11 +242,11 @@ const SpyScreen = () => {
       setIsStart(true);
     });
 
+    spySocket.on("eliminated", handleEliminated);
+
     spySocket.on("assignKeyword", (data) => {
       setKeyword(data.keyword);
     });
-
-    spySocket.on("eliminated", handleEliminated);
 
     return () => {
       leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
@@ -261,18 +260,8 @@ const SpyScreen = () => {
       spySocket.off("assignKeyword");
     };
   }, []);
-  const closeAllModal = () => {
-    setIsShowDes(false);
-    setIdUserVoted("");
-    setIsShowDialogResult(false);
-    setIsShowDialogRoundEnd(false);
-    setisShowVote(false);
-  }
   useEffect(() => {
-    if (!isStart) {
-      closeAllModal();
-      return;
-    }
+    if (!isStart) return;
     setShowKeyWordModal(true);
     usersInRoom.forEach((user) => {
       spyScoreController.addPlayer(user);
@@ -281,7 +270,6 @@ const SpyScreen = () => {
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         if (prevTimer <= 0) {
-
           gameTimeController.setNextStatusAndTime();
 
           handleGamingTimelines();
