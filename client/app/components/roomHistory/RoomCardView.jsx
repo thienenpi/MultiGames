@@ -22,7 +22,7 @@ function excuitionModeName(mode) {
   }
 }
 
-const RoomCardView = ({ item, isShowRoomsActive }) => {
+const RoomCardView = ({ onItemPress, item, isShowRoomsActive }) => {
   const [gameTypeColor, setGameTypeColor] = useState(COLORS.background);
   const { userInfo } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -58,7 +58,13 @@ const RoomCardView = ({ item, isShowRoomsActive }) => {
   };
 
   return (
-    <TouchableOpacity onPress={handleJoinRoom}>
+    <TouchableOpacity
+      onPress={() => {
+        handleJoinRoom().then(() => {
+          onItemPress();
+        });
+      }}
+    >
       <View style={styles.container}>
         <ImageBackground
           source={{

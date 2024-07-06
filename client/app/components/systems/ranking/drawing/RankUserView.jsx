@@ -38,11 +38,6 @@ const RankUserView = ({ item, isInGame }) => {
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
 
-        {/* {item.score ? (
-          <Text style={styles.expGain}>Final score: {item.score}</Text>
-        ) : (
-          <Text style={styles.expGain}>{item.money} $</Text>
-        )} */}
         {isInGame === true ? (
           <Text style={styles.expGain}>Final score: {item.score}</Text>
         ) : (

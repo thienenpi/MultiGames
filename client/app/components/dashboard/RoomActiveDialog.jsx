@@ -7,14 +7,15 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { SIZES } from "../../constants";
+import { COLORS, SIZES } from "../../constants";
 import RoomCardView from "../roomHistory/RoomCardView";
 import CustomButton from "../CustomButton";
 import { getAllRoomsActive } from "../../api/index";
+import { LinearGradient } from "expo-linear-gradient";
 
-const RoomActiveColumn = ({ rooms }) => {
+const RoomActiveColumn = ({ rooms, onItemPress }) => {
   const renderItem = ({ item }) => {
-    return <RoomCardView item={item} isShowRoomsActive={true} ></RoomCardView>;
+    return <RoomCardView onItemPress={onItemPress} item={item} isShowRoomsActive={true}></RoomCardView>;
   };
 
   return (
@@ -70,14 +71,24 @@ const RoomActiveDialog = ({ isShow, onChangeShow }) => {
         </View>
 
         <View style={styles.body}>
-          <RoomActiveColumn rooms={rooms}></RoomActiveColumn>
+          <RoomActiveColumn
+            rooms={rooms}
+            onItemPress={() => onChangeShow(false)}
+          ></RoomActiveColumn>
 
-          <CustomButton
-            isValid={true}
-            label={"Close"}
-            styles={styles}
-            onPress={closeModal}
-          ></CustomButton>
+          <LinearGradient
+            colors={COLORS.primaryGradient}
+            style={styles.btnContainer()}
+            start={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 0 }}
+          >
+            <CustomButton
+              isValid={true}
+              label={"Close"}
+              styles={styles}
+              onPress={closeModal}
+            ></CustomButton>
+          </LinearGradient>
         </View>
       </View>
     </Modal>
@@ -160,8 +171,6 @@ const styles = StyleSheet.create({
 
   btnContainer: (backgroundColor) => ({
     width: "40%",
-    backgroundColor: backgroundColor,
-    padding: 10,
     margin: 10,
     borderRadius: 10,
     alignItems: "center",

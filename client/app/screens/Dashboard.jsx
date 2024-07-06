@@ -109,7 +109,7 @@ const Dashboard = () => {
             source={require("../../assets/icon_playgame.png")}
             style={styles.icon}
           />
-          <Text style={styles.text}>Activity Rooms</Text>
+          <Text style={styles.text}>Active Rooms</Text>
         </TouchableOpacity>
 
         {isShowRoomActive && (
