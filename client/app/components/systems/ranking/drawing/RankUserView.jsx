@@ -8,7 +8,7 @@ import { checkIfFriend } from "../../../../services";
 import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 
-const RankUserView = ({ item }) => {
+const RankUserView = ({ item, isInGame }) => {
   const { userInfo } = useContext(AuthContext);
   const isMe = userInfo._id === item._id;
   const [isFriend, setIsFriend] = useState(false);
@@ -38,7 +38,12 @@ const RankUserView = ({ item }) => {
       <View style={styles.userInfo}>
         <Text style={styles.userName}>{item.name}</Text>
 
-        {item.score ? (
+        {/* {item.score ? (
+          <Text style={styles.expGain}>Final score: {item.score}</Text>
+        ) : (
+          <Text style={styles.expGain}>{item.money} $</Text>
+        )} */}
+        {isInGame === true ? (
           <Text style={styles.expGain}>Final score: {item.score}</Text>
         ) : (
           <Text style={styles.expGain}>{item.money} $</Text>
@@ -100,16 +105,16 @@ const styles = StyleSheet.create({
   },
 
   rank: {
-    flex: 1,
     borderRadius: 99,
     borderWidth: 1,
-    height: "50%",
+    height: 25,
+    width: 25,
     alignItems: "center",
     justifyContent: "center",
   },
 
   avatar: {
-    flex: 3,
+    flex: 2,
     alignItems: "center",
     justifyContent: "center",
     height: 50,
@@ -160,7 +165,7 @@ const styles = StyleSheet.create({
 
   btnLabel: {
     fontFamily: "sfProBold",
-    fontSize: SIZES.medium,
+    fontSize: SIZES.small,
     color: "white",
   },
 
@@ -174,7 +179,7 @@ const styles = StyleSheet.create({
 
   frStatusText: {
     fontFamily: "sfProBold",
-    fontSize: SIZES.medium,
+    fontSize: SIZES.small,
     color: "white",
   },
 });

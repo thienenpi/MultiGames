@@ -96,7 +96,14 @@ const RoomBoard = () => {
           end={{ x: 0, y: 0 }}
         >
           <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center" }}
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              zIndex: 99,
+            }}
             onPress={() => navigation.navigate("Room Create")}
           >
             <Ionicons name="add-circle" size={30} color="white" />
@@ -111,7 +118,14 @@ const RoomBoard = () => {
           end={{ x: 0, y: 0 }}
         >
           <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center" }}
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              zIndex: 99,
+            }}
             onPress={showDialog}
           >
             <Ionicons name="search-circle" size={30} color="white" />

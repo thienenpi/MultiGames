@@ -55,8 +55,9 @@ const Register = () => {
         status: "a",
       };
 
-      register({ data: data });
-      navigation.navigate("Login");
+      if (register({ data: data }) === true) {
+        navigation.navigate("Login");
+      }
     } else {
       console.log("Invalid birthday");
     }
@@ -77,13 +78,14 @@ const Register = () => {
   const checkBirthValid = () => {
     const today = new Date();
     const birthDate = new Date(dateOfBirth);
+    console.log(birthDate);
 
     if (today.getFullYear() < birthDate.getFullYear()) {
       return false;
     } else if (today.getMonth() < birthDate.getMonth()) {
       return false;
     } else {
-      return today.getDate() >= birthDate.getDate();
+      return true;
     }
   };
 

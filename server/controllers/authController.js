@@ -45,6 +45,14 @@ const login = async (req, res) => {
 const register = async (req, res) => {
   try {
     const newUser = new User(req.body);
+
+    // check if user already exists
+    const user = await User.findOne({ email: newUser.email });
+
+    if (user) {
+      return res.status(403).json("Email already exists");
+    }
+
     const password = newUser.password;
     const encryptedPassword = CryptoJS.AES.encrypt(
       password,

@@ -113,7 +113,7 @@ const SpyScreen = () => {
       voteResult.current = {};
       setIsDesrTime(true);
       const notification = {
-        sender: "Notify:",
+        sender: "Notify",
         content: "describe your keyword.",
       };
       setMessageHistory((pervMessages) => [...pervMessages, notification]);

@@ -53,10 +53,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   button: {
-    padding: 8,
     elevation: 2,
     width: "40%",
-    minHeight: 60,
+    height: 60,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,

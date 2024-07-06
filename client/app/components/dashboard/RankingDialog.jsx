@@ -14,7 +14,7 @@ import RankUserView from "../systems/ranking/drawing/RankUserView";
 import { LinearGradient } from "expo-linear-gradient";
 
 const RankColumns = ({ users }) => {
-  const renderItem = ({ item }) => <RankUserView item={item}></RankUserView>;
+  const renderItem = ({ item }) => <RankUserView isInGame={false} item={item}></RankUserView>;
 
   return (
     <FlatList

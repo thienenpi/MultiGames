@@ -41,6 +41,7 @@ const FriendsDialog = ({ isShow, onChangeShow }) => {
     try {
       const friends = await getFriends({ id: userInfo._id });
 
+      console.log(friends);
       setFriends(friends);
     } catch (error) {
       console.error(error);
