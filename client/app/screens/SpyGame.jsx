@@ -83,7 +83,7 @@ const SpyScreen = () => {
   };
   const confirmVote = async (selectedId) => {
     if (isStart) {
-      if (idUserVoted === "" && selectedId !== userInfo._id) {
+      if (idUserVoted === "" && selectedId !== userInfo._id && !eliminatedPlayers.current.includes(userInfo._id)) {
         setIdUserVoted(selectedId);
         spySocket.emit("vote", {
           voter: userInfo._id,
@@ -105,13 +105,13 @@ const SpyScreen = () => {
 
   const handleGamingTimelines = () => {
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.WORD_VIEW) {
-      setisShowVote(false);
       setIsDesrTime(false);
       setIsShowDes(false);
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.DESCRIPTION) {
       voteResult.current = {};
       setIsDesrTime(true);
+      setisShowVote(false);
       const notification = {
         sender: "Notify",
         content: "describe your keyword.",
@@ -128,7 +128,6 @@ const SpyScreen = () => {
       setIsShowDes(false);
       setDescriptionMessage([]);
       setisShowVote(true);
-
       if (voteResult.current) {
         spySocket.emit("votingResult", {
           room: roomInfo._id,
@@ -153,13 +152,11 @@ const SpyScreen = () => {
   const handleEliminated = async (data) => {
     remainingPlayers.current = [];
     eliminatedPlayers.current = data;
-    console.log("Mảng người chơi bị loại: " + eliminatedPlayers.current);
-    if (
-      eliminatedPlayers.current.length > 0 &&
-      numberOfUser.current.length > 0
-    ) {
-      eliminatedPlayer.current =
-        eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
+    eliminatedPlayer.current =
+      eliminatedPlayers.current[eliminatedPlayers.current.length - 1];
+
+    if (eliminatedPlayers.current.length > 0) {
+      console.log("eliminatedPlayer.current", eliminatedPlayer.current);
       if (spyData.current._id === eliminatedPlayer.current) {
         setIsShowDialogResult(true);
         console.log("Gián điệp đã bị loại, thường dân chiến thắng");
@@ -177,7 +174,7 @@ const SpyScreen = () => {
           remainingPlayers.current,
           "civ_win"
         );
-        setIsStart(false);
+        setTimeout(()=> setIsStart(false), 3000);
       } else if (
         numberOfUser.current.length - eliminatedPlayers.current.length ===
         2
@@ -204,14 +201,16 @@ const SpyScreen = () => {
             [spyData.current._id],
             "spy_win"
           );
-          setIsStart(false);
+          setTimeout(()=> setIsStart(false), 3000)
         }
       } else {
-        const res = await getUserById(eliminatedPlayer.current);
-        eliminatedPlayerData.current = res.data;
-        setIsShowDialogRoundEnd(true);
-        socket.emit("Reset", roomInfo._id);
-        console.log("Kết quả");
+        if (eliminatedPlayer.current !== undefined) {
+          const res = await getUserById({ id: eliminatedPlayer.current });
+          eliminatedPlayerData.current = res.data;
+          setIsShowDialogRoundEnd(true);
+          socket.emit("Reset", roomInfo._id);
+          console.log("Kết quả");
+        }
       }
     }
   };
@@ -243,11 +242,11 @@ const SpyScreen = () => {
       setIsStart(true);
     });
 
+    spySocket.on("eliminated", handleEliminated);
+
     spySocket.on("assignKeyword", (data) => {
       setKeyword(data.keyword);
     });
-
-    spySocket.on("eliminated", handleEliminated);
 
     return () => {
       leaveRoom({ roomId: roomInfo._id, userId: userInfo._id });
@@ -261,18 +260,8 @@ const SpyScreen = () => {
       spySocket.off("assignKeyword");
     };
   }, []);
-  const closeAllModal = () => {
-    setIsShowDes(false);
-    setIdUserVoted("");
-    setIsShowDialogResult(false);
-    setIsShowDialogRoundEnd(false);
-    setisShowVote(false);
-  }
   useEffect(() => {
-    if (!isStart) {
-      closeAllModal();
-      return;
-    }
+    if (!isStart) return;
     setShowKeyWordModal(true);
     usersInRoom.forEach((user) => {
       spyScoreController.addPlayer(user);
@@ -281,7 +270,6 @@ const SpyScreen = () => {
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         if (prevTimer <= 0) {
-
           gameTimeController.setNextStatusAndTime();
 
           handleGamingTimelines();
@@ -550,7 +538,7 @@ const SpyScreen = () => {
             name={spyData.current.name}
             identify={resultDialog.identify}
             isVisible={resultDialog.isVisible}
-            onClose={() => setIsShowDialogResult(false)}
+            onClose={() => navigation.goBack()}
             text={resultDialog.text}
             duration={3}
           />
