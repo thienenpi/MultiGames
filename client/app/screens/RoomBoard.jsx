@@ -53,7 +53,6 @@ const RoomBoard = () => {
 
       if (res.status === 200) {
         const roomInfo = res.data;
-        // console.log(roomInfo);
         setItems([roomInfo]);
       }
     } catch (error) {}

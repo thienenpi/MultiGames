@@ -20,6 +20,7 @@ import {
   isRoomFull,
   getRoomGuests,
   getRoomHistoryGuests,
+  getAllRoomsActive,
 } from "./RoomApi";
 
 import { getMessages, sendMessage, markMessagesAsSeen } from "./MessageApi";
@@ -48,6 +49,7 @@ export {
   isRoomFull,
   getRoomGuests,
   getRoomHistoryGuests,
+  getAllRoomsActive,
 
   // MessageApi
   getMessages,

@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const roomController = require("../controllers/roomsController");
 
+router.get("/active", roomController.getAllRoomsActive);
 router.post("/active", roomController.getActiveRoom);
 router.get("/", roomController.getRooms);
 router.get("/roomId=:id", roomController.getRoom);

@@ -16,6 +16,7 @@ import {
   GameCard,
   RankingDialog,
   FriendsDialog,
+  RoomActiveDialog,
 } from "../components";
 import { joinRoom, accessRoom } from "../services";
 import { socket, spySocket } from "../utils/config";
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const navigation = useNavigation();
   const [isShowRanking, setIsShowRanking] = useState(false);
   const [isShowFriends, setIsShowFriends] = useState(false);
+  const [isShowRoomActive, setIsShowRoomActive] = useState(false);
 
   const GAME_MODE = {
     DRAW: "Bạn Vẽ Tôi Đoán",
@@ -99,13 +101,23 @@ const Dashboard = () => {
           />
         )}
 
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => setIsShowRoomActive((prev) => !prev)}
+        >
           <Image
             source={require("../../assets/icon_playgame.png")}
             style={styles.icon}
           />
-          <Text style={styles.text}>Room Active</Text>
+          <Text style={styles.text}>Activity Rooms</Text>
         </TouchableOpacity>
+
+        {isShowRoomActive && (
+          <RoomActiveDialog
+            isShow={isShowRoomActive}
+            onChangeShow={setIsShowRoomActive}
+          />
+        )}
 
         <TouchableOpacity
           style={styles.item}

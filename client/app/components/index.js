@@ -36,6 +36,7 @@ import ResultDialog from "./spyGame/ResultDialog";
 import EndRoundDialog from "./spyGame/EndRoundDialog";
 import KeyWordDialog from "./spyGame/KeyWordDialog";
 import SpyScoreController from "./systems/scoringSystem/spyScoreController";
+import RoomActiveDialog from "./dashboard/RoomActiveDialog";
 
 export {
   CustomButton,
@@ -77,4 +78,5 @@ export {
   EndRoundDialog,
   // MyCarousel,
   SpyScoreController,
+  RoomActiveDialog,
 };
