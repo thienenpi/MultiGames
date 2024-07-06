@@ -83,7 +83,7 @@ const SpyScreen = () => {
   };
   const confirmVote = async (selectedId) => {
     if (isStart) {
-      if (idUserVoted === "" && selectedId !== userInfo._id) {
+      if (idUserVoted === "" && selectedId !== userInfo._id && !eliminatedPlayers.current.includes(userInfo._id)) {
         setIdUserVoted(selectedId);
         spySocket.emit("vote", {
           voter: userInfo._id,
@@ -105,13 +105,13 @@ const SpyScreen = () => {
 
   const handleGamingTimelines = () => {
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.WORD_VIEW) {
-      setisShowVote(false);
       setIsDesrTime(false);
       setIsShowDes(false);
     }
     if (gameTimeController.getStatus() === SPY_GAME_STATUS.DESCRIPTION) {
       voteResult.current = {};
       setIsDesrTime(true);
+      setisShowVote(false);
       const notification = {
         sender: "Notify:",
         content: "describe your keyword.",
@@ -174,7 +174,7 @@ const SpyScreen = () => {
           remainingPlayers.current,
           "civ_win"
         );
-        setIsStart(false);
+        setTimeout(()=> setIsStart(false), 3000);
       } else if (
         numberOfUser.current.length - eliminatedPlayers.current.length ===
         2
@@ -201,7 +201,7 @@ const SpyScreen = () => {
             [spyData.current._id],
             "spy_win"
           );
-          setIsStart(false);
+          setTimeout(()=> setIsStart(false), 3000)
         }
       } else {
         if (eliminatedPlayer.current !== undefined) {
@@ -538,7 +538,7 @@ const SpyScreen = () => {
             name={spyData.current.name}
             identify={resultDialog.identify}
             isVisible={resultDialog.isVisible}
-            onClose={() => setIsShowDialogResult(false)}
+            onClose={() => navigation.goBack()}
             text={resultDialog.text}
             duration={3}
           />
