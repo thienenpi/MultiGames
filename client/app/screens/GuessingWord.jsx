@@ -258,8 +258,8 @@ const GuessingWord = () => {
           setShowKeywordDialog(true);
         }
         setIsClear(true);
-      }
-    }
+      }},
+    
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.DRAWING) {
     }
     if (gameTimeController.getStatus() === DRAWING_GAME_STATUS.RESULT) {
@@ -283,8 +283,7 @@ const GuessingWord = () => {
           socket.off();
         }
       });
-    }
-  };
+    };
 
   const hideKeyboard = () => {
     Keyboard.dismiss();
@@ -793,6 +792,5 @@ const GuessingWord = () => {
       </View>
     </TouchableWithoutFeedback>
   );
-};
 
 export default GuessingWord;

@@ -1,7 +1,4 @@
-import {
-  DRAWING_GAME_SCORE,
-  DRAWING_GAME_MONEY,
-} from "../../../constants";
+import { DRAWING_GAME_SCORE, DRAWING_GAME_MONEY } from "../../../constants";
 import ApiManager from "../../../api/ApiManager";
 
 const updateUserInfo = async ({ id, data }) => {

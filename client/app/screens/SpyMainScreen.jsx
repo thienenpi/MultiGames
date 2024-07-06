@@ -9,7 +9,6 @@ import {
   Alert,
 } from "react-native";
 import { COLORS } from "../constants";
-import { LinearGradient } from "expo-linear-gradient";
 import GameHeader from "../components/spyGame/GameHeader";
 import GameType from "../components/spyGame/GameType";
 import { useNavigation } from "@react-navigation/native";
@@ -39,12 +38,14 @@ const SpyMainScreen = () => {
     navigation.navigate("Spy Game", { roomInfo: roomInfo });
   };
   return (
-    <View style={{ flexDirection: "column" }}>
+    <View style={styles.container}>
       <ImageBackground
         source={require("../../assets/spy_game_main_background.png")}
         style={styles.background}
       >
         <GameHeader />
+
+        {/* Game option container 1 */}
         <View style={styles.gameOptionContainer("#FCBE4F")}>
           <Text style={styles.gameText}> Ai Là Gián Điệp</Text>
           <View style={styles.gameTypeContainer}>
@@ -88,11 +89,11 @@ const SpyMainScreen = () => {
           </View>
         </View>
         <View style={styles.buttonContainers}>
-          <View style={styles.containerFindRoom}>
+          <Pressable style={styles.containerFindRoom} onPress={handleStartGame}>
             <LinearGradient
               colors={COLORS.blueGradient}
-              start={[0, 0]}
-              end={[1, 0]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={styles.gradientButton}
             >
               <Image
@@ -100,15 +101,19 @@ const SpyMainScreen = () => {
                 style={{ flex: 1, resizeMode: "center" }}
               />
               <Text style={{ flex: 2, color: "white", fontSize: 18 }}>
-                Tìm phòng
+                Bắt đầu trò chơi
               </Text>
             </LinearGradient>
-          </View>
-          <View style={styles.containerCreateRoom}>
+          </Pressable>
+
+          <Pressable
+            style={styles.containerCreateRoom}
+            onPress={navigateToCreateRoom}
+          >
             <LinearGradient
               colors={COLORS.redGradient}
-              start={[0, 0]}
-              end={[1, 0]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={styles.gradientButton}
             >
               <Image
@@ -119,10 +124,11 @@ const SpyMainScreen = () => {
                 Tạo Phòng
               </Text>
             </LinearGradient>
-          </View>
+          </Pressable>
         </View>
       </ImageBackground>
     </View>
   );
 };
+
 export default SpyMainScreen;
