@@ -59,7 +59,7 @@ const RoomCardView = ({ item, isShowRoomsActive }) => {
 
   return (
     <TouchableOpacity onPress={handleJoinRoom}>
-      <View style={styles.container}>
+      <View style={(isShowRoomsActive) ? styles.container : [styles.container, {width: SIZES.width}]}>
         <ImageBackground
           source={{
             uri: "https://fastly.picsum.photos/id/591/200/200.jpg?hmac=5agpVWsRchY0DObXs23vYWjjgqLZEBhqSvTwfCAcyng",
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     padding: SIZES.medium,
     borderBottomWidth: 0.5,
     borderColor: COLORS.text,
+    width: "100%"
   },
 
   avatar: {
