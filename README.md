@@ -58,7 +58,7 @@ https://github.com/user-attachments/assets/fd2067f6-4ef7-4404-af3b-9878e138c7ae
 4. **Build the Client (First Time Only)**
     If this is your first time running the project, you need to build the client before starting it. Follow the steps below:
     ```bash
-    cd ../client
+    cd client
     ```
     4.1. For creating a production build of your Android app, run the following command:
     ```bash
@@ -69,14 +69,26 @@ https://github.com/user-attachments/assets/fd2067f6-4ef7-4404-af3b-9878e138c7ae
     npx expo build:ios
     ```
     Follow the instructions provided by Expo to complete the build process.
-
+   
 5. **Start the Client**
     After building the client for the first time, you can start it by running:
     ```bash
+    cd client
     npm start
     ```
 
-6. **Deploy the App**
+6. **Run on Emulator/Simulator or Physical Device**
+    - **Using Emulator/Simulator:**
+        - For iOS: Press `i` to start the iOS simulator.
+        - For Android: Press `a` to start the Android emulator.
+    - **Using Physical Device:**
+        - Download the Expo Go app from your device's app store.
+        - Scan the QR code displayed in your terminal or Expo DevTools with the Expo Go app to open the project.
+
+7. **Switch to Expo**
+    If you need to switch the running mode to Expo, press `s` in the terminal where the client is running.
+
+8. **Deploy the App**
     You can deploy your app to app stores or via other deployment methods supported by Expo. For more details, refer to the [Expo documentation](https://docs.expo.dev/workflow/publishing/).
 
 ### Additional Tips
@@ -143,13 +155,9 @@ https://github.com/user-attachments/assets/fd2067f6-4ef7-4404-af3b-9878e138c7ae
   <tr>
     <td style="text-align: center;">
       <img src="https://github.com/user-attachments/assets/0d25285f-f2d4-4043-83f9-39be9a9fbaca" width="300"/>
-      <br/>
-      Giao diện Shop
     </td>
     <td style="text-align: center;">
       <img src="https://github.com/user-attachments/assets/7a2341d9-ef69-47d0-afcc-f2e8da462b02" width="300"/>
-      <br/>
-      Dialog mua vật phẩm ở shop - chưa mua
     </td>
   </tr>
 </table>
@@ -264,5 +272,5 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 **Development Team**
 - [Huynh Tien Phat](https://github.com/phathuynh24)
 - [Nguyen Phuoc Thien](https://github.com/thienenpi)
-- [Trần Tiến Phát](https://github.com/Phat7203)
+- [Tran Tien Phat](https://github.com/Phat7203)
 - [Nguyen Truong Bao Duy](https://github.com/bduy1011)
