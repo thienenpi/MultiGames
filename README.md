@@ -1,71 +1,95 @@
-# MultiGames
+# MultiGame
 
-<table>
-<tr>
-<td>
-  A cross-platform mobile app for Android and iOS featuring two standalone games: Drawing Guess and Spy Detection. These games involve creative drawing and word guessing, as well as inference challenges similar to the game Werewolf.
-</td>
-</tr>
-</table>
+A cross-platform mobile application for Android and iOS featuring two standalone games: Drawing Guess and Spy Detection. These games involve creative drawing and word guessing, as well as inference challenges similar to the game Werewolf.
+
+## Table of Contents
+- [Demo](#demo)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Technologies Used](#technologies-used)
+- [Screenshots](#screenshots)
+- [Mobile Support](#mobile-support)
+- [Contributing](#contributing)
+- [Bug / Feature Request](#bug--feature-request)
+- [To-do](#to-do)
+- [Team](#team)
 
 ## Demo
-Here is a working live demo: [MultiGames Demo](https://github.com/phathuynh24/MultiGames)
+Here is a working live demo: [MultiGame Demo](https://github.com/yourusername/MultiGame)
 
-## Site
+## Features
+- **Drawing Guess Game**: A multiplayer game where players draw a word and others guess what it is.
+- **Spy Detection Game**: A social deduction game where players must identify the spy among them through conversation and voting.
+- **User Authentication**: Registration, login, and password management.
+- **Real-time Multiplayer**: Create and join game rooms with friends.
+- **Chat Functionality**: In-game chat for players to communicate.
+- **Scoring System**: Points are awarded based on performance in the games.
+- **In-game Store**: Purchase items to enhance gameplay.
 
-### Landing Page
-![Landing Page](images/home_screen.png)
+## Installation
 
-### Game Room
-![Game Room](images/game_room.png)
+### Prerequisites
+- Node.js
+- npm or yarn
+- Expo CLI
 
-### Drawing Guess Game
-![Drawing Guess Game](images/drawing_guess.png)
-
-### Spy Detection Game
-![Spy Detection Game](images/spy_detection.png)
-
-## Mobile support
-The MultiGames app is compatible with devices of all sizes and all OS's, and consistent improvements are being made.
-
-![Mobile Support](images/mobile_support.png)
-
-## Video
-Here is a video demo of the app:
-[![Watch the video](images/video_thumbnail.png)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)  <!-- Replace this link with your actual YouTube video link -->
+### Steps
+_To be added._
 
 ## Usage
-Want to contribute? Great!
 
-To fix a bug or enhance an existing module, follow these steps:
+- **Register**: Create a new account or log in with an existing account.
+- **Create/Join Room**: Start a new game room or join an existing one.
+- **Play Games**: Enjoy the Drawing Guess and Spy Detection games with friends.
+- **Chat**: Communicate with other players in the game room.
+- **Score**: Track your performance and compare with friends.
 
-- Fork the repo
-- Create a new branch (`git checkout -b improve-feature`)
-- Make the appropriate changes in the files
-- Add changes to reflect the changes made
-- Commit your changes (`git commit -am 'Improve feature'`)
-- Push to the branch (`git push origin improve-feature`)
-- Create a Pull Request
+## Technologies Used
 
-### Bug / Feature Request
-If you find a bug (the app couldn't handle the query and/or gave undesired results), kindly open an issue [here](https://github.com/phathuynh24/MultiGames/issues/new) by including your search query and the expected result.
+- **JavaScript**
+- **React Native**: For building the mobile application.
+- **Expo**: For developing and deploying the app.
+- **Node.js**: For backend services.
+- **Express.js**: For server-side logic.
+- **MongoDB**: For database management.
+- **Socket.io**: For real-time communication.
+- **Docker**: For containerization.
+- **Azure**: For cloud services.
 
-If you'd like to request a new function, feel free to do so by opening an issue [here](https://github.com/phathuynh24/MultiGames/issues/new). Please include sample queries and their corresponding results.
+## Screenshots
 
-## Built with
-- **Frontend:** React Native, Expo
-- **Backend:** Node.js, Express.js, Socket.IO
-- **Database:** MongoDB
-- **Tools:** Docker, Azure Blob Storage
+- **Drawing Guess Game**
+
+- **Spy Detection Game**
+
+- **Chat Feature**
+
+## Mobile Support
+
+The MultiGame app is compatible with devices of all sizes and operating systems, with consistent improvements being made.
+
+## Contributing
+
+_To be added._
+
+## Bug / Feature Request
+
+If you find a bug (the app couldn't handle the query and/or gave undesired results), kindly open an issue here by including your query and the expected result.
+
+If you'd like to request a new function, feel free to do so by opening an issue here. Please include sample queries and their corresponding results.
 
 ## To-do
-- Add more games to the current app.
-- Enhance real-time multiplayer experience.
-- Optimize game performance.
+
+- Add new game modes and features.
+- Improve user interface and experience.
+- Enhance real-time communication capabilities.
+- Optimize game performance and stability.
 
 ## Team
-![Huynh Tien Phat](https://avatars1.githubusercontent.com/u/your-avatar-url)  
-[Huynh Tien Phat](https://github.com/phathuynh24)
 
-## License
-MIT © [Huynh Tien Phat](https://github.com/phathuynh24)
+**Development Team**
+- Huynh Tien Phat
+- Nguyen Phuoc Thien
+- Tran Tien Phat
+- Nguyen Truong Bao Duy
