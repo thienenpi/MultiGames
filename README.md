@@ -256,9 +256,9 @@ To fix a bug or enhance an existing module, follow these steps:
 
 ## Bug / Feature Request 🐛✨
 
-If you find a bug (the app couldn't handle the query and/or gave undesired results), kindly open an issue 2409huynhphat@gmail.com by including your query and the expected result.
+If you encounter a bug where the app fails to handle your query or produces unexpected results, please open an issue by sending an email to 2409huynhphat@gmail.com. Kindly provide details of your query and the expected result in the email.
 
-If you'd like to request a new function, feel free to do so by opening an issue 2409huynhphat@gmail.com. Please include sample queries and their corresponding results.
+If you would like to request a new function, you are welcome to do so by opening an issue via email to 2409huynhphat@gmail.com. Please include sample queries along with their corresponding results in the email.
 
 ## To-do 📝
 
